@@ -20,6 +20,7 @@ const datosInicio = [
     imagen: "https://pbs.twimg.com/media/ErdP28EXcAE8vrI.png",
    }
 ];
+
 const Inicio = () => {
   return (
     <div className="inicio-container">
@@ -29,10 +30,10 @@ const Inicio = () => {
           <div key={index} className="card">
             <img src={item.imagen} alt={item.nombre} className="imagen" />
             <h3>{item.nombre}</h3>
-            <div
+            {/* <div
               className="icono-container"
               style={{ backgroundColor: item.color }}
-            ></div>
+            ></div> */}
           </div>
         ))}
       </div>

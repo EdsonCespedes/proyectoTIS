@@ -52,18 +52,18 @@ input, select {
 .botones {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    /* gap: 15px; */
     margin-top: 10px;
 }
 
-.btn {
+/* .btn {
     padding: 12px 20px;
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
     border: none;
     transition: 0.3s;
-}
+} */
 
 .btn-competencia {
     background: #1e40af;
@@ -74,7 +74,39 @@ input, select {
     background: #1d4ed8;
 }
 
-.btn-registrar {
+.boton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0C3E92;
+    /* Color azul tipo botón */
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-red {
+    background-color: #E30613;
+}
+
+.btn-red:hover {
+    background-color: #A0000A;
+}
+
+.btn-blue {
+    background-color: #0C3E92;
+}
+
+.btn-blue:hover {
+    background-color: #072B6A;
+}
+
+/* .btn-registrar {
     background: #2563eb;
     color: white;
 }
@@ -90,4 +122,4 @@ input, select {
 
 .btn-cancelar:hover {
     background: #b91c1c;
-}
+} */

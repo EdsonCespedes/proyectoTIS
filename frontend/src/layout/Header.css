@@ -52,7 +52,9 @@
     border: none;
     padding: 10px 10px;
     font-size: 10px;
+    font-weight: 500;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .boton-header:hover {
