@@ -6,6 +6,10 @@ import EditColegios from "./pages/EditColegio";
 import DetalleInscripcion from "./pages/DetalleInscripcion";
 import CrearConvForm from "./pages/CrearConvForm";
 import DetalleConv from "./pages/DetalleConv";
+import Inicio from "./pages/Inicio";
+import Disciplinas from "./pages/Disciplinas";
+import Registro from "./pages/Registro";
+
 
 function App() {
 
@@ -18,8 +22,10 @@ function App() {
         <Route path="/registro-colegios" element={<AddColegios />} />
         <Route path="/edit-colegios" element={<EditColegios />} />
         <Route path="/detalle-inscripcion" element={<DetalleInscripcion/>} />
-        <Route path="/convocatoria" element={<CrearConvForm/>} />
-        <Route path="/detalle-convocatoria" element={<DetalleConv/>} />
+        <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
+        <Route path="/detalle-convocatoria" element={<DetalleConv />} />
+        <Route path="/disciplinas" element={<Disciplinas/>} />
+        <Route path="/registro-postulante" element={<Registro />} />
       </Routes>
     </div>
     

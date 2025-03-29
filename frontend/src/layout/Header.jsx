@@ -19,7 +19,7 @@ const Header = () => {
                 <button className="boton-header">EVENTOS</button>
                 <Link to="/disciplinas" className="boton-header">DISCIPLINAS</Link>
                 {/* <button className="boton-header">DISCIPLINAS</button> */}
-                <Link to="/registro-postulante" className="boton-header">INSCRIBIRSE</Link>
+                <Link to="/detalle-inscripcion" className="boton-header">INSCRIBIRSE</Link>
                 {/* <button className="boton-header">INSCRIBIRSE</button> */}
                 <button className="boton-header">INICIAR SESIÓN</button>
             </div>

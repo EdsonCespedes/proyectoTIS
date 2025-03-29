@@ -3,9 +3,7 @@ import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
 const DetalleInscripcion = () => {
-    const [estudiantes, setEstudiantes] = useState([
-        { id: 1, nombre: "Isaac", apellidos: "Gutierrez Huarachi", ci: "12435623", correo: "isgh@gmail.com", fechaNacimiento: "21-06-2004", colegio: "Unidad Educativa Genoveva Ríos", area: "Area 1", curso: "6to Secundaria", departamento: "Cochabamba", provincia: "Cercado", categoria: "Robotica" },
-    ]);
+    const [estudiantes, setEstudiantes] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
@@ -64,7 +62,7 @@ const DetalleInscripcion = () => {
                 )}
             </div>
             <div className="control">
-                <Link to="/" className="boton btn-red">AÑADIR NUEVO</Link>
+                <Link to="/registro-postulante" className="boton btn-red">AÑADIR NUEVO</Link>
                 <button className="boton btn-blue">GUARDAR</button>
                 <Link to="/" className="boton btn-red">CANCELAR</Link>
             </div>

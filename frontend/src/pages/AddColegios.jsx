@@ -183,7 +183,6 @@ const AddColegios = () => {
                         <label>FECHA DE CREACIÓN:</label>
                         <div className="input-with-icon">
                             <input type="date" placeholder="dd/mm/yyyy" />
-                            <span className="calendar-icon">📅</span>
                         </div>
                     </div>
                 </div>
