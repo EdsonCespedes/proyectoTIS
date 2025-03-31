@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
-const DetalleInscripcion = () => {
-    const [estudiantes, setEstudiantes] = useState([]);
-
+const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
+
+    console.log(estudiantes);
 
     const startIndex = currentPage * itemsPerPage;
     const currentEstudiantes = estudiantes.slice(startIndex, startIndex + itemsPerPage);
@@ -24,13 +24,20 @@ const DetalleInscripcion = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentEstudiantes.map((estudiante) => (
-                            <tr key={estudiante.id}>
+                        {currentEstudiantes.map((estudiante, index) => (
+                            <tr key={index}>
                                 <td>{estudiante.nombre} {estudiante.apellidos}</td>
-                                <td>{estudiante.area}</td>
+                                <td>
+                                    {estudiante.areas.map((area, index) => (
+                                        <React.Fragment key={area.idArea}>
+                                            {area.tituloArea} - {estudiante.categorias[index]?.nombreCategoria}
+                                            <br />
+                                        </React.Fragment>
+                                    ))}
+                                </td>
                                 <td>
                                     <Link to="/" className="boton btn-red">MODIFICAR</Link>
-                                    <button className="boton btn-red">RETIRAR</button>
+                                    <button onClick={()=>onEliminar(index)} className="boton btn-red">RETIRAR</button>
                                 </td>
                             </tr>
                         ))}
@@ -39,7 +46,7 @@ const DetalleInscripcion = () => {
 
                 {estudiantes.length === 0 && (
                     <h1 className="no-data">
-                        NO HAY ESTUDIANTES REGISTRADOS AÚN...
+                        NO HAY ESTUDIANTES PARA REGISTRAR AÚN...
                     </h1>
                 )}
 
@@ -60,11 +67,6 @@ const DetalleInscripcion = () => {
                         </button>
                     </div>
                 )}
-            </div>
-            <div className="control">
-                <Link to="/registro-postulante" className="boton btn-red">AÑADIR NUEVO</Link>
-                <button className="boton btn-blue">GUARDAR</button>
-                <Link to="/" className="boton btn-red">CANCELAR</Link>
             </div>
         </div>
     );

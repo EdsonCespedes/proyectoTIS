@@ -126,7 +126,7 @@ const CrearConvocatoria = () => {
 
 
   return (
-    <div className="container">
+    <div className="convocatoria-container">
       {paso === 1 && (
         <form className="convocatoria-form" onSubmit={handleSubmit}>
           <h1>CREAR CONVOCATORIA</h1>
