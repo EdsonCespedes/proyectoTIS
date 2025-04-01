@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./AreaCompetencia.css"; // Archivo de estilos
+import "./styles/AreaCompetencia.css"; // Archivo de estilos
 
 const AreaCompetencia = ({ setModalVisible }) => {
   const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);

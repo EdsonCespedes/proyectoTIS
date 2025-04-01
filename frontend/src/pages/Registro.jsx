@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Registro.css";
+import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia"; // Importamos el modal
 
 const Registro = ({ setVista }) => {
