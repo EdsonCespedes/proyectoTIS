@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 
+const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
+const carnetRegex = /^[0-9]+$/; // Solo números
+
 const departamentos = {
   "La Paz": ["Abel Iturralde", "Aroma", "Bautista Saavedra", "Camacho", "Caranavi"],
   "Cochabamba": ["Arani", "Arque", "Ayopaya", "Bolívar", "Capinota"],
@@ -13,13 +16,21 @@ const departamentos = {
   "Beni": ["Cercado", "Itenéz", "José Ballivián"],
   "Pando": ["Abuná", "Federico Román", "Madre de Dios"],
 };
-// Expresiones regulares para las validaciones
-const nombreApellidoRegex =  /^[A-Za-z\s]+$/; // Solo letras y espacios
-const carnetRegex = /^[0-9]+$/; // Solo números
+
+// Mapeo de provincias a colegios
+const colegiosPorProvincia = {
+  "Abel Iturralde": ["Colegio A", "Colegio B"],
+  "Aroma": ["Colegio C", "Colegio D"],
+  "Arani": ["Colegio E", "Colegio F"],
+  "Arque": ["Colegio G", "Colegio H"],
+  "Andres Ibañez": ["Colegio I", "Colegio J"],
+  "Ángel Sandoval": ["Colegio K", "Colegio L"],
+  // Agrega más provincias y sus colegios según sea necesario
+};
 
 const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
-  const [estudiantes, setEstudiantes] = useState([]); 
+
   const [form, setForm] = useState({
     nombre: "",
     apellidos: "",
@@ -34,8 +45,8 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     categorias: [],
   });
 
+  const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
   
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -50,17 +61,22 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
       alert("El carnet solo puede contener números.");
       return;
     }
-    
+
     // Actualizar el estado del formulario
     if (name === "departamento") {
-      setForm({ ...form, departamento: value, provincia: "" });
+      setForm({ ...form, departamento: value, provincia: "", colegio: "" });
+      setColegiosDisponibles([]); // Limpiar colegios al cambiar el departamento
+    } else if (name === "provincia") {
+      setForm({ ...form, provincia: value, colegio: "" });
+      // Cargar los colegios correspondientes a la provincia
+      setColegiosDisponibles(colegiosPorProvincia[value] || []);
     } else {
       setForm({ ...form, [name]: value });
     }
   };
 
   const handleAceptar = () => {
-    if (!form.nombre || !form.apellidos || !form.carnet || !form.correo || !form.fechaNacimiento || !form.colegio || !form.curso || !form.departamento || !form.provincia || areasSeleccionadas.length === 0 || categoriasSeleccionadas.length === 0) {
+    if (!form.nombre || !form.apellidos || !form.carnet || !form.correo || !form.fechaNacimiento || !form.curso || !form.departamento || !form.provincia || areasSeleccionadas.length === 0 || categoriasSeleccionadas.length === 0) {
       alert("Por favor completa todos los campos y selecciona un área de competencia.");
       return;
     }
@@ -78,7 +94,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
             <input type="email" placeholder="Correo Electrónico" name="correo" onChange={handleChange} />
             <input type="date" name="fechaNacimiento" onChange={handleChange} />
-            <input type="text" placeholder="Colegio" name="colegio" onChange={handleChange} />
+            
 
             <select name="curso" onChange={handleChange}>
               <option>Curso</option>
@@ -101,6 +117,17 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
               ))}
             </select>
 
+            {/* Colegio */}
+            <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
+              <option value="">Selecciona un colegio</option>
+              {colegiosDisponibles.length > 0 &&
+                colegiosDisponibles.map((colegio) => (
+                  <option key={colegio} value={colegio}>
+                    {colegio}
+                  </option>
+                ))}
+            </select>
+
             {areasSeleccionadas.length > 0 && (
               <div className="areas-seleccionadas">
                 <h3>Áreas Seleccionadas:</h3>
@@ -111,7 +138,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
                         <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
                       ))}   
                     </div>                                     
-                  ))}
+                  ))} 
                 </ul>
               </div>
             )}
@@ -129,9 +156,9 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
         <div className="area-competencia-container">
           <AreaCompetencia
             areasSeleccionadas={areasSeleccionadas}
-            setAreasSeleccionadas={setAreasSeleccionadas} 
+            setAreasSeleccionadas={setAreasSeleccionadas}
             categoriasSeleccionadas={categoriasSeleccionadas}
-            setCategoriasSeleccionadas={setCategoriasSeleccionadas} 
+            setCategoriasSeleccionadas={setCategoriasSeleccionadas}
           />
         </div>
       )}

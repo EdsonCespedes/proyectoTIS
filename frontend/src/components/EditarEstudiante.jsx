@@ -1,6 +1,4 @@
-
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/Registro.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import AreaCompetencia from "./AreaCompetencia";
@@ -20,6 +18,17 @@ const departamentos = {
     "Beni": ["Cercado", "Itenéz", "José Ballivián"],
     "Pando": ["Abuná", "Federico Román", "Madre de Dios"],
 };
+// Mapeo de provincias a colegios
+const colegiosPorProvincia = {
+    "Abel Iturralde": ["Colegio A", "Colegio B"],
+    "Aroma": ["Colegio C", "Colegio D"],
+    "Arani": ["Colegio E", "Colegio F"],
+    "Arque": ["Colegio G", "Colegio H"],
+    "Andres Ibañez": ["Colegio I", "Colegio J"],
+    "Ángel Sandoval": ["Colegio K", "Colegio L"],
+    // Agrega más provincias y sus colegios según sea necesario
+  };
+  
 
 const EditarEstudiante = ({ onGuardar }) => {
     const { idConvocatoria } = useParams(); // 🔥 Mover dentro del componente
@@ -30,6 +39,7 @@ const EditarEstudiante = ({ onGuardar }) => {
     const [mostrarArea, setMostrarArea] = useState(false);
     const [areasSeleccionadas, setAreasSeleccionadas] = useState(estudiante.areas || []);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(estudiante.categorias || []);
+    const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
     const [form, setForm] = useState({
         nombre: estudiante?.nombre || "",
@@ -42,34 +52,46 @@ const EditarEstudiante = ({ onGuardar }) => {
         departamento: estudiante?.departamento || "",
         provincia: estudiante?.provincia || "",
     });
-    
+
+    useEffect(() => {
+        if (form.provincia) {
+            // Cargar colegios para la provincia seleccionada
+            setColegiosDisponibles(departamentos[form.departamento] || []);
+        }
+    }, [form.departamento, form.provincia]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-         // Validación de nombre y apellido
+        // Validación de nombre y apellido
         if ((name === "nombre" || name === "apellidos") && !nombreApellidoRegex.test(value) && value !== "") {
             alert("El nombre y apellido solo pueden contener letras.");
             return;
         }
-    
+
         // Validación de carnet (solo números)
         if (name === "carnet" && value !== "" && !carnetRegex.test(value)) {
             alert("El carnet solo puede contener números.");
             return;
         }
+
         // Actualizar el estado del formulario
         if (name === "departamento") {
             setForm({
                 ...form,
                 departamento: value,
                 provincia: "", // Reiniciar la provincia al cambiar el departamento
+                colegio: "", // Reiniciar el colegio al cambiar el departamento
             });
+            setColegiosDisponibles([]); // Limpiar colegios cuando cambiamos el departamento
+        } else if (name === "provincia") {
+            setForm({ ...form, provincia: value, colegio: "" }); // Reiniciar el colegio cuando cambiamos la provincia
+            setColegiosDisponibles(departamentos[value] || []); // Cargar los colegios para la provincia seleccionada
         } else {
             setForm({ ...form, [name]: value });
         }
     };
-//MANEJA ACCION DE GUARDAR
+
     const handleGuardar = async (e) => {
         e.preventDefault();
 
@@ -85,15 +107,15 @@ const EditarEstudiante = ({ onGuardar }) => {
         console.log("Categorías seleccionadas:", categoriasSeleccionadas);
 
         if (typeof onGuardar == "function") {
-           await onGuardar({ ...form, areas: areasSeleccionadas, categorias: categoriasSeleccionadas });
-           alert("Cambios guardados correctamente");
+            await onGuardar({ ...form, areas: areasSeleccionadas, categorias: categoriasSeleccionadas });
+            alert("Cambios guardados correctamente");
             // Redirigir después de guardar
             navigate(-1);
         } 
     };
 
     return (
-        <div className="formulario-container">
+        <div className="registro-container editar-estudiante">
             <h2>Editar Estudiante</h2>
             <form onSubmit={handleGuardar}>
                 <div className="grid-container">
@@ -102,7 +124,7 @@ const EditarEstudiante = ({ onGuardar }) => {
                     <input type="text" name="carnet" value={form.carnet} onChange={handleChange} placeholder="Carnet de Identidad" />
                     <input type="email" name="correo" value={form.correo} onChange={handleChange} placeholder="Correo Electrónico" />
                     <input type="date" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange} />
-                    <input type="text" name="colegio" value={form.colegio} onChange={handleChange} placeholder="Colegio" />
+
                 </div>
 
                 <select name="curso" onChange={handleChange} value={form.curso}>
@@ -123,6 +145,15 @@ const EditarEstudiante = ({ onGuardar }) => {
                         <option key={prov} value={prov}>{prov}</option>
                     ))}
                 </select>
+
+                {colegiosDisponibles.length > 0 && (
+                    <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
+                        <option value="">Selecciona un colegio</option>
+                        {colegiosDisponibles.map((colegio) => (
+                            <option key={colegio} value={colegio}>{colegio}</option>
+                        ))}
+                    </select>
+                )}
 
                 {areasSeleccionadas.length > 0 && (
                     <div className="areas-seleccionadas">
@@ -159,7 +190,6 @@ const EditarEstudiante = ({ onGuardar }) => {
                 <div className="seccion-container">
                     <div className="botones">
                         <button type="submit" className="boton btn-blue">Registrar Cambios</button>
-                        
                         <button type="button" className="boton btn-red" onClick={() => navigate(-1)}>Cancelar</button>
                     </div>
                 </div>
@@ -169,5 +199,6 @@ const EditarEstudiante = ({ onGuardar }) => {
 };
 
 export default EditarEstudiante;
+
 
   
