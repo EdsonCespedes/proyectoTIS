@@ -1,0 +1,61 @@
+/* Contenedor principal */
+.registro-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+.boton {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.btn-blue {
+    background: #007bff;
+    color: white;
+}
+
+.btn-blue:hover {
+    background: #0056b3;
+}
+
+.btn-red {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-red:hover {
+    background: #a71d2a;
+}

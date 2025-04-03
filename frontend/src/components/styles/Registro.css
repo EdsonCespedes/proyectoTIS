@@ -9,6 +9,7 @@
     font-family: Arial, sans-serif;
 }
 
+
 /* Contenedor de cada sección (para mayor separación) */
 .seccion-container {
     margin-bottom: 30px; /* Espaciado entre secciones */
@@ -123,3 +124,19 @@ input, select {
 .btn-cancelar:hover {
     background: #b91c1c;
 } */
+/* Contenedor de Áreas de Competencia */
+.area-competencia-container {
+    width: 100%;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Espaciado debajo del botón */
+}
+
+
+
+
+
+
