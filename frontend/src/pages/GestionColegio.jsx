@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../layout/Header";
-import "./styles/GestionColegios.css";
+import "../components/styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
 const GestionColegios = () => {
