@@ -14,11 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+use App\Http\Controllers\ColegioController;
 
-Route::get('/prueba', function (Request $request) {
-    $convocatorias = DB::table('convocatoria')->get();
-    return response()->json($convocatorias);
-});
+Route::get('/colegio', [ColegioController::class, 'index']);
+Route::post('/colegio', [ColegioController::class, 'store']);
+Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
+Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
+Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
