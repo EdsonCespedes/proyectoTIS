@@ -4,31 +4,30 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDelegacionTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('delegacion', function (Blueprint $table) {
             $table->increments('idDelegacion');
-            $table->string('nombreDelegacion', 45)->nullable();
-            $table->unsignedInteger('idColegio');
-            $table->foreign('idColegio')->references('idColegio')->on('colegio')->onDelete('cascade');
-            $table->timestamps();
+            $table->unsignedInteger ('idColegio');
+            $table->foreign('idColegio')->references('idColegio')->on('colegio');
+            $table->string('nombreDelegacion');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('delegacion');
     }
-}
+};

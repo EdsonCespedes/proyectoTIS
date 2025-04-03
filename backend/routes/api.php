@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ColegioController;
 
+
 Route::get('/colegio', [ColegioController::class, 'index']);
 Route::post('/colegio', [ColegioController::class, 'store']);
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
