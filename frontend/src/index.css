@@ -2,6 +2,15 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
+html, body{
+  height: 100%;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
