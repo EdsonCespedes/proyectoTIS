@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
 
 class TutorSeeder extends Seeder
 {
@@ -15,25 +15,14 @@ class TutorSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tutor')->insert([
-            [
-                'nombreTutor'   => 'Carlos',
-                'apellidoTutor' => 'Gómez',
-                'correoTutor'   => 'carlos.gomez@gmail.com',
-                'telefonoTutor' => '73456789',
-                'fechaNacTutor' => Carbon::create(1980, 5, 10, 0, 0, 0),
-                'created_at'    => Carbon::now(),
-                'updated_at'    => Carbon::now(),
-            ],
-            [
-                'nombreTutor'   => 'María',
-                'apellidoTutor' => 'López',
-                'correoTutor'   => 'maria.lopez@gmail.com',
-                'telefonoTutor' => '67654321',
-                'fechaNacTutor' => Carbon::create(1985, 8, 15, 0, 0, 0),
-                'created_at'    => Carbon::now(),
-                'updated_at'    => Carbon::now(),
-            ],
-        ]);
+        $tutores = [
+            ['nombreTutor' => 'Carlos', 'apellidoTutor' => 'Gómez', 'correoTutor' => 'carlos@gmail.com', 'telefonoTutor' => '12345678', 'fechaNaciTutor' => '1980-05-10'],
+            ['nombreTutor' => 'María', 'apellidoTutor' => 'López', 'correoTutor' => 'maria@gmail.com', 'telefonoTutor' => '87654321', 'fechaNaciTutor' => '1985-08-15'],
+        ];
+        foreach ($tutores as $tutor) {
+            DB::table('tutor')->insert(array_merge($tutor, [
+                'fechaNaciTutor' => $tutor['fechaNaciTutor'],
+            ]));
+        }
     }
 }

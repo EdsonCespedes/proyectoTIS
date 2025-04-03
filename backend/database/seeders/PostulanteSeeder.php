@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+
+use Illuminate\Support\Facades\DB; 
+
+use Carbon\Carbon;
 
 class PostulanteSeeder extends Seeder
 {
@@ -17,36 +19,32 @@ class PostulanteSeeder extends Seeder
     {
         DB::table('postulante')->insert([
             [
-                'nombrePost'     => 'Luis',
-                'apellidoPost'   => 'Martínez',
-                'carnet'         => 'A123456',
-                'fechaNacPost'   => Carbon::create(2000, 1, 1, 0, 0, 0),
-                'correoPost'     => 'luis.martinez@example.com',
-                'telefonoPost'   => '111222333',
-                'departamento'   => 'Lima',
-                'provincia'      => 'Lima',
-                'curso'          => '10',
-                'idColegio'      => 1,  // Colegio San Pedro
-                'idDelegacion'   => 1,  // Delegación Lima Centro
-                'idTutor'        => 1,  // Tutor Carlos Gómez
-                'created_at'     => Carbon::now(),
-                'updated_at'     => Carbon::now(),
+                'nombrePost'    => 'Luis',
+                'apellidoPost'  => 'Martinez',
+                'carnet'        => 'LM123456',
+                'fechaNaciPost' => '2000-05-15',
+                'correoPost'    => 'luis.martinez@example.com',
+                'telefonoPost'  => '123456789',
+                'departamento'  => 'Cochabamba',
+                'provincia'     => 'Cercado',
+                'idTutor'       => 1,
+                'idColegio'     => 1,
+                'idDelegacion'  => 1, 
+                'idCurso'       => 1,
             ],
             [
-                'nombrePost'     => 'Ana',
-                'apellidoPost'   => 'García',
-                'carnet'         => 'B654321',
-                'fechaNacPost'   => Carbon::create(2001, 2, 2, 0, 0, 0),
-                'correoPost'     => 'ana.garcia@gmail.com',
-                'telefonoPost'   => '444555666',
-                'departamento'   => 'Cbba',
-                'provincia'      => 'Cbba',
-                'curso'          => '11',
-                'idColegio'      => 2,
-                'idDelegacion'   => 2,
-                'idTutor'        => 2,
-                'created_at'     => Carbon::now(),
-                'updated_at'     => Carbon::now(),
+                'nombrePost'    => 'Ana',
+                'apellidoPost'  => 'Garcia',
+                'carnet'        => 'AG654321',
+                'fechaNaciPost' => '2001-08-20',
+                'correoPost'    => 'ana.garcia@example.com',
+                'telefonoPost'  => '987654321',
+                'departamento'  => 'Cochabamba',
+                'provincia'     => 'Cercado',
+                'idTutor'       => 2, 
+                'idColegio'     => 2,  
+                'idDelegacion'  => 2, 
+                'idCurso'       => 7, 
             ],
         ]);
     }

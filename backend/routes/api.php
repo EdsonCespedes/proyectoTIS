@@ -22,3 +22,10 @@ Route::get('/prueba', function (Request $request) {
     $convocatorias = DB::table('convocatoria')->get();
     return response()->json($convocatorias);
 });
+
+Route::get('/colegios', function (Request $request) {
+    return response()->json([
+        'message' => 'Conexión exitosa desde el backend',
+        'timestamp' => now()
+    ]);
+});
