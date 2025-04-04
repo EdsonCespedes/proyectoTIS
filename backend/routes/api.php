@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ConvocatoriaController;
+use App\Http\Controllers\PostulanteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +24,7 @@ Route::get('/prueba', function (Request $request) {
     $convocatorias = DB::table('convocatoria')->get();
     return response()->json($convocatorias);
 });
+
+Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
+Route::get('/postulantes', [PostulanteController::class, 'index']);
+

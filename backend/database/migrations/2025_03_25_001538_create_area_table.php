@@ -19,7 +19,7 @@ class CreateAreaTable extends Migration
             $table->string('descArea', 45)->nullable();
             $table->boolean('activo')->default(false);
             $table->unsignedInteger('idConvocatoria');
-            $table->foreign('idConvocatoria')->references('idConvocatoria')->on('convocatoria')->onDelete('cascade');
+            $table->foreign('idConvocatoria')->references('idConvocatoria')->on('convocatorias')->onDelete('cascade');
             $table->timestamps();
         });
     }

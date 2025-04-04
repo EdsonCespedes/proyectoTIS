@@ -14,7 +14,7 @@ class ConvocatoriaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('convocatoria')->insert([
+        DB::table('convocatorias')->insert([
             'fechaPublicacion'   => now(),
             'fechaInicioInsc'    => now()->addDay(),
             'fechaFinInsc'       => now()->addDays(7),
