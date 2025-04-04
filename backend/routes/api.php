@@ -19,6 +19,11 @@ use App\Http\Controllers\ColegioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulanteController;
+use App\Http\Controllers\CursoController;
+
+
+Route::get('/vercursos', [CursoController::class, 'index']); //obtiene los cursos
+
 
 Route::get('/verdepartamentos', [DepartamentoController::class, 'index']); //obtiene departamentos para la direccion d postulante
 Route::get('/verprovincias/departamento/{nombre}', [ProvinciaController::class, 'getProvinciasPorNombreDepartamento']);//obtiene las provincias de la direccion d postulante
