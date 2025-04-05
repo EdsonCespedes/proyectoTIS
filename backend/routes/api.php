@@ -20,6 +20,10 @@ use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\PostulacionController;
+
+Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
+
 
 
 Route::get('/vercursos', [CursoController::class, 'index']); //obtiene los cursos

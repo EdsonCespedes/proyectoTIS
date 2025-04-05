@@ -27,4 +27,26 @@ class Postulante extends Model
         'idDelegacion',
         'idCurso',
     ];
+
+    public function colegio()
+    {
+        return $this->belongsTo(Colegio::class, 'idColegio');
+    }
+
+    public function tutor()
+    {
+        return $this->belongsTo(Tutor::class, 'idTutor');
+    }
+
+    public function delegacion()
+    {
+        return $this->belongsTo(Delegacion::class, 'idDelegacion');
+    }
+
+    public function curso()
+    {
+        return $this->belongsTo(Curso::class, 'idCurso');
+    }
+
+
 }
