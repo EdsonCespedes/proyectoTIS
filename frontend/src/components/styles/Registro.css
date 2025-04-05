@@ -57,15 +57,6 @@ input, select {
     margin-top: 10px;
 }
 
-/* .btn {
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    transition: 0.3s;
-} */
-
 .btn-competencia {
     background: #1e40af;
     color: white;
@@ -107,23 +98,6 @@ input, select {
     background-color: #072B6A;
 }
 
-/* .btn-registrar {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-registrar:hover {
-    background: #1d4ed8;
-}
-
-.btn-cancelar {
-    background: #dc2626;
-    color: white;
-}
-
-.btn-cancelar:hover {
-    background: #b91c1c;
-} */
 /* Contenedor de Áreas de Competencia */
 .area-competencia-container {
     width: 100%;
