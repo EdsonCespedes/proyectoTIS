@@ -12,4 +12,5 @@ class ConvocatoriaController extends Controller
         $convocatorias = Convocatoria::all();
         return response()->json($convocatorias);
     }
+    // agregar post
 }
