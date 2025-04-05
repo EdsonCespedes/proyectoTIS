@@ -1,34 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles/ImageUpload.css";
 
-const ImageUpload = ({ onFileSelect, imagePreview }) => {
-  const handleImageChange = (event) => {
+const ImageUpload = ({ onFileSelect }) => {
+  const [preview, setPreview] = useState(null);
+  const [dragging, setDragging] = useState(false);
+
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    processFile(file);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setDragging(false);
+    const file = event.dataTransfer.files[0];
+    processFile(file);
+  };
+
+  const processFile = (file) => {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        onFileSelect(file, reader.result); // Pasar el archivo y la vista previa al padre
+        setPreview(reader.result);
+        onFileSelect(file, reader.result);
       };
       reader.readAsDataURL(file);
+    } else {
+      alert("Por favor, selecciona un archivo de imagen válido.");
     }
   };
 
   return (
-    <div className="image-upload-container">
+    <div
+      className={`image-upload-container ${dragging ? "dragging" : ""}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <label className="upload-box">
-        {imagePreview ? (
-          <img src={imagePreview} alt="Vista previa" className="preview-image" />
+        {preview ? (
+          <img src={preview} alt="Vista previa" className="preview-image" />
         ) : (
           <div className="upload-placeholder">
             <span className="upload-icon">⬆️</span>
             <p>Arrastre y suelte los archivos aquí o haga clic para seleccionarlos</p>
           </div>
         )}
-        <input type="file" accept="image/*" onChange={handleImageChange} className="file-input" />
+        <input type="file" accept="image/*" onChange={handleFileChange} className="file-input" />
       </label>
     </div>
   );
 };
 
 export default ImageUpload;
+
 
