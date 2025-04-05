@@ -13,6 +13,9 @@ import InscripcionManual from "./pages/InscripcionManual";
 import Registro from "./components/Registro";
 import EditarDesdeRuta from './components/EditarDesdeRuta';
 
+import Niveles from "./pages/Niveles";
+
+
 
 function App() {
 
@@ -31,8 +34,9 @@ function App() {
         <Route path="/convocatorias" element={<Convocatorias />} />
         <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
+
         <Route path="/editar" element={<EditarDesdeRuta />} />
-        
+        <Route path="/nivel" element={<Niveles />} />
 
       </Routes>
     </div>

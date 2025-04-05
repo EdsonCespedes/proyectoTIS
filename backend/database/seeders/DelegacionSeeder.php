@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+
 use Illuminate\Support\Facades\DB;
 
 class DelegacionSeeder extends Seeder
@@ -16,17 +17,13 @@ class DelegacionSeeder extends Seeder
     {
         DB::table('delegacion')->insert([
             [
-                'nombreDelegacion' => 'Delegación Bolivar',
-                'idColegio'        => 1,
-                'created_at'       => now(),
-                'updated_at'       => now(),
+                'idColegio' => 1,
+                'nombreDelegacion' => 'Delegación Norte'
             ],
             [
-                'nombreDelegacion' => 'Delegación La Salle',
-                'idColegio'        => 2,
-                'created_at'       => now(),
-                'updated_at'       => now(),
-            ],
+                'idColegio' => 2,
+                'nombreDelegacion' => 'Delegación Sur'
+            ]
         ]);
     }
 }

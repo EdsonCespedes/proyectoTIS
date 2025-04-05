@@ -3,13 +3,16 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+
 use App\Models\Colegio; // Importamos el modelo Colegio
+
 
 class ColegioSeeder extends Seeder
 {
     
     public function run(): void
     {
+
         // Insertar datos en la tabla "colegios"
         Colegio::firstOrcreate([
             'nombreColegio' => 'Nacional',
@@ -139,5 +142,6 @@ class ColegioSeeder extends Seeder
             'provincia' => 'Chayanta'
         ]);
     
+
     }
 }
