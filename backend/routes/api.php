@@ -23,6 +23,7 @@ Route::get('/prueba', function (Request $request) {
     ]);
 });
 
+
 // Rutas para registrar/insertar entidades
 
 //Registrar un postulante
