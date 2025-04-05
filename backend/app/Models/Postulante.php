@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Postulante extends Model
 {
-    use HasFactory;
-
     protected $table = 'postulante';
-
     protected $primaryKey = 'idPostulante';
 
     protected $fillable = [
@@ -24,7 +20,16 @@ class Postulante extends Model
         'provincia',
         'idTutor',
         'idColegio',
-        'idDelegacion',
-        'idCurso',
+        'idCurso'
     ];
+
+    public function tutor()
+    {
+        return $this->belongsTo(Tutor::class, 'idTutor');
+    }
+
+    public function postulaciones()
+    {
+        return $this->hasMany(Postulacion::class, 'idPostulante');
+    }
 }
