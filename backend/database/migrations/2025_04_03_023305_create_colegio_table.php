@@ -4,31 +4,30 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateColegioTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('colegio', function (Blueprint $table) {
             $table->increments('idColegio');
-            $table->string('nombreColegio', 45)->nullable();
-            $table->string('departamento', 45)->nullable();
-            $table->string('provincia', 45)->nullable();
-            $table->timestamps();
+            $table->string('nombreColegio');
+            $table->string('departamento');
+            $table->string('provincia');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('colegio');
     }
-}
+};
