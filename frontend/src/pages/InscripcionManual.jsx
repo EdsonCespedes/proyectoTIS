@@ -1,12 +1,34 @@
 import React, { useState } from 'react';
 import DetalleInscripcion from '../components/DetalleInscripcion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Registro from '../components/Registro';
 import EditarEstudiante from '../components/EditarEstudiante';
 
+
 const InscripcionManual = () => {
     const [registro, setRegistro] = useState(false);
-    const [estudiantes, setEstudiantes] = useState([]);
+    const [estudiantes, setEstudiantes] = useState([{
+    
+    nombre: "Katerin",
+    apellidos: "Marza Caro",
+    carnet: "12345678",
+    correo: "katerin@gmail.com",
+    fechaNacimiento: "2003-05-21",
+    colegio: "Colegio A",
+    curso: "Curso 1",
+    departamento: "La Paz",
+    provincia: "Abel Iturralde",
+    departamentoNacimiento: "Cochabamba",
+    provinciaNacimiento: "Cercado",
+    areas: [
+      { idArea: 1, tituloArea: "Matemáticas" },
+    ],
+    categorias: [
+      { idCategoria: 1, nombreCategoria: "Álgebra", idArea: 1 }
+    ]
+
+    }]);
+
     const [estudianteEditar, setEstudianteEditar] = useState(null);
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
@@ -27,23 +49,38 @@ const InscripcionManual = () => {
     };
 
     const handleEditar = (estudiante) => {
-        setEstudianteEditar(estudiante);
-        setRegistro("editar");  // Cambiar el estado a "editar" para mostrar el formulario de edición
+        console.log("Invocando handleEditar con estudiante:", estudiante);
+        setEstudianteEditar({estudiante, index});
+        setAreasSeleccionadas(estudiante.areas || []);
+        setCategoriasSeleccionadas(estudiante.categorias || []);
+        setRegistro("editar");  // Cambiar el estado a "editar" 
+        
     };
     const handleGuardarEstudiante = (estudianteActualizado) => {
-        setEstudiantes((prevEstudiantes) =>
-            prevEstudiantes.map((est) =>
+        console.log("handleGuardarEstudiante invocada"); 
+        console.log("Estudiante actualizado1111:", estudianteActualizado);
+        
+       
+        setEstudiantes((prevEstudiantes) => {
+            // Actualiza el estudiante que coincide con el carnet
+            const estudiantesActualizados = prevEstudiantes.map((est) =>
                 est.carnet === estudianteActualizado.carnet ? estudianteActualizado : est
-            )
-        );
-        // Esto asegura que después de guardar, se salga del modo de edición.
-        setEstudianteEditar(null); 
-        // Redirige al usuario a la vista principal o la página deseada
-        history.push("/convocatoria/${idConvocatoria}/detalle-inscripcion"); // O la ruta que corresponda
+            );
+            
+            console.log("Estudiantes actualizados222:", estudiantesActualizados); 
+            return estudiantesActualizados; 
+        });
+   
+        setEstudianteEditar(null);
+        setRegistro(false); 
+
     };
+    
+
 
     return (
         <div>
+        {console.log("Renderizando tabla con estudiantes:", estudiantes)}
             {registro === false && (
                 <div>
                     <DetalleInscripcion estudiantes={estudiantes} onEliminar={handleEliminar} onEditar={handleEditar} />
@@ -53,7 +90,7 @@ const InscripcionManual = () => {
                         </button>
                         <button 
                             className="boton btn-blue" 
-                            onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL: Solo para verificar
+                            onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
                         >
                         GUARDAR
                         </button>
@@ -71,19 +108,21 @@ const InscripcionManual = () => {
                     setAreasSeleccionadas={setAreasSeleccionadas}
                     setCategoriasSeleccionadas={setCategoriasSeleccionadas}
                     handleRegistrar={handleRegistrar}
+                    setRegistro={setRegistro}
                 />
             )}
-
+            {console.log("Estado de registro:", registro)}
             {registro === "editar" && estudianteEditar && (
                 <EditarEstudiante 
                 estudiante={estudianteEditar}
-            onGuardar={handleGuardarEstudiante}
-            setEstudiantes={setEstudiantes}
-            areasSeleccionadas={areasSeleccionadas}
-            categoriasSeleccionadas={categoriasSeleccionadas}
-            setAreasSeleccionadas={setAreasSeleccionadas}
-            setCategoriasSeleccionadas={setCategoriasSeleccionadas} />
-            )}
+                onGuardar={handleGuardarEstudiante}
+                onEditar={handleEditar}
+                setEstudiantes={setEstudiantes}
+                areasSeleccionadas={areasSeleccionadas}
+                categoriasSeleccionadas={categoriasSeleccionadas}
+                setAreasSeleccionadas={setAreasSeleccionadas}
+                setCategoriasSeleccionadas={setCategoriasSeleccionadas} />
+                )}
         </div>
     );
 };
