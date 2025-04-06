@@ -26,4 +26,9 @@ class CursoController extends Controller
             'curso' => $curso
         ], 201);
     }
+
+    public function index()
+    {
+        return response()->json(Curso::all());
+    }
 }

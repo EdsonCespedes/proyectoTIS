@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Provincia extends Model
 {    protected $table = 'provincia';
-    protected $fillable = ['nombre', 'departamento_id'];
+    protected $fillable = ['nombre', 'idDepartamento'];
 
     public function departamento()
     {
-        return $this->belongsTo(Departamento::class);
+        return $this->belongsTo(Departamento::class, 'idDepartamento');
     }
 }

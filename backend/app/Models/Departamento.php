@@ -10,6 +10,6 @@ class Departamento extends Model
 
     public function provincias()
     {
-        return $this->hasMany(Provincia::class);
+        return $this->hasMany(Provincia::class, 'idDepartamento');
     }
 }
