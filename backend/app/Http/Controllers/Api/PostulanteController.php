@@ -137,4 +137,9 @@ class PostulanteController extends Controller
             'Curso' => $nombre
         ]);
     }
+
+    public function index(){
+        $postulante = Postulante::all();
+        return response()->json($postulante);
+    }
 }
