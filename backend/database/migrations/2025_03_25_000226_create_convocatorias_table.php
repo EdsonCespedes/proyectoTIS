@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConvocatoriaTable extends Migration
+class CreateConvocatoriasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateConvocatoriaTable extends Migration
      */
     public function up()
     {
-        Schema::create('convocatoria', function (Blueprint $table) {
+        Schema::create('convocatorias', function (Blueprint $table) {
             $table->increments('idConvocatoria');
             $table->dateTime('fechaPublicacion')->nullable();
             $table->dateTime('fechaInicioInsc')->nullable();
