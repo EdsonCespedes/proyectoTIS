@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Convocatoria extends Model
@@ -17,6 +18,7 @@ class Convocatoria extends Model
         'portada',
         'habilitada',
         'fechaInicioOlimp',
-        'fechaFinOlimp'
+        'fechaFinOlimp',
+        'maximoPostPorArea'
     ];
 }

@@ -67,3 +67,9 @@ Route::post('/areas', [AreaController::class, 'store']);
 //Crear Categoría
 Route::post('/categorias', [CategoriaController::class, 'store']);
 
+Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
+    // $convocatorias = DB::table('convocatoria')->get();
+    //     return response()->json($convocatorias);
+    // });
+Route::get('/postulantes', [PostulanteController::class, 'index']);
+
