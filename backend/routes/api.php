@@ -33,9 +33,6 @@ Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
 
 
-Route::post('/registrar-postulante', [PostulanteController::class, 'store']);
-
-
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

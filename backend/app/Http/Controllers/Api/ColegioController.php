@@ -48,9 +48,9 @@ class ColegioController extends Controller
 
     public function getDepartamentos()
     {
-          $departamentos= Departamento::select('*')
+          $departamentos= Colegio::select('departamento')
           ->distinct()
-          ->orderBy('nombreDepartamento')
+          ->orderBy('departamento')
           ->get()
           ->pluck('departamento');
 
