@@ -9,19 +9,6 @@ use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
 
-<<<<<<< HEAD
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 use App\Http\Controllers\ColegioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
@@ -51,7 +38,6 @@ Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[Cole
 
 Route::post('/registrar-postulante', [PostulanteController::class, 'store']);
 
-=======
 
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -86,4 +72,4 @@ Route::post('/areas', [AreaController::class, 'store']);
 
 //Crear Categoría
 Route::post('/categorias', [CategoriaController::class, 'store']);
->>>>>>> e14e06db20471659d51506ba211693e1dbf24f17
+
