@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import "./styles/Niveles.css";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const Niveles = () => {
   const location = useLocation();
   const formData = location.state?.formData || {};
+  const navigate = useNavigate();
+
 
   const [areas, setAreas] = useState([
     { id: 1, nombre: "Matemáticas", categorias: ["Primer Nivel", "Segundo Nivel"] },
@@ -84,6 +88,15 @@ const Niveles = () => {
     );
   };
 
+  const handleRegistrar = () => {
+    navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
+  };
+  
+  const handleCancelar = () => {
+    navigate("/detalle-convocatoria");
+  };
+  
+
   return (
     <div className="container">
       <h2>Áreas de Competencia</h2>
@@ -118,6 +131,7 @@ const Niveles = () => {
               type="text"
               placeholder="Nombre del Área"
               value={newAreaName}
+              maxLength={300}
               onChange={(e) => setNewAreaName(e.target.value)}
             />
             <button onClick={editingArea ? handleEditArea : handleAddArea}>
@@ -137,14 +151,24 @@ const Niveles = () => {
               type="text"
               placeholder="Nombre de la Categoría"
               value={newCategory}
+              maxLength={300}
               onChange={(e) => setNewCategory(e.target.value)}
             />
             <button onClick={handleAddCategory}>Agregar</button>
             <button onClick={() => setShowCategoryModal(false)}>Cerrar</button>
           </div>
+       
+         
         </div>
+        
       )}
+    <div className="action-buttons">
+         <button className="register-button" onClick={handleRegistrar}>REGISTRAR</button>
+        <button className="cancel-button" onClick={handleCancelar}>CANCELAR</button>
     </div>
+
+    </div>
+    
   );
 };
 
