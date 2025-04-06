@@ -31,6 +31,8 @@ return new class extends Migration
             $table->foreign('idDelegacion')->references('idDelegacion')->on('delegacion');
             $table->unsignedInteger ('idCurso');
             $table->foreign('idCurso')->references('idCurso')->on('curso');
+
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
