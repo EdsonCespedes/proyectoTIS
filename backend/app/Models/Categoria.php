@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Categoria extends Model
 {
-    protected $table = 'categoria';
-    protected $primaryKey = 'idCategoria';
+    protected $table = 'categoria'; 
+    protected $primaryKey = 'idCategoria'; 
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -15,4 +17,9 @@ class Categoria extends Model
         'descCategoria',
         'idArea'
     ];
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'idArea');
+    }
 }
