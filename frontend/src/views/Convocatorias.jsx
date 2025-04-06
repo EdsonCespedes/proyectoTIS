@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./styles/Disciplinas.css"
 import { useNavigate } from 'react-router-dom';
 
@@ -44,6 +44,14 @@ const Convocatorias = () => {
             maximoPostPorArea: 28,
         },
     ];
+    // const [convocatorias,setConvocatorias] =useState([]);
+
+    // useEffect(() => { para hacer un get
+    //         fetch("http://localhost:8000/api/convocatorias")
+    //             .then(response => response.json())
+    //             .then(data => setConvocatorias(data))
+    //             .catch(error => console.error("Error al obtener convocatorias:", error));
+    //     }, []);
 
     const handleInscripcion = (idConvocatoria) => {
         navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  

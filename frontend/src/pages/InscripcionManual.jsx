@@ -1,14 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import DetalleInscripcion from '../components/DetalleInscripcion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Registro from '../components/Registro';
+import EditarEstudiante from '../components/EditarEstudiante';
+
 
 const InscripcionManual = () => {
     const [registro, setRegistro] = useState(false);
+    const [estudiantes, setEstudiantes] = useState([{
+    
+    nombre: "Katerin",
+    apellidos: "Marza Caro",
+    carnet: "12345678",
+    correo: "katerin@gmail.com",
+    fechaNacimiento: "2003-05-21",
+    colegio: "Colegio A",
+    curso: "Curso 1",
+    departamento: "La Paz",
+    provincia: "Abel Iturralde",
+    departamentoNacimiento: "Cochabamba",
+    provinciaNacimiento: "Cercado",
+    areas: [
+      { idArea: 1, tituloArea: "Matemáticas" },
+    ],
+    categorias: [
+      { idCategoria: 1, nombreCategoria: "Álgebra", idArea: 1 }
+    ]
 
-    //Logica backend va aqui plis
-    const [estudiantes, setEstudiantes] = useState([]);
+    }]);
 
+    const [estudianteEditar, setEstudianteEditar] = useState(null);
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
 
@@ -19,45 +40,91 @@ const InscripcionManual = () => {
 
         setAreasSeleccionadas([]);
         setCategoriasSeleccionadas([]);
-        setRegistro(false);  // Cambiar el estado de registro a false
-    }; 
-    
+        setRegistro(false);
+    };
+
     const handleEliminar = (index) => {
         const nuevoEstudiantes = [...estudiantes.slice(0, index), ...estudiantes.slice(index + 1)];
         setEstudiantes(nuevoEstudiantes);
-    }
+    };
+
+    const handleEditar = (estudiante) => {
+        console.log("Invocando handleEditar con estudiante:", estudiante);
+        setEstudianteEditar({estudiante, index});
+        setAreasSeleccionadas(estudiante.areas || []);
+        setCategoriasSeleccionadas(estudiante.categorias || []);
+        setRegistro("editar");  // Cambiar el estado a "editar" 
+        
+    };
+    const handleGuardarEstudiante = (estudianteActualizado) => {
+        console.log("handleGuardarEstudiante invocada"); 
+        console.log("Estudiante actualizado1111:", estudianteActualizado);
+        
+       
+        setEstudiantes((prevEstudiantes) => {
+            // Actualiza el estudiante que coincide con el carnet
+            const estudiantesActualizados = prevEstudiantes.map((est) =>
+                est.carnet === estudianteActualizado.carnet ? estudianteActualizado : est
+            );
+            
+            console.log("Estudiantes actualizados222:", estudiantesActualizados); 
+            return estudiantesActualizados; 
+        });
+   
+        setEstudianteEditar(null);
+        setRegistro(false); 
+
+    };
+    
+
 
     return (
         <div>
+        {console.log("Renderizando tabla con estudiantes:", estudiantes)}
             {registro === false && (
                 <div>
-                    {/* Vista Detalle Inscripcion */}
-                    <DetalleInscripcion estudiantes={estudiantes} onEliminar={handleEliminar} />
-                    <div className="control">
-                        {/* <Link to="/registro-postulante" className="boton btn-red">AÑADIR NUEVO</Link> */}
-                        <button className="boton btn-red" type="button" onClick={() => setRegistro(true)}>AÑADIR NUEVO</button>
-                        <button className="boton btn-blue">GUARDAR</button>
-                        <Link to="/convocatorias" className="boton btn-red">CANCELAR</Link>
-                    </div>
+                    <DetalleInscripcion estudiantes={estudiantes} onEliminar={handleEliminar} onEditar={handleEditar} />
+                     <div className="control">
+                        <button className="boton btn-red" type="button" onClick={() => setRegistro(true)}>
+                            AÑADIR NUEVO
+                        </button>
+                        <button 
+                            className="boton btn-blue" 
+                            onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
+                        >
+                        GUARDAR
+                        </button>
+                             <Link to="/convocatorias" className="boton btn-red">CANCELAR</Link>
+                     </div>
                 </div>
             )}
+
             {registro === true && (
-                <div>
-                    Vista Registro
-                    <Registro
-                        estudiantes={estudiantes}
-                        setEstudiantes={setEstudiantes}
-                        areasSeleccionadas={areasSeleccionadas}
-                        categoriasSeleccionadas={categoriasSeleccionadas}
-                        setAreasSeleccionadas={setAreasSeleccionadas}
-                        setCategoriasSeleccionadas={setCategoriasSeleccionadas}
-                        // setRegistro={setRegistro}
-                        handleRegistrar={handleRegistrar}
-                    />
-                </div>
+                <Registro
+                    estudiantes={estudiantes}
+                    setEstudiantes={setEstudiantes}
+                    areasSeleccionadas={areasSeleccionadas}
+                    categoriasSeleccionadas={categoriasSeleccionadas}
+                    setAreasSeleccionadas={setAreasSeleccionadas}
+                    setCategoriasSeleccionadas={setCategoriasSeleccionadas}
+                    handleRegistrar={handleRegistrar}
+                    setRegistro={setRegistro}
+                />
             )}
+            {console.log("Estado de registro:", registro)}
+            {registro === "editar" && estudianteEditar && (
+                <EditarEstudiante 
+                estudiante={estudianteEditar}
+                onGuardar={handleGuardarEstudiante}
+                onEditar={handleEditar}
+                setEstudiantes={setEstudiantes}
+                areasSeleccionadas={areasSeleccionadas}
+                categoriasSeleccionadas={categoriasSeleccionadas}
+                setAreasSeleccionadas={setAreasSeleccionadas}
+                setCategoriasSeleccionadas={setCategoriasSeleccionadas} />
+                )}
         </div>
-    )
-}
+    );
+};
 
 export default InscripcionManual;
