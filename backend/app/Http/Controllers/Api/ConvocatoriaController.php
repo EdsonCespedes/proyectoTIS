@@ -46,4 +46,9 @@ class ConvocatoriaController extends Controller
             'convocatoria' => $convocatoria
         ], 201);
     }
+
+    public function index(){
+        $convocatorias = Convocatoria::all();
+        return response()->json($convocatorias);
+    }
 }
