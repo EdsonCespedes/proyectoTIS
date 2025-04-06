@@ -9,6 +9,12 @@ class Postulacion extends Model
 {
     protected $table = 'postulacion';
     protected $primaryKey = 'idPostulacion';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'idCategoria',
+        'idPostulante'
+    ];
 
     public function postulante()
     {

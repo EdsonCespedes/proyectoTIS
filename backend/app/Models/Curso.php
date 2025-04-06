@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Curso extends Model
 {
-    public $timestamps = false;
 
-    
-   
     protected $table = 'curso'; 
     protected $primaryKey = 'idCurso'; 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'Curso'
+    ];
 }
