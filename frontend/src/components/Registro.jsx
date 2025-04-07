@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
 const carnetRegex = /^[0-9]+$/; // Solo números
 
-const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, setRegistro }) => {
+
+const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar,setRegistro }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const navigate = useNavigate();
 
@@ -18,8 +19,8 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     fechaNacimiento: "",
     colegio: "",
     curso: "",
-    departamentoNacimiento: "",
-    provinciaNacimiento: "",
+    departamentoNacimiento: "", // Nuevo campo para departamento de nacimiento
+    provinciaNacimiento: "", // Nuevo campo para provincia de nacimiento
     departamento: "",
     provincia: "",
     areas: [],
@@ -117,21 +118,21 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
       return;
     }
 
-    if (name === "departamentoNacimiento") {
-      setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
-      obtenerProvinciasNacimiento(value);
-    } else if (name === "departamento") {
-      setForm({ ...form, departamento: value, provincia: "", colegio: "" });
-      obtenerProvinciasColegio(value);
-      setColegiosDisponibles([]);
-    } else if (name === "provinciaNacimiento") {
-      setForm({ ...form, provinciaNacimiento: value });
-    } else if (name === "provincia") {
-      setForm({ ...form, provincia: value, colegio: "" });
-      obtenerColegios(form.departamento, value);
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+      // Actualizar el estado del formulario
+      if (name === "departamento") {
+        setForm({ ...form, departamento: value, provincia: "", colegio: "" });
+        setColegiosDisponibles([]);
+      } else if (name === "provincia") {
+        setForm({ ...form, provincia: value, colegio: "" });
+        // Cargar los colegios correspondientes a la provincia
+        setColegiosDisponibles(colegiosPorProvincia[value] || []);
+      } else if (name === "departamentoNacimiento") {
+        setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
+      } else if (name === "provinciaNacimiento") {
+        setForm({ ...form, provinciaNacimiento: value });
+      } else {
+        setForm({ ...form, [name]: value });
+      }
   };
 
   const handleRegistrarPostulante = async () => {
@@ -191,52 +192,64 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
             <input type="date" name="fechaNacimiento" onChange={handleChange} />
             
             <select name="departamentoNacimiento" onChange={handleChange} value={form.departamentoNacimiento}>
-              <option value="">Selecciona un departamento </option>
-              {departamentos.map((dep) => (
+
+               <option value="">Selecciona un departamento </option>
+              {Object.keys(departamentos).map((dep) => (
                 <option key={dep} value={dep}>{dep}</option>
               ))}
             </select>
 
             <select name="provinciaNacimiento" onChange={handleChange} value={form.provinciaNacimiento} disabled={!form.departamentoNacimiento}>
               <option value="">Selecciona una provincia</option>
-              {form.departamentoNacimiento && provinciasNacimiento.map((prov) => (
+              {form.departamentoNacimiento && departamentos[form.departamentoNacimiento].map((prov) => (
+
                 <option key={prov} value={prov}>{prov}</option>
               ))}
             </select>
           </div>
         </div>
   
+        {/* Recuadro para Departamento, Provincia y Colegio */}
         <div className="recuadro-container">
-          <h3>Datos del Colegio</h3>
+        <h3> </h3>
+          <h3> Datos del Colegio </h3>
           <select name="departamento" onChange={handleChange} value={form.departamento}>
             <option value="">Selecciona un departamento</option>
-            {departamentos.map((dep) => (
+            {Object.keys(departamentos).map((dep) => (
               <option key={dep} value={dep}>{dep}</option>
             ))}
           </select>
   
           <select name="provincia" onChange={handleChange} value={form.provincia} disabled={!form.departamento}>
             <option value="">Selecciona una provincia</option>
-            {form.departamento && provinciasColegio.map((prov) => (
+            {form.departamento && departamentos[form.departamento].map((prov) => (
               <option key={prov} value={prov}>{prov}</option>
             ))}
           </select>
-  
-          <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
+          <select name="colegio" onChange={handleChange} value={form.colegio}disabled={!form.provincia}>
             <option value="">Selecciona un colegio</option>
-            {colegiosDisponibles.length > 0 && colegiosDisponibles.map((colegio) => (
-              <option key={colegio} value={colegio}>{colegio}</option>
-            ))}
+            {colegiosDisponibles.length > 0 &&
+              colegiosDisponibles.map((colegio) => (
+                <option key={colegio} value={colegio}>
+                  {colegio}
+                </option>
+              ))}
           </select>
-
           <select name="curso" onChange={handleChange} value={form.curso} disabled={!form.colegio}>
-            <option value="">Selecciona un curso</option>
-            {cursos.map((curso) => (
-              <option key={curso.id} value={curso.id}>{curso.nombre}</option>
-            ))}
-          </select>
+              <option value="">Selecciona un curso</option>
+              <option value="4_Primaria">4° Primaria</option>
+              <option value="5_Primaria">5° Primaria</option>
+              <option value="6_Primaria">6° Primaria</option>
+              <option value="1_Secundaria">1° Secundaria</option>
+              <option value="2_Secundaria">2° Secundaria</option>
+              <option value="3_Secundaria">3° Secundaria</option>
+              <option value="4_Secundaria">4° Secundaria</option>
+              <option value="5_Secundaria">5° Secundaria</option>
+              <option value="6_Secundaria">6° Secundaria</option>
+            </select>
         </div>
-
+  
+        {/* Áreas seleccionadas */}
         {areasSeleccionadas.length > 0 && (
           <div className="areas-seleccionadas">
             <h3>Áreas Seleccionadas:</h3>
@@ -252,11 +265,13 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           </div>
         )}
       </div>
-
+  
+      {/* Botón para mostrar/ocultar área de competencia */}
       <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
-
+  
+      {/* Mostrar Área de Competencia si está activado */}
       {mostrarArea && (
         <div className="area-competencia-container">
           <AreaCompetencia
@@ -268,17 +283,17 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           />
         </div>
       )}
-
+  
+      {/* Botones de acción */}
       <div className="seccion-container">
         <div className="botones">
-          <button className="boton btn-blue" onClick={handleRegistrarPostulante}>Registrar</button>
-          <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
+          <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
+          <button type="button" className="boton btn-red" onClick={() => setRegistro(false) }>Cancelar</button>
         </div>
       </div>
     </div>
   );
-};
-
+}  
 export default Registro;
 
 

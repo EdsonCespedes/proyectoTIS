@@ -34,10 +34,14 @@ function App() {
         <Route path="/convocatorias" element={<Convocatorias />} />
         <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
+<<<<<<< HEAD
 
         <Route path="/editar" element={<EditarDesdeRuta />} />
         <Route path="/nivel" element={<Niveles />} />
 
+=======
+        <Route path="/nivel" element={<Niveles />} />
+>>>>>>> 407c01855f01ed9f35c681dd7555977822c4ec2f
       </Routes>
     </div>
   )

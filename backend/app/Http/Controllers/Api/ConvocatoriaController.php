@@ -43,7 +43,8 @@ class ConvocatoriaController extends Controller
 
         return response()->json([
             'message' => 'Convocatoria creada correctamente',
-            'convocatoria' => $convocatoria
+            // 'convocatoria' => $convocatoria
+            'convocatorias' => $convocatoria
         ], 201);
     }
 

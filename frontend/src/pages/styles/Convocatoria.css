@@ -68,12 +68,11 @@ label {
   margin-top: 20px;
 }
 
-.publicar {
+.siguiente {
   background: blue;
   color: white;
   padding: 10px;
   border: none;
-  width: 48%;
 }
 
 .cancelar {
@@ -81,5 +80,4 @@ label {
   color: white;
   padding: 10px;
   border: none;
-  width: 48%;
 }

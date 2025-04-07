@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./styles/Convocatoria.css";
 import ImageUpload from "../components/ImageUpload";
+import { useNavigate } from "react-router-dom";
+
 
 export const CrearConvForm = () => {
   const [formData, setFormData] = useState({
@@ -12,12 +14,16 @@ export const CrearConvForm = () => {
     fechaFinOlimpiada: "",
     imagenPortada: null,
     maxConcursantes: [],
+    maxArea: [],
   });
 
   const [newArea, setNewArea] = useState("");
+  const [newMax, setNewMax] = useState("");
   const [newMaxConcursantes, setNewMaxConcursantes] = useState("");
   const [error, setError] = useState(""); // Estado para mostrar errores
   const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,6 +65,15 @@ export const CrearConvForm = () => {
     // Aquí podrías enviar los datos al backend o realizar otra acción
   };
 
+  const handleSiguiente = () => {
+    navigate("/nivel"); // Asegúrate de que esta ruta coincida con tu configuración
+  };
+  
+  const handleCancelar = () => {
+    navigate("/detalle-convocatoria");
+  };
+  
+
   return (
     <div className="container">
       <h2>Crear convocatoria</h2>
@@ -68,6 +83,7 @@ export const CrearConvForm = () => {
           type="text"
           name="titulo"
           value={formData.titulo}
+          maxLength={1300}
           onChange={handleChange}
           className="input-field"
         />
@@ -76,6 +92,7 @@ export const CrearConvForm = () => {
         <textarea
           name="descripcion"
           value={formData.descripcion}
+          maxLength={1300}
           onChange={handleChange}
           className="input-field"
         ></textarea>
@@ -119,6 +136,19 @@ export const CrearConvForm = () => {
             className="input-field"
           />
         </div>
+   
+        <label>Máximo de inscripción por área:</label>
+        <input
+              type="number"
+              name="maxArea"
+               value={formData.maxArea}
+              onChange={(e) => {
+                 if (e.target.value.length <= 6) {
+                     handleChange(e);
+                }
+              }}
+                 className="input-field"
+          />
 
         <label>Máximo de concursantes por categoría:</label>
         <div className="area-group">
@@ -126,6 +156,7 @@ export const CrearConvForm = () => {
             type="text"
             placeholder="Nombre de la categoría"
             value={newArea}
+            maxLength={300}
             onChange={(e) => setNewArea(e.target.value)}
             className="input-field"
           />
@@ -135,7 +166,7 @@ export const CrearConvForm = () => {
             value={newMaxConcursantes}
             onChange={(e) => {
               const value = parseInt(e.target.value, 10);
-              if (value > 0 || e.target.value === "") {
+              if (/^\d{0,6}$/.test(value)) {
                 setNewMaxConcursantes(e.target.value);
               }
             }}
@@ -160,10 +191,10 @@ export const CrearConvForm = () => {
         {error && <p className="error-message">{error}</p>}
 
         <div className="button-group">
-          <button type="submit" className="publicar">
+          <button type="submit" className="siguiente" onClick={handleSiguiente}>
             Siguiente
           </button>
-          <button type="button" className="cancelar">
+          <button type="button" className="cancelar" onClick={handleCancelar}>
             Cancelar
           </button>
         </div>
