@@ -10,7 +10,6 @@ class Postulante extends Model
     use HasFactory;
 
     protected $table = 'postulante';
-
     protected $primaryKey = 'idPostulante';
 
     protected $fillable = [
@@ -48,5 +47,8 @@ class Postulante extends Model
         return $this->belongsTo(Curso::class, 'idCurso');
     }
 
-
+    public function postulaciones()
+    {
+        return $this->hasMany(Postulacion::class, 'idPostulante');
+    }
 }

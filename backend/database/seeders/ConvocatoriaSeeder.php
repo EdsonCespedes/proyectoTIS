@@ -17,6 +17,7 @@ class ConvocatoriaSeeder extends Seeder
      */
     public function run()
     {
+<<<<<<< HEAD
         DB::table('convocatoria')->insert([
             [
                 'fechaPublicacion' => '2022-01-01',
@@ -45,6 +46,19 @@ class ConvocatoriaSeeder extends Seeder
                 'fechaInicioOlimp' => Carbon::now()->addDays(50)->toDateString(),
                 'fechaFinOlimp'    => Carbon::now()->addDays(60)->toDateString(),
             ],
+=======
+        DB::table('convocatorias')->insert([
+            'fechaPublicacion'   => now(),
+            'fechaInicioInsc'    => now()->addDay(),
+            'fechaFinInsc'       => now()->addDays(7),
+            'portada'            => 'portada.jpg',
+            'activo'             => true,
+            'fechaInicioOlimp'   => now()->addDays(10),
+            'fechaFinOlimp'      => now()->addDays(20),
+            'maximoPostPorArea'  => 5,
+            'created_at'         => now(),
+            'updated_at'         => now(),
+>>>>>>> 53f3711036b4b2a07e9cd7a620c7ba83fab1a1b1
         ]);
     }
 }

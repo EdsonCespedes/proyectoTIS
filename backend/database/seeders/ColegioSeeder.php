@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 use App\Models\Colegio; // Importamos el modelo Colegio
-
+use Illuminate\Support\Facades\DB;
 
 class ColegioSeeder extends Seeder
 {
@@ -141,7 +141,5 @@ class ColegioSeeder extends Seeder
             'departamento' => 'Potosi',
             'provincia' => 'Chayanta'
         ]);
-    
-
     }
 }

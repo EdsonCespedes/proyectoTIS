@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 import { useNavigate } from "react-router-dom";
@@ -6,32 +6,7 @@ import { useNavigate } from "react-router-dom";
 const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
 const carnetRegex = /^[0-9]+$/; // Solo números
 
-
-const departamentos = {
-  "La Paz": ["Abel Iturralde", "Aroma", "Bautista Saavedra", "Camacho", "Caranavi"],
-  "Cochabamba": ["Arani", "Arque", "Ayopaya", "Bolívar", "Capinota"],
-  "Santa Cruz": ["Andres Ibañez", "Ángel Sandoval", "Chiquitos", "Cordillera"],
-  "Chuquisaca": ["Belisario Boeto", "Hernando Siles", "Jaime Zudañez"],
-  "Oruro": ["Abaroa", "Carangas", "Cercado", "Eduardo Avaroa"],
-  "Potosi": ["Alonso de Ibáñez", "Antonio Quijarro", "Bernardino Bilbao"],
-  "Tarija": ["Aniceto Arce", "Burnet O'Connor", "Cercado"],
-  "Beni": ["Cercado", "Itenéz", "José Ballivián"],
-  "Pando": ["Abuná", "Federico Román", "Madre de Dios"],
-};
-
-// Mapeo de provincias a colegios
-const colegiosPorProvincia = {
-  "Abel Iturralde": ["Colegio A", "Colegio B"],
-  "Aroma": ["Colegio C", "Colegio D"],
-  "Arani": ["Colegio E", "Colegio F"],
-  "Arque": ["Colegio G", "Colegio H"],
-  "Andres Ibañez": ["Colegio I", "Colegio J"],
-  "Ángel Sandoval": ["Colegio K", "Colegio L"],
-  // Agrega más provincias y sus colegios según sea necesario
-};
-
-
-const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar,setRegistro }) => {
+const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, setRegistro }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const navigate = useNavigate();
 
@@ -43,54 +18,164 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     fechaNacimiento: "",
     colegio: "",
     curso: "",
-    departamentoNacimiento: "", // Nuevo campo para departamento de nacimiento
-    provinciaNacimiento: "", // Nuevo campo para provincia de nacimiento
+    departamentoNacimiento: "",
+    provinciaNacimiento: "",
     departamento: "",
     provincia: "",
     areas: [],
     categorias: [],
   });
 
+  const [departamentos, setDepartamentos] = useState([]);
+  const [provinciasNacimiento, setProvinciasNacimiento] = useState([]);
+  const [provinciasColegio, setProvinciasColegio] = useState([]);
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
-  
+  const [cursos, setCursos] = useState([]);
+
+  useEffect(() => {
+    const fetchDepartamentosNacimiento = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/verdepartamentos");
+        const data = await response.json();
+        console.log(data);
+        setDepartamentos(data);
+      } catch (error) {
+        console.error("Hubo un error al obtener los departamentos de nacimiento:", error);
+      }
+    };
+
+    const fetchDepartamentosColegio = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/departamentos");
+        const data = await response.json();
+        console.log(data);
+        setDepartamentos(data);
+      } catch (error) {
+        console.error("Hubo un error al obtener los departamentos de colegio:", error);
+      }
+    };
+
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/vercursos");
+        const data = await response.json();
+        console.log(data);
+        setCursos(data);
+      } catch (error) {
+        console.error("Hubo un error al obtener los cursos:", error);
+      }
+    };
+
+    fetchDepartamentosNacimiento();
+    fetchDepartamentosColegio();
+    fetchCursos();
+  }, []);
+
+  const obtenerProvinciasNacimiento = async (departamento) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/verprovincias/departamento/${departamento}`);
+      const data = await response.json();
+      console.log(data);
+      setProvinciasNacimiento(data);
+    } catch (error) {
+      console.error("Hubo un error al obtener las provincias de nacimiento:", error);
+    }
+  };
+
+  const obtenerProvinciasColegio = async (departamento) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/departamentos/${departamento}/provincias`);
+      const data = await response.json();
+      console.log(data);
+      setProvinciasColegio(data);
+    } catch (error) {
+      console.error("Hubo un error al obtener las provincias del colegio:", error);
+    }
+  };
+
+  const obtenerColegios = async (departamento, provincia) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/departamentos/${departamento}/provincias/${provincia}/colegios`);
+      const data = await response.json();
+      console.log(data);
+      setColegiosDisponibles(data);
+    } catch (error) {
+      console.error("Hubo un error al obtener los colegios:", error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validación de nombre y apellido
     if ((name === "nombre" || name === "apellidos") && !nombreApellidoRegex.test(value) && value !== "") {
       alert("El nombre y apellido solo pueden contener letras.");
       return;
     }
 
-    // Validación de carnet (solo números)
     if (name === "carnet" && value !== "" && !carnetRegex.test(value)) {
       alert("El carnet solo puede contener números.");
       return;
     }
 
-      // Actualizar el estado del formulario
-      if (name === "departamento") {
-        setForm({ ...form, departamento: value, provincia: "", colegio: "" });
-        setColegiosDisponibles([]);
-      } else if (name === "provincia") {
-        setForm({ ...form, provincia: value, colegio: "" });
-        // Cargar los colegios correspondientes a la provincia
-        setColegiosDisponibles(colegiosPorProvincia[value] || []);
-      } else if (name === "departamentoNacimiento") {
-        setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
-      } else if (name === "provinciaNacimiento") {
-        setForm({ ...form, provinciaNacimiento: value });
-      } else {
-        setForm({ ...form, [name]: value });
-      }
+    if (name === "departamentoNacimiento") {
+      setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
+      obtenerProvinciasNacimiento(value);
+    } else if (name === "departamento") {
+      setForm({ ...form, departamento: value, provincia: "", colegio: "" });
+      obtenerProvinciasColegio(value);
+      setColegiosDisponibles([]);
+    } else if (name === "provinciaNacimiento") {
+      setForm({ ...form, provinciaNacimiento: value });
+    } else if (name === "provincia") {
+      setForm({ ...form, provincia: value, colegio: "" });
+      obtenerColegios(form.departamento, value);
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
-  const handleAceptar = () => {
+  const handleRegistrarPostulante = async () => {
     if (!form.nombre || !form.apellidos || !form.carnet || !form.correo || !form.fechaNacimiento || !form.curso || !form.departamento || !form.provincia || areasSeleccionadas.length === 0 || categoriasSeleccionadas.length === 0) {
       alert("Por favor completa todos los campos y selecciona un área de competencia.");
       return;
     }
-    handleRegistrar(form);
+
+    const postulanteData = {
+      nombre: form.nombre,
+      apellidos: form.apellidos,
+      carnet: form.carnet,
+      correo: form.correo,
+      fechaNacimiento: form.fechaNacimiento,
+      colegio: form.colegio,
+      curso: form.curso,
+      departamentoNacimiento: form.departamentoNacimiento,
+      provinciaNacimiento: form.provinciaNacimiento,
+      departamento: form.departamento,
+      provincia: form.provincia,
+      areas: areasSeleccionadas,
+      categorias: categoriasSeleccionadas,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8000/api/registrar-postulante", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postulanteData),
+      });
+
+      if (response.ok) {
+        alert("Postulante registrado correctamente.");
+        setRegistro(false);  // Cerrar el formulario después del registro exitoso
+      } else {
+        const errorData = await response.json();
+        alert(`Error al registrar postulante: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Hubo un error al registrar el postulante:", error);
+      alert("Hubo un error en el registro. Intenta de nuevo.");
+    }
   };
 
   return (
@@ -106,63 +191,52 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
             <input type="date" name="fechaNacimiento" onChange={handleChange} />
             
             <select name="departamentoNacimiento" onChange={handleChange} value={form.departamentoNacimiento}>
-               <option value="">Selecciona un departamento </option>
-              {Object.keys(departamentos).map((dep) => (
+              <option value="">Selecciona un departamento </option>
+              {departamentos.map((dep) => (
                 <option key={dep} value={dep}>{dep}</option>
               ))}
             </select>
 
             <select name="provinciaNacimiento" onChange={handleChange} value={form.provinciaNacimiento} disabled={!form.departamentoNacimiento}>
               <option value="">Selecciona una provincia</option>
-              {form.departamentoNacimiento && departamentos[form.departamentoNacimiento].map((prov) => (
+              {form.departamentoNacimiento && provinciasNacimiento.map((prov) => (
                 <option key={prov} value={prov}>{prov}</option>
               ))}
             </select>
           </div>
         </div>
   
-        {/* Recuadro para Departamento, Provincia y Colegio */}
         <div className="recuadro-container">
-        <h3> </h3>
-          <h3> Datos del Colegio </h3>
+          <h3>Datos del Colegio</h3>
           <select name="departamento" onChange={handleChange} value={form.departamento}>
             <option value="">Selecciona un departamento</option>
-            {Object.keys(departamentos).map((dep) => (
+            {departamentos.map((dep) => (
               <option key={dep} value={dep}>{dep}</option>
             ))}
           </select>
   
           <select name="provincia" onChange={handleChange} value={form.provincia} disabled={!form.departamento}>
             <option value="">Selecciona una provincia</option>
-            {form.departamento && departamentos[form.departamento].map((prov) => (
+            {form.departamento && provinciasColegio.map((prov) => (
               <option key={prov} value={prov}>{prov}</option>
             ))}
           </select>
   
-          <select name="colegio" onChange={handleChange} value={form.colegio}disabled={!form.provincia}>
+          <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
             <option value="">Selecciona un colegio</option>
-            {colegiosDisponibles.length > 0 &&
-              colegiosDisponibles.map((colegio) => (
-                <option key={colegio} value={colegio}>
-                  {colegio}
-                </option>
-              ))}
+            {colegiosDisponibles.length > 0 && colegiosDisponibles.map((colegio) => (
+              <option key={colegio} value={colegio}>{colegio}</option>
+            ))}
           </select>
+
           <select name="curso" onChange={handleChange} value={form.curso} disabled={!form.colegio}>
-              <option value="">Selecciona un curso</option>
-              <option value="4_Primaria">4° Primaria</option>
-              <option value="5_Primaria">5° Primaria</option>
-              <option value="6_Primaria">6° Primaria</option>
-              <option value="1_Secundaria">1° Secundaria</option>
-              <option value="2_Secundaria">2° Secundaria</option>
-              <option value="3_Secundaria">3° Secundaria</option>
-              <option value="4_Secundaria">4° Secundaria</option>
-              <option value="5_Secundaria">5° Secundaria</option>
-              <option value="6_Secundaria">6° Secundaria</option>
-            </select>
+            <option value="">Selecciona un curso</option>
+            {cursos.map((curso) => (
+              <option key={curso.id} value={curso.id}>{curso.nombre}</option>
+            ))}
+          </select>
         </div>
-  
-        {/* Áreas seleccionadas */}
+
         {areasSeleccionadas.length > 0 && (
           <div className="areas-seleccionadas">
             <h3>Áreas Seleccionadas:</h3>
@@ -178,13 +252,11 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           </div>
         )}
       </div>
-  
-      {/* Botón para mostrar/ocultar área de competencia */}
+
       <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
-  
-      {/* Mostrar Área de Competencia si está activado */}
+
       {mostrarArea && (
         <div className="area-competencia-container">
           <AreaCompetencia
@@ -196,17 +268,18 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           />
         </div>
       )}
-  
-      {/* Botones de acción */}
+
       <div className="seccion-container">
         <div className="botones">
-          <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
-          <button type="button" className="boton btn-red" onClick={() => setRegistro(false) }>Cancelar</button>
+          <button className="boton btn-blue" onClick={handleRegistrarPostulante}>Registrar</button>
+          <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
         </div>
       </div>
     </div>
   );
-}  
+};
+
 export default Registro;
+
 
 

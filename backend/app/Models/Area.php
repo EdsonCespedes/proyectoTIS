@@ -9,4 +9,12 @@ class Area extends Model
 {
     protected $table = 'area';
     protected $primaryKey = 'idArea';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'tituloArea',
+        'descArea',
+        'habilitada',
+        'idConvocatoria'
+    ];
 }
