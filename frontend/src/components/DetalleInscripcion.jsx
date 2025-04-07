@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
-const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
+
+
+const DetalleInscripcion = ({ estudiantes, onEliminar, onEditar }) => {
+    console.log("Estudiantes actuales:", estudiantes); // Verifica que se pase el estado actualizado
+
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
 
-    console.log(estudiantes);
 
     const startIndex = currentPage * itemsPerPage;
     const currentEstudiantes = estudiantes.slice(startIndex, startIndex + itemsPerPage);
@@ -36,7 +39,7 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                                     ))}
                                 </td>
                                 <td>
-                                    <Link to="/" className="boton btn-red">MODIFICAR</Link>
+                                    <Link to="/editar" state={{estudiante}} className="boton btn-red">MODIFICAR</Link>
                                     <button onClick={()=>onEliminar(index)} className="boton btn-red">RETIRAR</button>
                                 </td>
                             </tr>
