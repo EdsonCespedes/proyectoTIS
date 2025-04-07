@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombreCategoria');
             $table->string('descCategoria')->nullable();
             $table->unsignedInteger  ('idArea');
+            $table->foreign('idArea')->references('idArea')->on('area');
         });
     }
 
