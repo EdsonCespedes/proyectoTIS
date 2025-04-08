@@ -31,6 +31,8 @@ Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene to
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
+Route::get('/areas', [AreaController::class, 'index']);
+Route::get('/categorias', [AreaController::class, 'index']);
 
 
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR

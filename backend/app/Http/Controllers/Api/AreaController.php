@@ -34,4 +34,9 @@ class AreaController extends Controller
             'area' => $area
         ], 201);
     }
+
+    public function index(){
+        $areas = Area::all();
+        return response()->json($areas);
+    }
 }
