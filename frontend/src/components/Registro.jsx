@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 import { useNavigate } from "react-router-dom";
@@ -6,34 +6,25 @@ import { useNavigate } from "react-router-dom";
 const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
 const carnetRegex = /^[0-9]+$/; // Solo números
 
-
-const departamentos = {
-  "La Paz": ["Abel Iturralde", "Aroma", "Bautista Saavedra", "Camacho", "Caranavi"],
-  "Cochabamba": ["Arani", "Arque", "Ayopaya", "Bolívar", "Capinota"],
-  "Santa Cruz": ["Andres Ibañez", "Ángel Sandoval", "Chiquitos", "Cordillera"],
-  "Chuquisaca": ["Belisario Boeto", "Hernando Siles", "Jaime Zudañez"],
-  "Oruro": ["Abaroa", "Carangas", "Cercado", "Eduardo Avaroa"],
-  "Potosi": ["Alonso de Ibáñez", "Antonio Quijarro", "Bernardino Bilbao"],
-  "Tarija": ["Aniceto Arce", "Burnet O'Connor", "Cercado"],
-  "Beni": ["Cercado", "Itenéz", "José Ballivián"],
-  "Pando": ["Abuná", "Federico Román", "Madre de Dios"],
-};
-
-// Mapeo de provincias a colegios
-const colegiosPorProvincia = {
-  "Abel Iturralde": ["Colegio A", "Colegio B"],
-  "Aroma": ["Colegio C", "Colegio D"],
-  "Arani": ["Colegio E", "Colegio F"],
-  "Arque": ["Colegio G", "Colegio H"],
-  "Andres Ibañez": ["Colegio I", "Colegio J"],
-  "Ángel Sandoval": ["Colegio K", "Colegio L"],
-  // Agrega más provincias y sus colegios según sea necesario
-};
-
-
-const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar,setRegistro }) => {
+const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const navigate = useNavigate();
+
+  const [departamentos, setDepartamentos] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [provincias, setProvincias] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/verdepartamentos")
+      .then(response => response.json())
+      .then(data => setDepartamentos(data))
+      .catch(error => console.error("Error al obtener colegios:", error));
+
+    fetch("http://localhost:8000/api/vercursos")
+      .then(response => response.json())
+      .then(data => setCursos(data))
+      .catch(error => console.error("Error al obtener colegios:", error));
+  }, []);
 
   const [form, setForm] = useState({
     nombre: "",
@@ -52,7 +43,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
   });
 
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -68,21 +59,39 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
       return;
     }
 
-      // Actualizar el estado del formulario
-      if (name === "departamento") {
-        setForm({ ...form, departamento: value, provincia: "", colegio: "" });
-        setColegiosDisponibles([]);
-      } else if (name === "provincia") {
-        setForm({ ...form, provincia: value, colegio: "" });
-        // Cargar los colegios correspondientes a la provincia
-        setColegiosDisponibles(colegiosPorProvincia[value] || []);
-      } else if (name === "departamentoNacimiento") {
-        setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
-      } else if (name === "provinciaNacimiento") {
-        setForm({ ...form, provinciaNacimiento: value });
-      } else {
-        setForm({ ...form, [name]: value });
-      }
+    // Actualizar el estado del formulario
+    if (name === "departamento") {
+      setForm({ ...form, departamento: value, provincia: "", colegio: "" });
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
+        .then(response => response.json())
+        .then(data => setProvincias(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+      setColegiosDisponibles([]);
+    } else if (name === "provincia") {
+      const nuevaProvincia = value;
+      const departamentoActual = form.departamento;
+
+      setForm({ ...form, provincia: nuevaProvincia, colegio: "" });
+
+      fetch(`http://localhost:8000/api/departamentos/${departamentoActual}/provincias/${nuevaProvincia}/colegios`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Colegios cargados:", data);
+          setColegiosDisponibles(data);
+        })
+        .catch(error => console.error("Error al obtener colegios:", error));
+
+    } else if (name === "departamentoNacimiento") {
+      setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
+        .then(response => response.json())
+        .then(data => setProvincias(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+    } else if (name === "provinciaNacimiento") {
+      setForm({ ...form, provinciaNacimiento: value });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleAceptar = () => {
@@ -104,64 +113,59 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
             <input type="email" placeholder="Correo Electrónico" name="correo" onChange={handleChange} />
             <input type="date" name="fechaNacimiento" onChange={handleChange} />
-            
+
+            <select name="curso" onChange={handleChange} value={form.curso}>
+              <option value="">Selecciona un curso</option>
+              {cursos.map((curso) => (
+                <option key={curso.idCurso} value={curso.Curso}>{curso.Curso}</option>
+              ))}
+            </select>
+
             <select name="departamentoNacimiento" onChange={handleChange} value={form.departamentoNacimiento}>
-               <option value="">Selecciona un departamento </option>
-              {Object.keys(departamentos).map((dep) => (
-                <option key={dep} value={dep}>{dep}</option>
+              <option value="">Selecciona un departamento </option>
+              {departamentos.map((dep) => (
+                <option key={dep.idDepartamento} value={dep.nombreDepartamento}>{dep.nombreDepartamento}</option>
               ))}
             </select>
 
             <select name="provinciaNacimiento" onChange={handleChange} value={form.provinciaNacimiento} disabled={!form.departamentoNacimiento}>
               <option value="">Selecciona una provincia</option>
-              {form.departamentoNacimiento && departamentos[form.departamentoNacimiento].map((prov) => (
-                <option key={prov} value={prov}>{prov}</option>
+              {provincias.map((prov) => (
+                <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
               ))}
             </select>
           </div>
         </div>
-  
+
         {/* Recuadro para Departamento, Provincia y Colegio */}
         <div className="recuadro-container">
-        <h3> </h3>
+          <h3> </h3>
           <h3> Datos del Colegio </h3>
           <select name="departamento" onChange={handleChange} value={form.departamento}>
             <option value="">Selecciona un departamento</option>
-            {Object.keys(departamentos).map((dep) => (
-              <option key={dep} value={dep}>{dep}</option>
+            {departamentos.map((dep) => (
+              <option key={dep.idDepartamento} value={dep.nombreDepartamento}>{dep.nombreDepartamento}</option>
             ))}
           </select>
-  
+
           <select name="provincia" onChange={handleChange} value={form.provincia} disabled={!form.departamento}>
             <option value="">Selecciona una provincia</option>
-            {form.departamento && departamentos[form.departamento].map((prov) => (
-              <option key={prov} value={prov}>{prov}</option>
+            {provincias.map((prov) => (
+              <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
             ))}
           </select>
-  
-          <select name="colegio" onChange={handleChange} value={form.colegio}disabled={!form.provincia}>
+
+          <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
             <option value="">Selecciona un colegio</option>
-            {colegiosDisponibles.length > 0 &&
-              colegiosDisponibles.map((colegio) => (
-                <option key={colegio} value={colegio}>
-                  {colegio}
-                </option>
-              ))}
+            {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
+              <option key={id} value={id}>
+                {nombre}
+              </option>
+            ))}
+
           </select>
-          <select name="curso" onChange={handleChange} value={form.curso} disabled={!form.colegio}>
-              <option value="">Selecciona un curso</option>
-              <option value="4_Primaria">4° Primaria</option>
-              <option value="5_Primaria">5° Primaria</option>
-              <option value="6_Primaria">6° Primaria</option>
-              <option value="1_Secundaria">1° Secundaria</option>
-              <option value="2_Secundaria">2° Secundaria</option>
-              <option value="3_Secundaria">3° Secundaria</option>
-              <option value="4_Secundaria">4° Secundaria</option>
-              <option value="5_Secundaria">5° Secundaria</option>
-              <option value="6_Secundaria">6° Secundaria</option>
-            </select>
         </div>
-  
+
         {/* Áreas seleccionadas */}
         {areasSeleccionadas.length > 0 && (
           <div className="areas-seleccionadas">
@@ -172,18 +176,18 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
                   {categoriasSeleccionadas.filter((categoria) => categoria.idArea === idArea).map(({ idCategoria, nombreCategoria }) => (
                     <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
                   ))}
-                </div>                                     
+                </div>
               ))}
             </ul>
           </div>
         )}
       </div>
-  
+
       {/* Botón para mostrar/ocultar área de competencia */}
       <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
-  
+
       {/* Mostrar Área de Competencia si está activado */}
       {mostrarArea && (
         <div className="area-competencia-container">
@@ -196,17 +200,17 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           />
         </div>
       )}
-  
+
       {/* Botones de acción */}
       <div className="seccion-container">
         <div className="botones">
           <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
-          <button type="button" className="boton btn-red" onClick={() => setRegistro(false) }>Cancelar</button>
+          <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
         </div>
       </div>
     </div>
   );
-}  
+}
 export default Registro;
 
 
