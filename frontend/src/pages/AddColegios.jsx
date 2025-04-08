@@ -112,7 +112,7 @@ const AddColegios = () => {
                             <option value="">Seleccionar Provincia</option>
                             {departamento &&
                                 provincias.map((prov) => (
-                                    <option key={prov.idProvincia} value={prov.idProvincia}>
+                                    <option key={prov.idProvincia} value={prov.nombreProvincia}>
                                         {prov.nombreProvincia}
                                     </option>
                                 ))}

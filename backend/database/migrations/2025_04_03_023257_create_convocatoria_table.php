@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('convocatoria', function (Blueprint $table) {
             $table->increments('idConvocatoria');
+            $table->string('titulo', 45)->nullable();
+            $table->string('descripcion', 75)->nullable();
             $table->dateTime('fechaPublicacion')->nullable();
             $table->dateTime('fechaInicioInsc')->nullable();
             $table->dateTime('fechaFinInsc')->nullable();
-            $table->string('portada', 45)->nullable();
+            $table->string('portada', 255)->nullable();
             $table->boolean('habilitada')->default(false);
             $table->dateTime('fechaInicioOlimp')->nullable();
             $table->dateTime('fechaFinOlimp')->nullable();
