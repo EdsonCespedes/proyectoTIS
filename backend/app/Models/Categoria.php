@@ -10,6 +10,14 @@ class Categoria extends Model
     protected $table = 'categoria'; 
     protected $primaryKey = 'idCategoria'; 
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'nombreCategoria',
+        'descCategoria',
+        'idArea'
+    ];
+
     public function area()
     {
         return $this->belongsTo(Area::class, 'idArea');
