@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./styles/Convocatoria.css";
 import ImageUpload from "../components/ImageUpload";
+import { useNavigate } from "react-router-dom";
+
 
 export const CrearConvForm = () => {
   const [formData, setFormData] = useState({
@@ -12,12 +14,16 @@ export const CrearConvForm = () => {
     fechaFinOlimpiada: "",
     imagenPortada: null,
     maxConcursantes: [],
+    maxArea: [],
   });
 
   const [newArea, setNewArea] = useState("");
+  const [newMax, setNewMax] = useState("");
   const [newMaxConcursantes, setNewMaxConcursantes] = useState("");
   const [error, setError] = useState(""); // Estado para mostrar errores
   const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +44,7 @@ export const CrearConvForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Verificar que todos los campos obligatorios estén llenos
     if (
@@ -57,7 +63,47 @@ export const CrearConvForm = () => {
     setError(""); // Limpiar error si todo está correcto
     console.log("Formulario enviado", formData);
     // Aquí podrías enviar los datos al backend o realizar otra acción
+    const formDataToSend = new FormData();
+    formDataToSend.append("fechaPublicacion", new Date().toISOString().split("T")[0]); // o usa otro valor si es manual
+    formDataToSend.append("fechaInicioInsc", formData.fechaInicioInscripcion);
+    formDataToSend.append("fechaFinInsc", formData.fechaCierreInscripcion);
+    formDataToSend.append("fechaInicioOlimp", formData.fechaInicioOlimpiada);
+    formDataToSend.append("fechaFinOlimp", formData.fechaFinOlimpiada);
+    formDataToSend.append("habilitada", 1); // o false, según tu lógica
+    formDataToSend.append("portada", formData.imagenPortada);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/convocatorias", {
+        method: "POST",
+        body: formDataToSend, // sin headers aquí
+      });
+
+      // if (!response.ok) throw new Error("Error al enviar datos");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Errores de validación:", errorData.errors);
+        throw new Error("Error en la validación");
+      }
+
+      const result = await response.json();
+      console.log("Convocatoria creada:", result);
+      // redirige o limpia formulario aquí
+    } catch (error) {
+      console.error("Error en el envío:", error);
+      alert("Ocurrió un error al guardar la convocatoria.");
+    }
+
   };
+
+  const handleSiguiente = (e) => {
+    handleSubmit(e);
+    navigate("/nivel"); // Asegúrate de que esta ruta coincida con tu configuración
+  };
+
+  const handleCancelar = () => {
+    navigate("/detalle-convocatoria");
+  };
+
 
   return (
     <div className="container">
@@ -68,6 +114,7 @@ export const CrearConvForm = () => {
           type="text"
           name="titulo"
           value={formData.titulo}
+          maxLength={1300}
           onChange={handleChange}
           className="input-field"
         />
@@ -76,6 +123,7 @@ export const CrearConvForm = () => {
         <textarea
           name="descripcion"
           value={formData.descripcion}
+          maxLength={1300}
           onChange={handleChange}
           className="input-field"
         ></textarea>
@@ -120,32 +168,19 @@ export const CrearConvForm = () => {
           />
         </div>
 
-        <label>Máximo de concursantes por categoría:</label>
-        <div className="area-group">
-          <input
-            type="text"
-            placeholder="Nombre de la categoría"
-            value={newArea}
-            onChange={(e) => setNewArea(e.target.value)}
-            className="input-field"
-          />
-          <input
-            type="number"
-            placeholder="Máximo de postulantes"
-            value={newMaxConcursantes}
-            onChange={(e) => {
-              const value = parseInt(e.target.value, 10);
-              if (value > 0 || e.target.value === "") {
-                setNewMaxConcursantes(e.target.value);
-              }
-            }}
-            className="input-field"
-          />
-          <button type="button" onClick={addAreaMaxConcursantes} className="add-button">
-            Agregar
-          </button>
-        </div>
-
+        <label>Máximo de inscripción por categoría{/*área*/}:</label>
+        <input
+          type="number"
+          name="maxArea"
+          value={formData.maxArea}
+          onChange={(e) => {
+            if (e.target.value.length <= 6) {
+              handleChange(e);
+            }
+          }}
+          className="input-field"
+        />
+        
         <ul className="area-list">
           {formData.maxConcursantes.map((item, index) => (
             <li key={index}>
@@ -160,10 +195,10 @@ export const CrearConvForm = () => {
         {error && <p className="error-message">{error}</p>}
 
         <div className="button-group">
-          <button type="submit" className="publicar">
+          <button type="submit" className="siguiente" onClick={handleSiguiente}>
             Siguiente
           </button>
-          <button type="button" className="cancelar">
+          <button type="button" className="cancelar" onClick={handleCancelar}>
             Cancelar
           </button>
         </div>

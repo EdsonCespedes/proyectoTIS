@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 
-const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  
+import { useNavigate } from "react-router-dom";
+
+const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
+const carnetRegex = /^[0-9]+$/; // Solo números
+
+const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
+  const [mostrarArea, setMostrarArea] = useState(false);
+  const navigate = useNavigate();
+
+  const [departamentos, setDepartamentos] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [provincias, setProvincias] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/verdepartamentos")
+      .then(response => response.json())
+      .then(data => setDepartamentos(data))
+      .catch(error => console.error("Error al obtener colegios:", error));
+
+    fetch("http://localhost:8000/api/vercursos")
+      .then(response => response.json())
+      .then(data => setCursos(data))
+      .catch(error => console.error("Error al obtener colegios:", error));
+  }, []);
+
+
   const [form, setForm] = useState({
     nombre: "",
     apellidos: "",
@@ -19,8 +42,58 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     categorias: [],
   });
 
+
+  const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Validación de nombre y apellido
+    if ((name === "nombre" || name === "apellidos") && !nombreApellidoRegex.test(value) && value !== "") {
+      alert("El nombre y apellido solo pueden contener letras.");
+      return;
+    }
+
+    // Validación de carnet (solo números)
+    if (name === "carnet" && value !== "" && !carnetRegex.test(value)) {
+      alert("El carnet solo puede contener números.");
+      return;
+    }
+
+    // Actualizar el estado del formulario
+    if (name === "departamento") {
+      setForm({ ...form, departamento: value, provincia: "", colegio: "" });
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
+        .then(response => response.json())
+        .then(data => setProvincias(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+      setColegiosDisponibles([]);
+    } else if (name === "provincia") {
+      const nuevaProvincia = value;
+      const departamentoActual = form.departamento;
+
+      setForm({ ...form, provincia: nuevaProvincia, colegio: "" });
+
+      fetch(`http://localhost:8000/api/departamentos/${departamentoActual}/provincias/${nuevaProvincia}/colegios`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Colegios cargados:", data);
+          setColegiosDisponibles(data);
+        })
+        .catch(error => console.error("Error al obtener colegios:", error));
+
+    } else if (name === "departamentoNacimiento") {
+      setForm({ ...form, departamentoNacimiento: value, provinciaNacimiento: "" });
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
+        .then(response => response.json())
+        .then(data => setProvincias(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+    } else if (name === "provinciaNacimiento") {
+      setForm({ ...form, provinciaNacimiento: value });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+
   };
 
   const handleAceptar = () => {
@@ -48,37 +121,93 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
             <input type="email" placeholder="Correo Electrónico" name="correo" onChange={handleChange} />
             <input type="date" name="fechaNacimiento" onChange={handleChange} />
-            <input type="text" placeholder="Colegio" name="colegio" onChange={handleChange} />
-            <select name="curso" onChange={handleChange}>
-              <option>Curso</option>
-              <option value="Curso 1">Curso 1</option>
-            </select>
-            <select name="departamento" onChange={handleChange}>
-              <option>Departamento</option>
-              <option value="Departamento 1">Departamento 1</option>
-            </select>
-            <select name="provincia" onChange={handleChange}>
-              <option>Provincia</option>
-              <option value="Provincia 1">Provincia 1</option>
+
+
+            <select name="curso" onChange={handleChange} value={form.curso}>
+              <option value="">Selecciona un curso</option>
+              {cursos.map((curso) => (
+                <option key={curso.idCurso} value={curso.Curso}>{curso.Curso}</option>
+              ))}
             </select>
 
-            <button className="boton btn-competencia" onClick={() => setModalVisible(true)}>
-              Área de Competencia
-            </button>
+            <select name="departamentoNacimiento" onChange={handleChange} value={form.departamentoNacimiento}>
+              <option value="">Selecciona un departamento </option>
+              {departamentos.map((dep) => (
+                <option key={dep.idDepartamento} value={dep.nombreDepartamento}>{dep.nombreDepartamento}</option>
+              ))}
+            </select>
 
-            {areasSeleccionadas.length > 0 && (
-              <div className="areas-seleccionadas">
-                <h3>Áreas Seleccionadas:</h3>
-                <ul>
-                  {areasSeleccionadas.map(({ idArea, tituloArea }) => (
-                    <div key={idArea}>
-                      {categoriasSeleccionadas.filter((categoria) => categoria.idArea === idArea).map(({ idCategoria, nombreCategoria })=>(<li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>))}   
-                    </div>                                     
-                  ))}
-                </ul>
-              </div>
-            )}
+            <select name="provinciaNacimiento" onChange={handleChange} value={form.provinciaNacimiento} disabled={!form.departamentoNacimiento}>
+              <option value="">Selecciona una provincia</option>
+              {provincias.map((prov) => (
+                <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
+              ))}
+            </select>
           </div>
+        </div>
+
+        {/* Recuadro para Departamento, Provincia y Colegio */}
+        <div className="recuadro-container">
+          <h3> </h3>
+          <h3> Datos del Colegio </h3>
+          <select name="departamento" onChange={handleChange} value={form.departamento}>
+            <option value="">Selecciona un departamento</option>
+            {departamentos.map((dep) => (
+              <option key={dep.idDepartamento} value={dep.nombreDepartamento}>{dep.nombreDepartamento}</option>
+            ))}
+          </select>
+
+          <select name="provincia" onChange={handleChange} value={form.provincia} disabled={!form.departamento}>
+            <option value="">Selecciona una provincia</option>
+            {provincias.map((prov) => (
+              <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
+            ))}
+          </select>
+
+          <select name="colegio" onChange={handleChange} value={form.colegio} disabled={!form.provincia}>
+            <option value="">Selecciona un colegio</option>
+            {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
+              <option key={id} value={id}>
+                {nombre}
+              </option>
+            ))}
+
+          </select>
+        </div>
+
+        {/* Áreas seleccionadas */}
+        {areasSeleccionadas.length > 0 && (
+          <div className="areas-seleccionadas">
+            <h3>Áreas Seleccionadas:</h3>
+            <ul>
+              {areasSeleccionadas.map(({ idArea, tituloArea }) => (
+                <div key={idArea}>
+                  {categoriasSeleccionadas.filter((categoria) => categoria.idArea === idArea).map(({ idCategoria, nombreCategoria }) => (
+                    <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
+                  ))}
+                </div>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Botón para mostrar/ocultar área de competencia */}
+      <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
+        {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
+      </button>
+
+      {/* Mostrar Área de Competencia si está activado */}
+      {mostrarArea && (
+        <div className="area-competencia-container">
+          <AreaCompetencia
+            areasSeleccionadas={areasSeleccionadas}
+            setAreasSeleccionadas={setAreasSeleccionadas}
+            categoriasSeleccionadas={categoriasSeleccionadas}
+            setCategoriasSeleccionadas={setCategoriasSeleccionadas}
+            cursoSeleccionado={form.curso}
+          />
+
         </div>
       </div>
 
@@ -91,6 +220,9 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           setCategoriasSeleccionadas={setCategoriasSeleccionadas} 
         />
       )}
+
+
+      {/* Botones de acción */}
 
       <div className="seccion-container">
         <div className="seccion">
@@ -106,11 +238,14 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
 
         <div className="botones">
           <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
-          <button className="boton btn-red" >Cancelar</button>
+
+          <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
+
         </div>
       </div>
     </div>
   );
-};
 
+}
 export default Registro;
+

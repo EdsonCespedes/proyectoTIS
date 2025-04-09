@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
             TutorSeeder::class,
             DelegacionSeeder::class,
             PostulanteSeeder::class,
-            //PostulacionSeeder::class,
-            //CategoriaCursoSeeder::class,
+            PostulacionSeeder::class,
+            CategoriaCursoSeeder::class
         ]);
     }
 }
