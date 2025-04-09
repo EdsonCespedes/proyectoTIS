@@ -221,6 +221,7 @@ class ColegioSeeder extends Seeder
             'RUE' => '357913',
             'direccion' => 'Calle 14 de Septiembre 654',
             'fecha_creacion' => '1992-11-15'
+
         ]);
     }
 }
