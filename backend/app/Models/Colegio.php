@@ -16,6 +16,9 @@ class Colegio extends Model
         'nombreColegio',
         'departamento',
         'provincia',
+        'RUE',
+        'direccion',
+        'fecha_creacion',
     ];
 
     public static function obtenerDatosColegio()
