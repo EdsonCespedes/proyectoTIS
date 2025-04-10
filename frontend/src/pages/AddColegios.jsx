@@ -71,8 +71,8 @@ const AddColegios = () => {
     };
 
     return (
-        <div className="contenedor">
-            <h3 className="title">UNIDAD EDUCATIVA</h3>
+        <div className="contenedor-add-colegio">
+            <h3 className="title-add-colegio">UNIDAD EDUCATIVA</h3>
             <form className="formulario" id="colegio-form" onSubmit={handleSubmit}>
                 <div className="campo">
                     <label>NOMBRE DE LA UNIDAD EDUCATIVA:</label>
@@ -121,10 +121,10 @@ const AddColegios = () => {
                 </div>
             </form>
             <div className="control">
-                <button type="submit" form="colegio-form" className="btn-blue">
-                    GUARDAR
+                <button type="submit" form="colegio-form" className="boton-style btn-aceptacion">
+                Guardar
                 </button>
-                <Link to="/colegios" className="boton btn-red">CANCELAR</Link>
+                <Link to="/colegios" className="boton-style btn-rechazo">Cancelar</Link>
             </div>
         </div>
     );
