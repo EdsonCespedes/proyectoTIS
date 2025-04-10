@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bcebd709-2e54-4b64-af25-3fcb8278e575" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023304_create_tutor_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023260_create_tutor_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023305_create_colegio_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023261_create_colegio_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023306_create_delegacion_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023262_create_delegacion_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023309_create_curso_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/migrations/2025_04_03_023263_create_curso_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/AddColegios.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/AddColegios.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +148,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "geo__db",
     "last_opened_file_path": "C:/laragon/www/proyectoTIS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -186,7 +181,7 @@
       <option name="presentableId" value="Default" />
       <updated>1743791471157</updated>
       <workItem from="1743791472286" duration="12269000" />
-      <workItem from="1744120334009" duration="6027000" />
+      <workItem from="1744120334009" duration="6592000" />
     </task>
     <servers />
   </component>
