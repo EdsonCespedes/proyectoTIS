@@ -32,4 +32,9 @@ class CategoriaController extends Controller
             'categoria' => $categoria
         ], 201);
     }
+
+    public function index(){
+        $categorias = Categoria::all();
+        return response()->json($categorias);
+    }
 }
