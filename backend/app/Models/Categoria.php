@@ -20,6 +20,6 @@ class Categoria extends Model
 
     public function area()
     {
-        return $this->belongsTo(Area::class, 'idArea');
+        return $this->belongsTo(Area::class, 'idArea'); // relacion d uno a muchos //uno
     }
 }
