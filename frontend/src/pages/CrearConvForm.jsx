@@ -107,7 +107,7 @@ export const CrearConvForm = () => {
 
   return (
     <div className="container">
-      <h2>Crear convocatoria</h2>
+      <h3 className="title-add-convocatoria">Crear convocatoria</h3>
       <form className="convocatoria-form" onSubmit={handleSubmit}>
         <label>Título:</label>
         <input

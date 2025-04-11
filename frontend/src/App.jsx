@@ -19,7 +19,6 @@ import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
 
 
-
 function App() {
 
   
@@ -42,7 +41,6 @@ function App() {
         <Route path="/ordenPago" element={<OrdenPago />} />
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
-
       </Routes>
     </div>
   )
