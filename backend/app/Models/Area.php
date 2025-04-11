@@ -17,4 +17,13 @@ class Area extends Model
         'habilitada',
         'idConvocatoria'
     ];
+    public function categorias()
+    {
+        return $this->hasMany(Categoria::class, 'idArea'); //relacion d uno a muchos //muchos
+    }
+    public function convocatoria()
+{
+    return $this->belongsTo(Convocatoria::class, 'idConvocatoria');
+}
+
 }

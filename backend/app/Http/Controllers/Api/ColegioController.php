@@ -16,6 +16,9 @@ class ColegioController extends Controller
             'nombreColegio' => 'required|string|max:45|unique:colegio,nombreColegio',
             'departamento'  => 'required|string|max:45',
             'provincia'     => 'required|string|max:45',
+            'RUE' => 'required|string',
+            'direccion' => 'required|string',
+            'fecha_creacion' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -25,7 +28,10 @@ class ColegioController extends Controller
         $colegio = Colegio::create($request->only([
             'nombreColegio',
             'departamento',
-            'provincia'
+            'provincia',
+            'RUE',
+            'direccion',
+            'fecha_creacion'
         ]));
 
         return response()->json([

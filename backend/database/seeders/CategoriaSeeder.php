@@ -21,7 +21,7 @@ class CategoriaSeeder extends Seeder
             Log::info('Area data: ' . json_encode($area)); // Verifica los datos del área
             Log::info("Processing area: " . $area->tituloArea);
 
-            // Verifica si el título del área es uno de los esperados
+            // Verifica si el título del área es corecto
             Log::info('Checking area: ' . $area->tituloArea);
 
             if (in_array($area->tituloArea, ['Matematicas', 'Fisica', 'Quimica', 'Biologia'])) {
@@ -30,6 +30,7 @@ class CategoriaSeeder extends Seeder
                         'nombreCategoria' => $i . 'P',
                         'descCategoria'   => 'Grado ' . $i . ' de Primaria',
                         'idArea'          => $area->idArea,
+                        'maxPost'          => 20,
                     ];
                     DB::table('categoria')->insert($data);
                     Log::info('Inserting category: ' . json_encode($data));
@@ -39,6 +40,7 @@ class CategoriaSeeder extends Seeder
                         'nombreCategoria' => $i . 'S',
                         'descCategoria'   => 'Grado ' . $i . ' de Secundaria',
                         'idArea'          => $area->idArea,
+                        'maxPost'          => 20,
                     ];
                     DB::table('categoria')->insert($data);
                     Log::info('Inserting category: ' . json_encode($data));
@@ -48,6 +50,7 @@ class CategoriaSeeder extends Seeder
                     'nombreCategoria' => 'Bufeo',
                     'descCategoria'   => 'Desde 1° Secundaria hasta 3° Secundaria',
                     'idArea'          => $area->idArea,
+                    'maxPost'          => 20,
                 ];
                 DB::table('categoria')->insert($data);
                 Log::info('Inserting category: ' . json_encode($data));
@@ -56,6 +59,7 @@ class CategoriaSeeder extends Seeder
                     'nombreCategoria' => 'LEGO',
                     'descCategoria'   => 'Desde 3° Secundaria hasta 5° Secundaria',
                     'idArea'          => $area->idArea,
+                    'maxPost'          => 20,
                 ];
                 DB::table('categoria')->insert($data);
                 Log::info('Inserting category: ' . json_encode($data));

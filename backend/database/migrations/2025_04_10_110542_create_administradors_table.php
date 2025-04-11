@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveDepartamentoProvinciaFromPostulante extends Migration
+class CreateAdministradorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class RemoveDepartamentoProvinciaFromPostulante extends Migration
      */
     public function up()
     {
-        Schema::table('postulante', function (Blueprint $table) {
-            $table->dropColumn(['departamento', 'provincia',]); // Eliminar dos columnas
+        Schema::create('administradors', function (Blueprint $table) {
+            $table->integer('idAdmin')->primary(); // clave primaria personalizada
+            $table->bigInteger('new_column')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class RemoveDepartamentoProvinciaFromPostulante extends Migration
      */
     public function down()
     {
-        Schema::table('postulante', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('administradors');
     }
 }

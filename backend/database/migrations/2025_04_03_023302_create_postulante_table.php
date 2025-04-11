@@ -27,8 +27,7 @@ return new class extends Migration
             $table->foreign('idTutor')->references('idTutor')->on('tutor');
             $table->unsignedInteger ('idColegio');
             $table->foreign('idColegio')->references('idColegio')->on('colegio');
-            $table->unsignedInteger ('idDelegacion')->nullable();
-            $table->foreign('idDelegacion')->references('idDelegacion')->on('delegacion');
+            $table->string ('delegacion')->nullable();
             $table->unsignedInteger ('idCurso');
             $table->foreign('idCurso')->references('idCurso')->on('curso');
 

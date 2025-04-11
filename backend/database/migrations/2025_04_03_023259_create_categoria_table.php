@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('idCategoria');
             $table->string('nombreCategoria');
             $table->string('descCategoria')->nullable();
+            $table->integer('maxPost')->nullable();
             $table->unsignedInteger  ('idArea');
             $table->foreign('idArea')->references('idArea')->on('area');
         });

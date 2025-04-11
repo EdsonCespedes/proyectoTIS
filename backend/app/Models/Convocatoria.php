@@ -13,6 +13,8 @@ class Convocatoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'titulo',
+        'descripcion',
         'fechaPublicacion',
         'fechaInicioInsc',
         'fechaFinInsc',
@@ -22,4 +24,10 @@ class Convocatoria extends Model
         'fechaFinOlimp',
         'maximoPostPorArea'
     ];
+
+    public function areas()
+    {
+        return $this->belongsToMany(Area::class, 'convocatoria_area', 'idConvocatoria', 'idArea');
+    }
+    
 }

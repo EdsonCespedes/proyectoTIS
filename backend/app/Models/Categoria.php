@@ -15,11 +15,16 @@ class Categoria extends Model
     protected $fillable = [
         'nombreCategoria',
         'descCategoria',
-        'idArea'
+        'idArea',
+        'maxPost'
     ];
 
     public function area()
     {
-        return $this->belongsTo(Area::class, 'idArea');
+        return $this->belongsTo(Area::class, 'idArea'); // relacion d uno a muchos //uno
+    }
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'categoria_curso', 'idCategoria', 'idCurso');
     }
 }

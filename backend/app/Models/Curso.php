@@ -15,4 +15,9 @@ class Curso extends Model
     protected $fillable = [
         'Curso'
     ];
+    public function categorias()
+{
+    return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
+}
+
 }
