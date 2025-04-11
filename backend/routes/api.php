@@ -77,3 +77,8 @@ Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
     // });
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
+
+// obtener areas y categorias de los cursos habilitados
+
+Route::get('/convocatoria/{id}/areas-categorias-cursos', [ConvocatoriaController::class, 'obtenerEstructura']);
+
