@@ -5,13 +5,14 @@
     padding: 50px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,5);
   }
   
   h1 {
     text-align: center;
-    font-size: 24px;
+    font-size: 30px;
     margin-bottom: 20px;
+    color: #ffffff; /* Título en blanco */
   }
   
   th, td {
@@ -32,13 +33,13 @@
   }
   input {
     width: 100%;
-    padding: 5px;
+    padding: 10px;
     border: none;
     background-color: transparent;
   }
   
   .total {
-    margin-top: 10px;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -57,13 +58,17 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   
-  .btn-descargar,
+  
+  #btn-descargar-pdf {
+    display: none;
+  }
+  
   .btn-cancelar {
-    flex: 1;
-    padding: 12px;
+    flex: 0.5;
+    padding: 1px;
     font-size: 16px;
     border: none;
     border-radius: 4px;

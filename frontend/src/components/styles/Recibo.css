@@ -1,0 +1,71 @@
+/* Recibo.css */
+.recibo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #d8eef2; /* Fondo general */
+}
+
+.form-wrapper {
+  width: 80%; /* Aumenta el ancho al 80% de la pantalla */
+  max-width: 800px; /* Establece un máximo para evitar que se expanda demasiado */
+  background-color: #B0C4D8; /* Fondo del formulario */
+  padding: 30px; /* Aumento el padding para mayor espacio dentro */
+  border-radius: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 5);
+}
+
+.form-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  color: #ffffff; /* Título en blanco */
+  margin-bottom: 20px;
+}
+
+.recibo-details {
+  margin-bottom: 100px;
+}
+
+.recibo-details p {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20px; /* Mayor espacio entre cada fila */
+}
+
+hr {
+  margin: 10px 0;
+  border: 0;
+  border-top: 8px solid #ddd;
+}
+
+.recibo-monto {
+  margin-top: 30px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #333;
+}
+
+button.btn-descargar {
+  background-color: #0891b2;
+  color: white;
+  border: none;
+  padding: 10px 10px;
+  font-size: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px; /* Espacio arriba del botón */
+}
+
+button:hover {
+  background-color: #0d5f73;
+}
+
+button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
