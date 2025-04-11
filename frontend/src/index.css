@@ -1,5 +1,7 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #DBEDEF;
+  
 }
 
 html, body{
@@ -20,3 +22,5 @@ button {
   font-family: inherit;
   cursor: pointer;
 }
+
+

@@ -19,7 +19,7 @@ const GestionColegios = () => {
     const currentColegios = colegios.slice(startIndex, startIndex + itemsPerPage);
 
     return (
-        <div className="contenedor">
+        <div className="contenedor-colegio">
             <h3 className="title-tabla">UNIDADES EDUCATIVAS</h3>
             <div className="tabla">
                 <table>
@@ -37,9 +37,9 @@ const GestionColegios = () => {
                                 {/* <td>{colegio.rue}</td> */}
                                 <td>{colegio.idColegio}</td>
                                 <td>{colegio.nombreColegio}</td>
-                                <td>
-                                    <Link to="/edit-colegios" className="boton btn-red">MODIFICAR</Link>
-                                    <button className="boton btn-red">RETIRAR</button>
+                                <td className="actions">
+                                    <Link to="/edit-colegios" className="boton-style btn-rechazo">Modificar</Link>
+                                    <button className="boton-style btn-rechazo">Retirar</button>
                                 </td>
                             </tr>
                         ))}
@@ -58,22 +58,22 @@ const GestionColegios = () => {
                             onClick={() => setCurrentPage(currentPage - 1)}
                             disabled={currentPage === 0}
                         >
-                            ANTERIOR
+                            Anterior
                         </button>
                         <span>Página {currentPage + 1} de {Math.ceil(colegios.length / itemsPerPage)}</span>
                         <button
                             onClick={() => setCurrentPage(currentPage + 1)}
                             disabled={startIndex + itemsPerPage >= colegios.length}
                         >
-                            SIGUIENTE
+                            Siguiente
                         </button>
                     </div>
                 )}
             </div>
             <div className="control">
-                <Link to="/registro-colegios" className="boton btn-red">AÑADIR NUEVO</Link>
-                <button className="boton btn-blue">GUARDAR</button>
-                <Link to="/" className="boton btn-red">CANCELAR</Link>
+                <Link to="/registro-colegios" className="boton-style btn-aceptacion">Añadir nuevo</Link>
+                <button className="boton-style btn-aceptacion">Guardar</button>
+                <Link to="/" className="boton-style btn-rechazo">Cancelar</Link>
             </div>
         </div>
     );
