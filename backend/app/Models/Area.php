@@ -21,5 +21,9 @@ class Area extends Model
     {
         return $this->hasMany(Categoria::class, 'idArea'); //relacion d uno a muchos //muchos
     }
+    public function convocatoria()
+{
+    return $this->belongsTo(Convocatoria::class, 'idConvocatoria');
+}
 
 }

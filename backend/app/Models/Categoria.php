@@ -22,4 +22,8 @@ class Categoria extends Model
     {
         return $this->belongsTo(Area::class, 'idArea'); // relacion d uno a muchos //uno
     }
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'categoria_curso', 'idCategoria', 'idCurso');
+    }
 }
