@@ -38,9 +38,9 @@ const DetalleInscripcion = ({ estudiantes, onEliminar, onEditar }) => {
                                         </React.Fragment>
                                     ))}
                                 </td>
-                                <td>
-                                    <Link to="/editar" state={{estudiante}} className="boton btn-red">MODIFICAR</Link>
-                                    <button onClick={()=>onEliminar(index)} className="boton btn-red">RETIRAR</button>
+                                <td className="actions">
+                                    <Link to="/editar" state={{estudiante}} className="boton-style btn-rechazo">Modificar</Link>
+                                    <button onClick={()=>onEliminar(index)} className="boton-style btn-rechazo">Retirar</button>
                                 </td>
                             </tr>
                         ))}
@@ -59,14 +59,14 @@ const DetalleInscripcion = ({ estudiantes, onEliminar, onEditar }) => {
                             onClick={() => setCurrentPage(currentPage - 1)}
                             disabled={currentPage === 0}
                         >
-                            ANTERIOR
+                            Anterior
                         </button>
                         <span>Página {currentPage + 1} de {Math.ceil(estudiantes.length / itemsPerPage)}</span>
                         <button
                             onClick={() => setCurrentPage(currentPage + 1)}
                             disabled={startIndex + itemsPerPage >= estudiantes.length}
                         >
-                            SIGUIENTE
+                            Siguiente
                         </button>
                     </div>
                 )}

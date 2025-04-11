@@ -37,7 +37,7 @@ const GestionColegios = () => {
                                 {/* <td>{colegio.rue}</td> */}
                                 <td>{colegio.idColegio}</td>
                                 <td>{colegio.nombreColegio}</td>
-                                <td>
+                                <td className="actions">
                                     <Link to="/edit-colegios" className="boton-style btn-rechazo">Modificar</Link>
                                     <button className="boton-style btn-rechazo">Retirar</button>
                                 </td>
