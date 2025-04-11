@@ -27,4 +27,5 @@ class Convocatoria extends Model
     {
         return $this->belongsToMany(Area::class, 'convocatoria_area', 'idConvocatoria', 'idArea');
     }
+    
 }
