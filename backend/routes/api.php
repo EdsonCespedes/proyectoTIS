@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\PostulanteController;
+use App\Http\Controllers\Api\PostulanteControllerJ;
 use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\ConvocatoriaController;
@@ -57,6 +57,8 @@ Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
 //Crear Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
 
+
+
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
 
@@ -74,4 +76,9 @@ Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
     //     return response()->json($convocatorias);
     // });
 Route::get('/postulantes', [PostulanteController::class, 'index']);
+
+
+// obtener areas y categorias de los cursos habilitados
+
+Route::get('/convocatoria/{id}/areas-categorias-cursos', [ConvocatoriaController::class, 'obtenerEstructura']);
 

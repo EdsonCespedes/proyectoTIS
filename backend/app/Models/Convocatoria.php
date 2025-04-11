@@ -22,4 +22,10 @@ class Convocatoria extends Model
         'fechaFinOlimp',
         'maximoPostPorArea'
     ];
+
+    public function areas()
+    {
+        return $this->belongsToMany(Area::class, 'convocatoria_area', 'idConvocatoria', 'idArea');
+    }
+    
 }
