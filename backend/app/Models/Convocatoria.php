@@ -13,6 +13,8 @@ class Convocatoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'titulo',
+        'descripcion',
         'fechaPublicacion',
         'fechaInicioInsc',
         'fechaFinInsc',

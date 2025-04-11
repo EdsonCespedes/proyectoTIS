@@ -15,7 +15,8 @@ class Categoria extends Model
     protected $fillable = [
         'nombreCategoria',
         'descCategoria',
-        'idArea'
+        'idArea',
+        'maxPost'
     ];
 
     public function area()
