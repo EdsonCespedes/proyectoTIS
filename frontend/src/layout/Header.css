@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #0C3E92;
+    background-color: #09052C;
     width: 100%;
     height: 111px;
 }
@@ -29,7 +29,7 @@
 
 .logo .title {
     color: white;
-    font-size: 36px;
+    font-size: 30px;
     margin: 0;
     padding: 0px 10px;
 }
@@ -42,16 +42,16 @@
 }
 
 .buttons {
-    padding: 10px;
-    margin: 10px;
+    padding: 20px;
+    margin: 20px;
 }
 
 .boton-header {
     color: white;
-    background-color: #0C3E92;
+    background-color: #09052C;
     border: none;
     padding: 10px 10px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;

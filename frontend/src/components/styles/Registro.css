@@ -1,37 +1,55 @@
-/* Contenedor principal */
-.registro-container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
+/* Fondo general */
+body {
+    background-color: #d8eef2; /* Mismo fondo que .formulario-pago-container */
+    margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
 }
 
+/* Contenedor principal */
+.registro-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-/* Contenedor de cada sección (para mayor separación) */
+/* Encabezado principal */
+.encabezado-postulante {
+    background-color: #007d99;
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+    text-align: center;
+    padding: 15px;
+}
+
+/* Contenedor de cada sección */
 .seccion-container {
-    margin-bottom: 30px; /* Espaciado entre secciones */
+    margin: 30px 20px;
     padding: 20px;
-    background-color: #eef2ff; /* Fondo diferente para que resalten */
+    background-color: #B0C4D8; /* Similar al fondo del input del formulario-search */
     border-radius: 10px;
 }
 
-/* Secciones */
+/* Sección individual */
 .seccion {
     padding: 20px;
-    background-color: white;
+    background-color: white; /* Igual al fondo blanco */
     border-radius: 8px;
     border: 1px solid #ddd;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 5);
 }
 
+/* Subtítulos */
 .subtitulo {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
-    margin-bottom: 15px;
-    color: #444;
+    margin-bottom: 20px;
+    color: #ddd;
 }
 
 /* Estilos de los campos */
@@ -53,10 +71,41 @@ input, select {
 .botones {
     display: flex;
     justify-content: center;
-    /* gap: 15px; */
-    margin-top: 10px;
+    gap: 20px;
+    margin: 30px 0;
 }
 
+.btn-guardar {
+    background-color: #0099B3;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-guardar:hover {
+    background-color: #007d99;
+}
+
+.btn-cancelar {
+    background-color: #B0C4D8;
+    color: black;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+    background-color: #9eb3c9;
+}
+
+/* Botones anteriores (si decides usarlos también) */
 .btn-competencia {
     background: #1e40af;
     color: white;
@@ -69,8 +118,7 @@ input, select {
 .boton {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #0C3E92;
-    /* Color azul tipo botón */
+    background-color: #0099B3;
     color: white;
     text-decoration: none;
     font-weight: 500;
@@ -83,15 +131,15 @@ input, select {
 }
 
 .btn-red {
-    background-color: #E30613;
+    background-color: #0099B3;
 }
 
 .btn-red:hover {
-    background-color: #A0000A;
+    background-color: #072B6A;
 }
 
 .btn-blue {
-    background-color: #0C3E92;
+    background-color: #D9D9D9;
 }
 
 .btn-blue:hover {
@@ -105,12 +153,9 @@ input, select {
     border: 2px solid #ddd;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px; /* Espaciado debajo del botón */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 5);
+    margin-top: 20px;
 }
-
-
-
 
 
 

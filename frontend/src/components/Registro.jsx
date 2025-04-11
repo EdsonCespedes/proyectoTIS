@@ -3,11 +3,13 @@ import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 import { useNavigate } from "react-router-dom";
 
-const nombreApellidoRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
-const carnetRegex = /^[0-9]+$/; // Solo números
+const nombreApellidoRegex = /^[A-Za-z\s]+$/;
+const carnetRegex = /^[0-9]+$/;
 
 const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
+  const [provinciasColegio, setProvinciasColegio] = useState([]);
+
   const navigate = useNavigate();
 
   const [departamentos, setDepartamentos] = useState([]);
@@ -34,30 +36,28 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     fechaNacimiento: "",
     colegio: "",
     curso: "",
-    departamentoNacimiento: "", // Nuevo campo para departamento de nacimiento
-    provinciaNacimiento: "", // Nuevo campo para provincia de nacimiento
     departamento: "",
     provincia: "",
+    departamentoColegio: "",
+    provinciaColegio: "",
     areas: [],
     categorias: [],
   });
-
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validación de nombre y apellido
-    if ((name === "nombre" || name === "apellidos") && !nombreApellidoRegex.test(value) && value !== "") {
+    if ((name === "nombre" || name === "apellidos") && value && !nombreApellidoRegex.test(value)) {
       alert("El nombre y apellido solo pueden contener letras.");
       return;
     }
 
-    // Validación de carnet (solo números)
-    if (name === "carnet" && value !== "" && !carnetRegex.test(value)) {
+    if (name === "carnet" && value && !carnetRegex.test(value)) {
       alert("El carnet solo puede contener números.");
       return;
     }
+    setForm({ ...form, [name]: value });
 
     // Actualizar el estado del formulario
     if (name === "departamento") {
@@ -95,10 +95,18 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
   };
 
   const handleAceptar = () => {
-    if (!form.nombre || !form.apellidos || !form.carnet || !form.correo || !form.fechaNacimiento || !form.curso || !form.departamento || !form.provincia || areasSeleccionadas.length === 0 || categoriasSeleccionadas.length === 0) {
+    const camposRequeridos = [
+      "nombre", "apellidos", "carnet", "correo", "fechaNacimiento",
+      "curso", "departamento", "provincia"
+    ];
+
+    const camposVacios = camposRequeridos.some((campo) => !form[campo]);
+
+    if (camposVacios || areasSeleccionadas.length === 0 || categoriasSeleccionadas.length === 0) {
       alert("Por favor completa todos los campos y selecciona un área de competencia.");
       return;
     }
+
     handleRegistrar(form);
   };
 
@@ -182,13 +190,13 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           </div>
         )}
       </div>
-
       {/* Botón para mostrar/ocultar área de competencia */}
       <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
 
       {/* Mostrar Área de Competencia si está activado */}
+
       {mostrarArea && (
         <div className="area-competencia-container">
           <AreaCompetencia
@@ -200,7 +208,6 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           />
         </div>
       )}
-
       {/* Botones de acción */}
       <div className="seccion-container">
         <div className="botones">
@@ -211,6 +218,13 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     </div>
   );
 }
+
 export default Registro;
+
+
+
+
+
+
 
 
