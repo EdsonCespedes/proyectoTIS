@@ -12,38 +12,42 @@ class ConvocatoriaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fechaPublicacion' => 'required|date',
-            'fechaInicioInsc'  => 'required|date',
-            'fechaFinInsc'     => 'required|date',
-            'portada'          => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'habilitada'       => 'required|boolean',
-            'fechaInicioOlimp' => 'required|date',
-            'fechaFinOlimp'    => 'required|date'
+            'titulo'            => 'nullable|string|max:45',
+            'descripcion'       => 'nullable|string|max:75',
+            'fechaPublicacion'  => 'required|date',
+            'fechaInicioInsc'   => 'required|date',
+            'fechaFinInsc'      => 'required|date',
+//            'portada'           => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'portada' => 'nullable|string',
+            'habilitada'        => 'required|boolean',
+            'fechaInicioOlimp'  => 'required|date',
+            'fechaFinOlimp'     => 'required|date',
+            'maximoPostCategoria' => 'nullable|integer'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        if ($request->hasFile('portada')) {
-            $path = $request->file('portada')->store('portadas', 'public');
-        } else {
-            $path = null;
-        }
+        $path = $request->hasFile('portada')
+            ? $request->file('portada')->store('portadas', 'public')
+            : null;
 
         $convocatoria = Convocatoria::create([
-            'fechaPublicacion' => $request->input('fechaPublicacion'),
-            'fechaInicioInsc'  => $request->input('fechaInicioInsc'),
-            'fechaFinInsc'     => $request->input('fechaFinInsc'),
-            'portada'          => $path,
-            'habilitada'       => $request->input('habilitada'),
-            'fechaInicioOlimp' => $request->input('fechaInicioOlimp'),
-            'fechaFinOlimp'    => $request->input('fechaFinOlimp'),
+            'titulo'              => $request->input('titulo'),
+            'descripcion'         => $request->input('descripcion'),
+            'fechaPublicacion'    => $request->input('fechaPublicacion'),
+            'fechaInicioInsc'     => $request->input('fechaInicioInsc'),
+            'fechaFinInsc'        => $request->input('fechaFinInsc'),
+            'portada'             => $path,
+            'habilitada'          => $request->input('habilitada'),
+            'fechaInicioOlimp'    => $request->input('fechaInicioOlimp'),
+            'fechaFinOlimp'       => $request->input('fechaFinOlimp'),
+            'maximoPostCategoria' => $request->input('maximoPostCategoria')
         ]);
 
         return response()->json([
             'message' => 'Convocatoria creada correctamente',
-            // 'convocatoria' => $convocatoria
             'convocatorias' => $convocatoria
         ], 201);
     }

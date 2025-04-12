@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('habilitada')->default(false);
             $table->dateTime('fechaInicioOlimp')->nullable();
             $table->dateTime('fechaFinOlimp')->nullable();
-            $table->integer('maximoPostPorArea')->nullable();
+            $table->integer('maximoPostCategoria')->nullable();
             $table->timestamps();
         });
     }
