@@ -13,7 +13,9 @@ class Curso extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Curso'
+        'nombreCurso', // Asegúrate de que estos campos existan
+        'descripcion',
+        'habilitado'
     ];
     public function categorias()
 {
