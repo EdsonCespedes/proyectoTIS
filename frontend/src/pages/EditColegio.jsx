@@ -166,9 +166,9 @@ const EditColegios = () => {
     };
 
     return (
-        <div className="contenedor">
+        <div className="contenedor-add-colegio">
             {/* <Header /> */}
-            <h3 className="title">UNIDAD EDUCATIVA</h3>
+            <h3 className="title-add-colegio">UNIDAD EDUCATIVA</h3>
             <form className="formulario" id="colegio-form">
                 <div className="campo">
                     <label>NOMBRE DE LA UNIDAD EDUCATIVA:</label>
@@ -217,10 +217,10 @@ const EditColegios = () => {
                 </div>
             </form>
             <div className="control">
-                <button type="submit" form="colegio-form" className="btn-blue">
-                    GUARDAR
+                <button type="submit" form="colegio-form" className="boton-style btn-aceptacion">
+                    Guardar
                 </button>
-                <Link to="/colegios" className="boton btn-red">CANCELAR</Link>
+                <Link to="/colegios" className="boton-style btn-rechazo">Cancelar</Link>
             </div>
         </div>
     );

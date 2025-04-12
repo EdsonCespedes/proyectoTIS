@@ -85,16 +85,16 @@ const InscripcionManual = () => {
                 <div>
                     <DetalleInscripcion estudiantes={estudiantes} onEliminar={handleEliminar} onEditar={handleEditar} />
                      <div className="control">
-                        <button className="boton btn-red" type="button" onClick={() => setRegistro(true)}>
-                            AÑADIR NUEVO
+                        <button className="boton-style btn-aceptacion" type="button" onClick={() => setRegistro(true)}>
+                            Añadir nuevo
                         </button>
                         <button 
-                            className="boton btn-blue" 
+                            className="boton-style btn-aceptacion" 
                             onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
                         >
-                        GUARDAR
+                        Guardar
                         </button>
-                             <Link to="/convocatorias" className="boton btn-red">CANCELAR</Link>
+                             <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
                      </div>
                 </div>
             )}
