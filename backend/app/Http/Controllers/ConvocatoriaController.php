@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ConvocatoriaController extends Controller
 {
-    //
+    //obtiene todas las convocatorias
     public function index(){
         $convocatorias = Convocatoria::all();
         return response()->json($convocatorias);
@@ -111,12 +111,32 @@ class ConvocatoriaController extends Controller
             return response()->json(['error' => 'Error al guardar: ' . $e->getMessage()], 500);
         }
     }
+
+
+
+
+
+
+
+
+
     
-    // Comparación de nombres flexible
-    private function compararNombres($curso, $categoriaNivel)
+
+    public function editarConvocatoria($idConvocatoria)
     {
-        return strtolower(trim($curso)) === strtolower(trim($categoriaNivel));
+        $convocatoria = Convocatoria::with([
+            'areas.categorias.cursos' 
+        ])->find($idConvocatoria);
+    
+        if (!$convocatoria) {
+            return response()->json(['message' => 'Convocatoria no encontrada'], 404);
+        }
+    
+        return response()->json($convocatoria);
     }
+     
+    
+
     
 
 }
