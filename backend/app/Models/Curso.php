@@ -13,6 +13,18 @@ class Curso extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Curso'
+        'nombreCurso', // Asegúrate de que estos campos existan
+        'descripcion',
+        'habilitado'
     ];
+    public function categorias()
+    {
+        return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'idArea');
+    }
+
 }

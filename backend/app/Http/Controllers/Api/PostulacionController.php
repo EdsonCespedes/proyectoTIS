@@ -8,6 +8,8 @@ use App\Models\Postulacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Colegio;
+use App\Models\Curso;
 
 class PostulacionController extends Controller
 {
@@ -18,7 +20,6 @@ class PostulacionController extends Controller
         DB::beginTransaction();
 
         try {
-            //Crear o reutiliza tutor
             $tutor = Tutor::create([
                 'nombreTutor' => 'Por definir',
                 'apellidoTutor' => 'Por definir',
@@ -27,7 +28,9 @@ class PostulacionController extends Controller
                 'fechaNaciTutor' => '1990-01-01'
             ]);
 
-            //Crear postulante
+            $idColegio = Colegio::buscarOCrearPorNombre($data['idColegio']);
+            $idCurso = Curso::buscarOCrearPorNombre($data['idCurso']);
+
             $postulante = Postulante::create([
                 'nombrePost'     => $data['nombrePost'],
                 'apellidoPost'   => $data['apellidoPost'],
@@ -38,14 +41,13 @@ class PostulacionController extends Controller
                 'departamento'   => $data['departamento'],
                 'provincia'      => $data['provincia'],
                 'idTutor'        => $tutor->idTutor,
-                'idColegio'      => $this->buscarOCrearColegio($data['idColegio']),
-                'idCurso'        => $this->buscarOCrearCurso($data['idCurso']),
+                'idColegio'      => $idColegio,
+                'idCurso'        => $idCurso,
             ]);
 
-            //Registrar postulaciones (categorías)
             foreach ($data['categorias'] as $categoria) {
                 Postulacion::create([
-                    'idCategoria' => $categoria['idCategoria'],
+                    'idCategoria'  => $categoria['idCategoria'],
                     'idPostulante' => $postulante->idPostulante
                 ]);
             }
@@ -57,8 +59,8 @@ class PostulacionController extends Controller
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
-
+    } 
+    
     private function buscarOCrearColegio($nombre)
     {
         return DB::table('colegio')->firstOrCreate(['nombreColegio' => $nombre])->idColegio;

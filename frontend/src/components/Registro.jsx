@@ -15,18 +15,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
   const [departamentos, setDepartamentos] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [provincias, setProvincias] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8000/api/verdepartamentos")
-      .then(response => response.json())
-      .then(data => setDepartamentos(data))
-      .catch(error => console.error("Error al obtener colegios:", error));
-
-    fetch("http://localhost:8000/api/vercursos")
-      .then(response => response.json())
-      .then(data => setCursos(data))
-      .catch(error => console.error("Error al obtener colegios:", error));
-  }, []);
+  const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   const [form, setForm] = useState({
     nombre: "",
@@ -59,7 +48,6 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     }
     setForm({ ...form, [name]: value });
 
-    // Actualizar el estado del formulario
     if (name === "departamento") {
       setForm({ ...form, departamento: value, provincia: "", colegio: "" });
       fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
@@ -114,7 +102,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
     <div className="registro-container">
       <div className="seccion-container">
         <div className="seccion">
-          <h2 className="subtitulo">Datos del Estudiante</h2>
+          <h2 className="subtitulo">Postulante</h2>
           <div className="grid-container">
             <input type="text" placeholder="Nombre(s)" name="nombre" onChange={handleChange} />
             <input type="text" placeholder="Apellido(s)" name="apellidos" onChange={handleChange} />
@@ -145,7 +133,6 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
           </div>
         </div>
 
-        {/* Recuadro para Departamento, Provincia y Colegio */}
         <div className="recuadro-container">
           <h3> </h3>
           <h3> Datos del Colegio </h3>
@@ -170,20 +157,20 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
                 {nombre}
               </option>
             ))}
-
           </select>
         </div>
 
-        {/* Áreas seleccionadas */}
         {areasSeleccionadas.length > 0 && (
           <div className="areas-seleccionadas">
             <h3>Áreas Seleccionadas:</h3>
             <ul>
               {areasSeleccionadas.map(({ idArea, tituloArea }) => (
                 <div key={idArea}>
-                  {categoriasSeleccionadas.filter((categoria) => categoria.idArea === idArea).map(({ idCategoria, nombreCategoria }) => (
-                    <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
-                  ))}
+                  {categoriasSeleccionadas
+                    .filter((categoria) => categoria.idArea === idArea)
+                    .map(({ idCategoria, nombreCategoria }) => (
+                      <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
+                    ))}
                 </div>
               ))}
             </ul>
@@ -210,6 +197,17 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
       )}
       {/* Botones de acción */}
       <div className="seccion-container">
+        <div className="seccion">
+          <h2 className="subtitulo">Tutor</h2>
+          <div className="grid-container">
+            <input type="text" placeholder="Nombre(s)" />
+            <input type="text" placeholder="Apellido(s)" />
+            <input type="text" placeholder="Teléfono" />
+            <input type="email" placeholder="Correo Electrónico" />
+            <input type="date" />
+          </div>
+        </div>
+
         <div className="botones">
           <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
           <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>

@@ -29,7 +29,7 @@ class PostulanteSeeder extends Seeder
                 'provincia'     => 'Cercado',
                 'idTutor'       => 1,
                 'idColegio'     => 1,
-                'idDelegacion'  => 1, 
+                'delegacion'  => 'delegacion 1',  
                 'idCurso'       => 1,
             ],
             [
@@ -43,7 +43,7 @@ class PostulanteSeeder extends Seeder
                 'provincia'     => 'Cercado',
                 'idTutor'       => 2, 
                 'idColegio'     => 2,  
-                'idDelegacion'  => 2, 
+                'delegacion'  => 'delegacion 2', 
                 'idCurso'       => 7, 
             ],
         ]);
