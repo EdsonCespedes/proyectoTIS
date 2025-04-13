@@ -21,5 +21,9 @@ class Curso extends Model
 {
     return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
 }
+public function area()
+{
+    return $this->belongsTo(Area::class, 'idArea');
+}
 
 }

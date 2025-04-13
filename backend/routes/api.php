@@ -2,16 +2,17 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\PostulanteControllerJ;
+use App\Http\Controllers\Api\PostulanteController;
 use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
-use App\Http\Controllers\Api\ConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
+use App\Http\Controllers\EstructuraConvocatoriaController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -78,7 +79,12 @@ Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
 
-// obtener areas y categorias de los cursos habilitados
 
-Route::get('/convocatoria/{id}/areas-categorias-cursos', [ConvocatoriaController::class, 'obtenerEstructura']);
 
+
+// obtener areas y categorias de los cursos habilitados mediante el nombre del curso
+
+Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
+
+//guarda Convocatoria junto con todos su datos
+Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
