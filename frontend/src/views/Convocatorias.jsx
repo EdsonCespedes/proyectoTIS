@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react'
+
 import "./styles/Disciplinas.css"
 import { useNavigate } from 'react-router-dom';
 
 const Convocatorias = () => {
     const navigate = useNavigate();
 
-    //Aqui va la logica para traer convocatorias
+
     // const convocatorias = [
     //     {
     //         idConvocatoria: 1,
@@ -53,6 +54,7 @@ const Convocatorias = () => {
                 .then(data => setConvocatorias(data))
                 .catch(error => console.error("Error al obtener convocatorias:", error));
         }, []);
+
 
     const handleInscripcion = (idConvocatoria) => {
         navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  

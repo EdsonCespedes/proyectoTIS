@@ -47,20 +47,22 @@ export const CrearConvForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Verificar que todos los campos obligatorios estén llenos
-    if (
-      !formData.titulo ||
-      !formData.descripcion ||
-      !formData.fechaInicioInscripcion ||
-      !formData.fechaCierreInscripcion ||
-      !formData.fechaInicioOlimpiada ||
-      !formData.fechaFinOlimpiada ||
-      !formData.imagenPortada
-    ) {
-      setError("Por favor, complete todos los campos obligatorios.");
-      return;
-    }
+    // // if (
+    // //   !formData.titulo ||
+    // //   !formData.descripcion ||
+    // //   !formData.fechaInicioInscripcion ||
+    // //   !formData.fechaCierreInscripcion ||
+    // //   !formData.fechaInicioOlimpiada ||
+    // //   !formData.fechaFinOlimpiada ||
+    // //   !formData.imagenPortada
+    // // ) {
+    // //   setError("Por favor, complete todos los campos obligatorios.");
+    // //   return;
+    // // }
 
-    setError(""); // Limpiar error si todo está correcto
+    // // setError(""); 
+    // // // Limpiar error si todo está correcto
+    
     console.log("Formulario enviado", formData);
     // Aquí podrías enviar los datos al backend o realizar otra acción
     const formDataToSend = new FormData();
@@ -108,9 +110,23 @@ export const CrearConvForm = () => {
       setError("Por favor, complete todos los campos obligatorios.");
       return;
     }
+    setError("");
+    if (
+      !formData.titulo ||
+      !formData.descripcion ||
+      !formData.fechaInicioInscripcion ||
+      !formData.fechaCierreInscripcion ||
+      !formData.fechaInicioOlimpiada ||
+      !formData.fechaFinOlimpiada ||
+      !formData.imagenPortada
+    ) {
+      setError("Por favor, complete todos los campos obligatorios.");
+      return;
+    }
 
     setError("");
     handleSubmit(e);
+    navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
     navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
   };
 
@@ -120,6 +136,8 @@ export const CrearConvForm = () => {
 
 
   return (
+    <div className="container-formconv">
+      <h3 className="title-add-convocatoria">Crear convocatoria</h3>
     <div className="container-formconv">
       <h3 className="title-add-convocatoria">Crear convocatoria</h3>
       <form className="convocatoria-form" onSubmit={handleSubmit}>
@@ -210,6 +228,8 @@ export const CrearConvForm = () => {
 
       </form>
       <div className="button-group">
+      </form>
+      <div className="button-group">
           <button type="submit" className="siguiente" onClick={handleSiguiente}>
             Siguiente
           </button>
@@ -218,6 +238,7 @@ export const CrearConvForm = () => {
           </button>
         </div>
     </div>
+    
     
   );
 };

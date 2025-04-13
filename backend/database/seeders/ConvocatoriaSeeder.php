@@ -19,6 +19,8 @@ class ConvocatoriaSeeder extends Seeder
     {
         DB::table('convocatoria')->insert([
             [
+                'titulo' => 'conv1',
+                'descripcion'  => 'descripcion 1',
                 'fechaPublicacion' => '2022-01-01',
                 'fechaInicioInsc'  => '2022-01-05',
                 'fechaFinInsc'     => '2022-01-20',
@@ -28,6 +30,8 @@ class ConvocatoriaSeeder extends Seeder
                 'fechaFinOlimp'    => '2022-02-10',
             ],
             [
+                'titulo' => 'conv2',
+                'descripcion'  => 'descripcion 2',
                 'fechaPublicacion' => Carbon::now()->subDays(10)->toDateString(),
                 'fechaInicioInsc'  => Carbon::now()->subDays(5)->toDateString(),
                 'fechaFinInsc'     => Carbon::now()->addDays(5)->toDateString(),
@@ -37,6 +41,8 @@ class ConvocatoriaSeeder extends Seeder
                 'fechaFinOlimp'    => Carbon::now()->addDays(20)->toDateString(),
             ],
              [
+                'titulo' => 'conv3',
+                'descripcion'  => 'descripcion 3',
                 'fechaPublicacion' => Carbon::now()->addDays(30)->toDateString(),
                 'fechaInicioInsc'  => Carbon::now()->addDays(35)->toDateString(),
                 'fechaFinInsc'     => Carbon::now()->addDays(45)->toDateString(),

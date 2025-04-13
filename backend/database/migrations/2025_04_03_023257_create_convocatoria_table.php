@@ -6,13 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('convocatoria', function (Blueprint $table) {
             $table->increments('idConvocatoria');
+
             $table->string('titulo', 45)->nullable();
             $table->string('descripcion', 75)->nullable();
             $table->dateTime('fechaPublicacion')->nullable();
@@ -23,13 +21,11 @@ return new class extends Migration
             $table->dateTime('fechaInicioOlimp')->nullable();
             $table->dateTime('fechaFinOlimp')->nullable();
             $table->integer('maximoPostPorArea')->nullable();
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('convocatoria');

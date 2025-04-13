@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveCursoFromPostulante extends Migration
+class DropAreaCategoria extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,7 @@ class RemoveCursoFromPostulante extends Migration
      */
     public function up()
     {
-        Schema::table('postulante', function (Blueprint $table) {
-            $table->dropColumn('curso');
-            //
-        });
+        Schema::dropIfExists('area_categoria');
     }
 
     /**
@@ -26,7 +23,7 @@ class RemoveCursoFromPostulante extends Migration
      */
     public function down()
     {
-        Schema::table('postulante', function (Blueprint $table) {
+        Schema::table('area_categoria', function (Blueprint $table) {
             //
         });
     }
