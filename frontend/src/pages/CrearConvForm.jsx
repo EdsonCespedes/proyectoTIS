@@ -106,7 +106,7 @@ export const CrearConvForm = () => {
 
 
   return (
-    <div className="container">
+    <div className="container-formconv">
       <h3 className="title-add-convocatoria">Crear convocatoria</h3>
       <form className="convocatoria-form" onSubmit={handleSubmit}>
         <label>Título:</label>
@@ -194,7 +194,8 @@ export const CrearConvForm = () => {
 
         {error && <p className="error-message">{error}</p>}
 
-        <div className="button-group">
+      </form>
+      <div className="button-group">
           <button type="submit" className="siguiente" onClick={handleSiguiente}>
             Siguiente
           </button>
@@ -202,8 +203,8 @@ export const CrearConvForm = () => {
             Cancelar
           </button>
         </div>
-      </form>
     </div>
+    
   );
 };
 

@@ -13,10 +13,10 @@ import InscripcionManual from "./pages/InscripcionManual";
 import Registro from "./components/Recibo";
 import EditarDesdeRuta from './components/EditarDesdeRuta';
 
-import Niveles from "./pages/Niveles";
 import OrdenPago from "./components/OrdenPago";
 import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
+import Area from "./pages/Area";
 
 
 function App() {
@@ -37,10 +37,10 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
         <Route path="/editar" element={<EditarDesdeRuta />} />
-        <Route path="/nivel" element={<Niveles />} />
         <Route path="/ordenPago" element={<OrdenPago />} />
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
+        <Route path="/area" element={<Area />} />
       </Routes>
     </div>
   )

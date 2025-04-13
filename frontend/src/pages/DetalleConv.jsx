@@ -25,8 +25,8 @@ const DetalleConv = () => {
   }, []);
 
   return (
-    <div className="container">
-      <h2>DETALLE DE CONVOCATORIAS</h2>
+    <div className="container-detalleCov">
+      <h2 className="title-detalleConv">Detalle de convocatorias</h2>
       <table className="convocatoria-table">
         <thead>
           <tr>
