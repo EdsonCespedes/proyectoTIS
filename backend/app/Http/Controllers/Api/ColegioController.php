@@ -86,4 +86,16 @@ class ColegioController extends Controller
           return response()->json($colegios);
 
     }
+
+    //obtiene los datos de un colegio por su id
+    public function muestraColegioconid($id)
+    {
+        $colegio = Colegio::find($id);
+
+        if (!$colegio) {
+            return response()->json(['message' => 'Colegio no encontrado'], 404);
+        }
+
+        return response()->json($colegio);
+    }
 }

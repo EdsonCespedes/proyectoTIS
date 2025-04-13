@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ConvocatoriaController extends Controller
 {
-    //
+    //obtiene todas las convocatorias
     public function index(){
         $convocatorias = Convocatoria::all();
         return response()->json($convocatorias);
@@ -55,16 +55,13 @@ class ConvocatoriaController extends Controller
     
             foreach ($request->input('areas') as $areaData) {
                 // Verifica si existe o crea el área (sin necesidad de usar idConvocatoria en el área)
-                $area = isset($areaData['idArea']) && Area::find($areaData['idArea'])
-                    ? Area::find($areaData['idArea'])
-                    : Area::firstOrCreate(
-                        ['tituloArea' => $areaData['tituloArea']],
-                        [
-                            'descArea' => $areaData['descArea'] ?? null,
-                            'habilitada' => $areaData['habilitada'] ?? true
-                        ]
-                    );
-    
+                $area = Area::firstOrCreate(
+                    ['tituloArea' => $areaData['tituloArea']], // Compara por el nombre del área
+                    [
+                        'descArea' => $areaData['descArea'] ?? null, // Si no se envía descripción, se deja null
+                        'habilitada' => $areaData['habilitada'] ?? true // Si no se indica habilitación, se pone true por defecto
+                    ]
+                );
                 // Insertar relación en tabla intermedia (evita duplicados)
                 DB::table('convocatoria_area')->updateOrInsert(
                     [
@@ -111,12 +108,32 @@ class ConvocatoriaController extends Controller
             return response()->json(['error' => 'Error al guardar: ' . $e->getMessage()], 500);
         }
     }
-    
-    // Comparación de nombres flexible
-    private function compararNombres($curso, $categoriaNivel)
+
+
+
+
+
+
+
+
+
+
+
+    public function editarConvocatoria($idConvocatoria)
     {
-        return strtolower(trim($curso)) === strtolower(trim($categoriaNivel));
+        $convocatoria = Convocatoria::with([
+            'areas.categorias.cursos' 
+        ])->find($idConvocatoria);
+    
+        if (!$convocatoria) {
+            return response()->json(['message' => 'Convocatoria no encontrada'], 404);
+        }
+    
+        return response()->json($convocatoria);
     }
+     
+    
+
     
 
 }
