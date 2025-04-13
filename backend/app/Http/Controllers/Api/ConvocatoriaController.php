@@ -6,6 +6,7 @@ use App\Models\Convocatoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ConvocatoriaController extends Controller
 {
@@ -19,20 +20,28 @@ class ConvocatoriaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'convocatoria.titulo' => 'required|string',
-            'convocatoria.fechaPublicacion' => 'required|date',
-            'convocatoria.fechaInicioInsc' => 'required|date',
-            'convocatoria.fechaFinInsc' => 'required|date',
-            'convocatoria.portada' => 'required|string',
-            'convocatoria.habilitada' => 'required|boolean',
-            'convocatoria.fechaInicioOlimp' => 'required|date',
-            'convocatoria.fechaFinOlimp' => 'required|date',
-            'convocatoria.maximoPostPorArea' => 'required|integer',
+            'titulo' => 'required|string',
+            'fechaPublicacion' => 'required|date',
+            'fechaInicioInsc' => 'required|date',
+            'fechaFinInsc' => 'required|date',
+            'portada' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'habilitada' => 'required|boolean',
+            'fechaInicioOlimp' => 'required|date',
+            'fechaFinOlimp' => 'required|date',
+            'maximoPostPorArea' => 'required|integer',
         ]);
     
         DB::beginTransaction();
+        
     
         try {
+
+            if ($request->hasFile('portada')) {
+                $portadaPath = $request->file('portada')->store('portadas', 'public');
+            } else {
+                $portadaPath = null;  
+            }
+
             $convocatoriaData = $request->has('convocatoria')
                 ? $request->input('convocatoria')
                 : $request->only([
@@ -41,12 +50,13 @@ class ConvocatoriaController extends Controller
                     'fechaPublicacion',
                     'fechaInicioInsc',
                     'fechaFinInsc',
-                    'portada',
                     'habilitada',
                     'fechaInicioOlimp',
                     'fechaFinOlimp',
                     'maximoPostPorArea'
                 ]);
+                
+                $convocatoriaData['portada'] = $portadaPath;
     
             $conv = Convocatoria::create($convocatoriaData);
     
