@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\PostulanteControllerJ;
+use App\Http\Controllers\Api\PostulanteController;
 use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\ConvocatoriaController;

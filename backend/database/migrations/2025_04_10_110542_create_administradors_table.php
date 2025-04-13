@@ -13,7 +13,7 @@ class CreateAdministradorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('administradors', function (Blueprint $table) {
+        Schema::create('administrador', function (Blueprint $table) {
             $table->integer('idAdmin')->primary(); // clave primaria personalizada
             $table->bigInteger('new_column')->nullable();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateAdministradorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('administradors');
+        Schema::dropIfExists('administrador');
     }
 }

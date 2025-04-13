@@ -18,10 +18,9 @@ class CategoriaSeeder extends Seeder
         $areas = DB::table('area')->get();
 
         foreach ($areas as $area) {
-            Log::info('Area data: ' . json_encode($area)); // Verifica los datos del área
+            Log::info('Area data: ' . json_encode($area)); 
             Log::info("Processing area: " . $area->tituloArea);
 
-            // Verifica si el título del área es corecto
             Log::info('Checking area: ' . $area->tituloArea);
 
             if (in_array($area->tituloArea, ['Matematicas', 'Fisica', 'Quimica', 'Biologia'])) {

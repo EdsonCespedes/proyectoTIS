@@ -15,7 +15,7 @@ class CreatePagoTable extends Migration
     {
         Schema::create('pago', function (Blueprint $table) {
             $table->increments('idPago');
-           
+            $table->integer('idAdmin');
             $table->unsignedInteger ('idOrdenPago');
             $table->foreign('idOrdenPago')->references('idOrdenPago')->on('ordenpago');
             

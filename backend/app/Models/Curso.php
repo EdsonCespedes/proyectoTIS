@@ -16,8 +16,13 @@ class Curso extends Model
         'Curso'
     ];
     public function categorias()
-{
-    return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
-}
+    {
+        return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
+    }
+
+    public static function buscarOCrearPorNombre($nombre)
+    {
+        return self::firstOrCreate(['Curso' => $nombre])->idCurso;
+    }
 
 }

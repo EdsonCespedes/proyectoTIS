@@ -13,7 +13,6 @@ class ColegioSeeder extends Seeder
     public function run(): void
     {
 
-        // Insertar datos en la tabla "colegios"
         Colegio::firstOrcreate([
             'nombreColegio' => 'Nacional',
             'departamento' => 'Cochabamba',
