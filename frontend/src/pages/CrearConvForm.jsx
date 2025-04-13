@@ -96,8 +96,22 @@ export const CrearConvForm = () => {
   };
 
   const handleSiguiente = (e) => {
+    if (
+      !formData.titulo ||
+      !formData.descripcion ||
+      !formData.fechaInicioInscripcion ||
+      !formData.fechaCierreInscripcion ||
+      !formData.fechaInicioOlimpiada ||
+      !formData.fechaFinOlimpiada ||
+      !formData.imagenPortada
+    ) {
+      setError("Por favor, complete todos los campos obligatorios.");
+      return;
+    }
+
+    setError("");
     handleSubmit(e);
-    navigate("/nivel"); // Asegúrate de que esta ruta coincida con tu configuración
+    navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
   };
 
   const handleCancelar = () => {
