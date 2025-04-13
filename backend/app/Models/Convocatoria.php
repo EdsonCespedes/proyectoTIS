@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Convocatoria extends Model
 {
-    // protected $table = 'convocatoria';
     protected $table = 'convocatoria';
     protected $primaryKey = 'idConvocatoria';
     public $timestamps = false;
@@ -25,9 +24,15 @@ class Convocatoria extends Model
         'maximoPostPorArea'
     ];
 
+    // Relación CORREGIDA (usa belongsToMany si es tabla pivote)
     public function areas()
     {
-        return $this->belongsToMany(Area::class, 'convocatoria_area', 'idConvocatoria', 'idArea');
+        return $this->belongsToMany(Area::class, 'convocatoria_area', 'idConvocatoria', 'idArea')
+                    ->where('habilitada', true);
     }
-    
+    public function cursos()
+{
+    return $this->hasMany(Curso::class, 'idConvocatoria');
+}
+
 }

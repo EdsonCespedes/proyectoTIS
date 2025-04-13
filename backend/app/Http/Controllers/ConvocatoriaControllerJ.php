@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Models\Convocatoria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Area;
+use App\Models\Categoria;
+use App\Models\Curso;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ConvocatoriaController extends Controller
 {
@@ -114,4 +117,6 @@ class ConvocatoriaController extends Controller
     {
         return strtolower(trim($curso)) === strtolower(trim($categoriaNivel));
     }
+    
+
 }
