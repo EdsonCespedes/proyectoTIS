@@ -13,16 +13,18 @@ class Curso extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Curso'
+        'nombreCurso', // Asegúrate de que estos campos existan
+        'descripcion',
+        'habilitado'
     ];
     public function categorias()
     {
         return $this->belongsToMany(Categoria::class, 'categoria_curso', 'idCurso', 'idCategoria');
     }
 
-    public static function buscarOCrearPorNombre($nombre)
+    public function area()
     {
-        return self::firstOrCreate(['Curso' => $nombre])->idCurso;
+        return $this->belongsTo(Area::class, 'idArea');
     }
 
 }

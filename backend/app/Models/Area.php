@@ -26,4 +26,5 @@ class Area extends Model
     return $this->belongsTo(Convocatoria::class, 'idConvocatoria');
 }
 
+
 }

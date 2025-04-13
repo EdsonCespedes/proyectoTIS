@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CategoriaCurso extends Pivot
+class ConvocatoriaArea extends Pivot
 {
-    protected $table = 'categoria_curso';
+    protected $table = 'convocatoria_area';
     public $timestamps = false;
 
     protected $fillable = [
-        'idCategoria',
-        'idCurso'
+        'idConvocatoria',
+        'idArea'
     ];
 }
