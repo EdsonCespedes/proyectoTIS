@@ -15,7 +15,7 @@ const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSelecci
   const [departamentos, setDepartamentos] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [provincias, setProvincias] = useState([]);
-  const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
+  // const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   const [form, setForm] = useState({
     nombre: "",
