@@ -120,6 +120,15 @@ class PostulanteController extends Controller
                         'maxPost'         => $categoriaItem['maxPost'] ?? 0,
                     ]);
                 }
+
+                // Verifica que no se supere el límite de postulaciones por categoría:
+                    $inscriptos = DB::table('postulacion')
+                    ->where('idCategoria', $categoriaItem['idCategoria'])
+                    ->count();
+                if ($inscriptos >= $categoriaExists->maxPost) {
+                throw new \Exception("La categoría '{$categoriaItem['nombreCategoria']}' ya alcanzó el máximo de postulaciones ({$categoriaExists->maxPost}).");
+                }
+
                 // Categoría a Curso en categoria_curso
                 $existsCatCurso = DB::table('categoria_curso')
                     ->where('idCategoria', $categoriaItem['idCategoria'])
