@@ -3,6 +3,9 @@ import "./styles/Convocatoria.css";
 import ImageUpload from "../components/ImageUpload";
 import { useNavigate } from "react-router-dom";
 
+import { useContext } from "react";
+import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
+
 
 export const CrearConvForm = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +16,8 @@ export const CrearConvForm = () => {
     fechaInicioOlimpiada: "",
     fechaFinOlimpiada: "",
     imagenPortada: null,
-    maxConcursantes: [],
+    // maxConcursantes: [],
+    maxConcursantes: 0,
     maxArea: [],
   });
 
@@ -24,6 +28,7 @@ export const CrearConvForm = () => {
   const today = new Date().toISOString().split("T")[0];
   const navigate = useNavigate();
 
+  const { agregarConvocatoria } = useContext(ConvocatoriaContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,59 +49,6 @@ export const CrearConvForm = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Verificar que todos los campos obligatorios estén llenos
-    // // if (
-    // //   !formData.titulo ||
-    // //   !formData.descripcion ||
-    // //   !formData.fechaInicioInscripcion ||
-    // //   !formData.fechaCierreInscripcion ||
-    // //   !formData.fechaInicioOlimpiada ||
-    // //   !formData.fechaFinOlimpiada ||
-    // //   !formData.imagenPortada
-    // // ) {
-    // //   setError("Por favor, complete todos los campos obligatorios.");
-    // //   return;
-    // // }
-
-    // // setError(""); 
-    // // // Limpiar error si todo está correcto
-    
-    console.log("Formulario enviado", formData);
-    // Aquí podrías enviar los datos al backend o realizar otra acción
-    const formDataToSend = new FormData();
-    formDataToSend.append("fechaPublicacion", new Date().toISOString().split("T")[0]); // o usa otro valor si es manual
-    formDataToSend.append("fechaInicioInsc", formData.fechaInicioInscripcion);
-    formDataToSend.append("fechaFinInsc", formData.fechaCierreInscripcion);
-    formDataToSend.append("fechaInicioOlimp", formData.fechaInicioOlimpiada);
-    formDataToSend.append("fechaFinOlimp", formData.fechaFinOlimpiada);
-    formDataToSend.append("habilitada", 1); // o false, según tu lógica
-    formDataToSend.append("portada", formData.imagenPortada);
-
-    try {
-      const response = await fetch("http://localhost:8000/api/convocatorias", {
-        method: "POST",
-        body: formDataToSend, // sin headers aquí
-      });
-
-      // if (!response.ok) throw new Error("Error al enviar datos");
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Errores de validación:", errorData.errors);
-        throw new Error("Error en la validación");
-      }
-
-      const result = await response.json();
-      console.log("Convocatoria creada:", result);
-      // redirige o limpia formulario aquí
-    } catch (error) {
-      console.error("Error en el envío:", error);
-      alert("Ocurrió un error al guardar la convocatoria.");
-    }
-
-  };
-
   const handleSiguiente = (e) => {
     if (
       !formData.titulo ||
@@ -111,22 +63,18 @@ export const CrearConvForm = () => {
       return;
     }
     setError("");
-    if (
-      !formData.titulo ||
-      !formData.descripcion ||
-      !formData.fechaInicioInscripcion ||
-      !formData.fechaCierreInscripcion ||
-      !formData.fechaInicioOlimpiada ||
-      !formData.fechaFinOlimpiada ||
-      !formData.imagenPortada
-    ) {
-      setError("Por favor, complete todos los campos obligatorios.");
-      return;
-    }
-
-    setError("");
-    handleSubmit(e);
-    navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
+    //handleSubmit(e);
+    agregarConvocatoria({
+      titulo: formData.titulo,
+      fechaPublicacion: new Date().toISOString().split("T")[0],
+      fechaInicioInsc: formData.fechaInicioInscripcion,
+      fechaFinInsc: formData.fechaCierreInscripcion,
+      portada: formData.imagenPortada,
+      habilitada: true,
+      fechaInicioOlimp: formData.fechaInicioOlimpiada,
+      fechaFinOlimp: formData.fechaFinOlimpiada,
+      maximoPostPorArea: formData.maxConcursantes,
+    });
     navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
   };
 
@@ -138,9 +86,7 @@ export const CrearConvForm = () => {
   return (
     <div className="container-formconv">
       <h3 className="title-add-convocatoria">Crear convocatoria</h3>
-    <div className="container-formconv">
-      <h3 className="title-add-convocatoria">Crear convocatoria</h3>
-      <form className="convocatoria-form" onSubmit={handleSubmit}>
+      <form className="convocatoria-form">
         <label>Título:</label>
         <input
           type="text"
@@ -203,43 +149,38 @@ export const CrearConvForm = () => {
         <label>Máximo de inscripción por categoría{/*área*/}:</label>
         <input
           type="number"
-          name="maxArea"
-          value={formData.maxArea}
-          onChange={(e) => {
-            if (e.target.value.length <= 6) {
-              handleChange(e);
-            }
-          }}
+          name="maxConcursantes"
+          value={formData.maxConcursantes}
+          onChange={handleChange}
           className="input-field"
         />
-        
-        <ul className="area-list">
+
+        {/* <ul className="area-list">
           {formData.maxConcursantes.map((item, index) => (
             <li key={index}>
               {item.area}: {item.max} postulantes
             </li>
           ))}
-        </ul>
+        </ul> */}
 
         <label>Imagen de portada:</label>
         <ImageUpload onFileSelect={handleFileChange} />
 
         {error && <p className="error-message">{error}</p>}
 
+
       </form>
       <div className="button-group">
-      </form>
-      <div className="button-group">
-          <button type="submit" className="siguiente" onClick={handleSiguiente}>
-            Siguiente
-          </button>
-          <button type="button" className="cancelar" onClick={handleCancelar}>
-            Cancelar
-          </button>
-        </div>
+        <button type="submit" className="siguiente" onClick={handleSiguiente}>
+          Siguiente
+        </button>
+        <button type="button" className="cancelar" onClick={handleCancelar}>
+          Cancelar
+        </button>
+      </div>
     </div>
-    
-    
+
+
   );
 };
 

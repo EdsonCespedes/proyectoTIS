@@ -64,13 +64,13 @@ Route::post('/colegios', [ColegioController::class, 'store']);
 Route::post('/cursos', [CursoController::class, 'store']);
 
 //Crear Convocatoria
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
 
 //Crear Categoría
-Route::post('/categorias', [CategoriaController::class, 'store']);
+//Route::post('/categorias', [CategoriaController::class, 'store']);
 
 Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
     // $convocatorias = DB::table('convocatoria')->get();

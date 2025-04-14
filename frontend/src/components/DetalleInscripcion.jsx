@@ -26,7 +26,7 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                     <tbody>
                         {currentEstudiantes.map((estudiante, index) => (
                             <tr key={index}>
-                                <td>{estudiante.nombre} {estudiante.apellidos}</td>
+                                <td>{estudiante.nombrePost} {estudiante.apellidoPost}</td>
                                 <td>
                                     {estudiante.areas.map((area, index) => (
                                         <React.Fragment key={area.idArea}>

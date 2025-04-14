@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/Area.css";
+import { useNavigate } from "react-router-dom";
+
+import { useContext } from "react";
+import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
 
 const Area = () => {
-  const [areas, setAreas] = useState(["Matemáticas", "Física", "Química", "Biología", "Informática", "Robótica"]);
+  const [areas, setAreas] = useState([
+    // "Matemáticas", "Física", "Química", "Biología", "Informática", "Robótica"
+  ]);
+  const [areaDescriptions, setAreaDescriptions] = useState({});
   const [selectedArea, setSelectedArea] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newArea, setNewArea] = useState("");
+  const [newDescription, setNewDescription] = useState("");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [areaCategories, setAreaCategories] = useState({});
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -13,18 +21,49 @@ const Area = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editInput, setEditInput] = useState("");
   const [activeCards, setActiveCards] = useState([]);
+  const [customCategoryName, setCustomCategoryName] = useState("");
+  const [customCategoryDescription, setCustomCategoryDescription] = useState("");
+  const navigate = useNavigate();
 
-  const categoryOptions = [
-    "1ro Primaria", "1ro Secundaria", "2do Primaria", "2do Secundaria",
-    "3ro Primaria",  "3ero Secundaria", "4to Primaria","4to Secundaria", 
-    "5to Primaria", "5to Secundaria","6to Primaria",  "6to Secundaria"
-    
-  ];
+  const { convocatoria } = useContext(ConvocatoriaContext);
+
+  // const categoryOptions = [
+  //   "1° Primaria", "1° Secundaria", "2° Primaria", "2° Secundaria",
+  //   "3° Primaria", "3° Secundaria", "4° Primaria", "4° Secundaria",
+  //   "5° Primaria", "5° Secundaria", "6° Primaria", "6° Secundaria"
+  // ];
+
+  const [categoryOptions, setCategoryOptions] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/areas")
+      .then(response => response.json())
+      // .then(data => setAreas(data))
+      .then((data) => {
+        const nombres = data.map(area => area.tituloArea);
+        setAreas(nombres); // ← aquí solo guardamos los títulos
+      })
+      .catch(error => console.error("Error al obtener colegios:", error));
+
+    fetch("http://localhost:8000/api/vercursos")
+      .then(response => response.json())
+      // .then(data => setAreas(data))
+      .then((data) => {
+        const nombres = data.map(curso => curso.Curso);
+        setCategoryOptions(nombres); // ← aquí solo guardamos los títulos
+      })
+      .catch(error => console.error("Error al obtener colegios:", error));
+  }, []);
 
   const handleAddArea = () => {
     if (newArea && !areas.includes(newArea)) {
       setAreas([...areas, newArea]);
+      setAreaDescriptions({
+        ...areaDescriptions,
+        [newArea]: newDescription,
+      });
       setNewArea("");
+      setNewDescription("");
       setShowModal(false);
     }
   };
@@ -56,10 +95,25 @@ const Area = () => {
   };
 
   const handleSaveCategories = () => {
+    const allCategories = [...(areaCategories[selectedArea] || [])];
+    // const allCategories = [...selectedCategories];
+    if (customCategoryName) {
+      //allCategories.push(`${customCategoryName} - ${customCategoryDescription}`);
+      allCategories.push({
+        name: customCategoryName,
+        description: customCategoryDescription,
+        levels: [...selectedCategories]
+      });
+    }
+
     setAreaCategories({
       ...areaCategories,
-      [selectedArea]: selectedCategories,
+      [selectedArea]: allCategories,
     });
+
+    setCustomCategoryName("");
+    setCustomCategoryDescription("");
+    setSelectedCategories([]);
     setShowCategoryModal(false);
     setSelectedArea("");
   };
@@ -73,11 +127,75 @@ const Area = () => {
   };
 
   const openCategoryModal = (area) => {
-    const current = areaCategories[area] || [];
+    //const current = areaCategories[area] || [];
     setSelectedArea(area);
-    setSelectedCategories(current); // mantener selección anterior
+    //setSelectedCategories(current);
+    setSelectedCategories([]);
+    setCustomCategoryName("");
+    setCustomCategoryDescription("");
     setShowCategoryModal(true);
   };
+
+  const generarJSONFinal = () => {
+    const jsonFinal = {
+      convocatoria,
+      areas: activeCards.map(area => ({
+        tituloArea: editedCardNames[area] || area,
+        descArea: areaDescriptions[area] || "",
+        habilitada: true,
+        categorias: (areaCategories[area] || []).map(cat => ({
+          nombreCategoria: cat.name,
+          descCategoria: (cat.levels || []).join(", ") // niveles como texto en descCategoria
+        }))
+      }))
+    };
+
+    console.log("JSON Final:", JSON.stringify(jsonFinal, null, 2));
+    return jsonFinal;
+  };
+
+  const handleMostrarJSON = () => {
+    generarJSONFinal();
+    alert('Revisa la consola (F12) para ver el JSON generado.');
+  };
+
+  const handlePublicar = async (e) => {
+    e.preventDefault();
+    const jsonFinal = generarJSONFinal();
+
+    try {
+      const response = await fetch('http://localhost:8000/api/convocatorias', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonFinal)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('Convocatoria publicada con éxito');
+        console.log('Respuesta del servidor:', data);
+      } else {
+        const errorData = await response.json();
+        alert('Error al publicar: ' + errorData.message);
+        console.error('Error al publicar:', errorData);
+      }
+    } catch (error) {
+      alert('Error de conexión con el servidor');
+      console.error('Error de red:', error);
+    }
+  };
+
+  const handleSiguiente = (e) => {
+    handlePublicar(e);
+    navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
+  };
+
+  const handleCancelar = () => {
+    navigate("/detalle-convocatoria");
+  };
+
 
   return (
     <div className="container-Area">
@@ -100,15 +218,27 @@ const Area = () => {
           <div className="area-card" key={area}>
             {isEditing && selectedArea === area ? (
               <div>
-                <input 
+                <input
                   value={editInput}
                   onChange={(e) => setEditInput(e.target.value)}
+                  placeholder="Nuevo nombre del área"
+                />
+                <input
+                  value={areaDescriptions[area]}
+                  onChange={(e) =>
+                    setAreaDescriptions({
+                      ...areaDescriptions,
+                      [area]: e.target.value
+                    })
+                  }
+                  placeholder="Editar descripción"
                 />
                 <button onClick={handleSaveEdit}>Guardar</button>
               </div>
             ) : (
               <>
                 <h3>{editedCardNames[area] || area}</h3>
+                <p><strong>Descripción:</strong> {areaDescriptions[area] || "Sin descripción"}</p>
                 <div className="button-group">
                   <button className="edit-button" onClick={() => handleEditCard(area)}>Editar</button>
                   <button className="delete-button" onClick={() => handleDeleteCard(area)}>Eliminar</button>
@@ -120,38 +250,58 @@ const Area = () => {
             {areaCategories[area]?.length > 0 && (
               <div className="category-list">
                 <h4>Categorías:</h4>
-                <ul>
-                  {areaCategories[area].map((cat) => (
-                    <li key={cat}>{cat}</li>
-                  ))}
-                </ul>
+                {areaCategories[area].map((cat, i) => (
+                  <div key={i} className="category-item">
+                    <strong>{cat.name}</strong> - {cat.description}
+                    <ul>
+                      {cat.levels.map((lvl, idx) => (
+                        <li key={idx}>{lvl}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         ))}
       </div>
 
+      {/* Modal para nueva área */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-button" onClick={() => setShowModal(false)}>✖</button>
             <h3>Agregar Nueva Área</h3>
-            <input 
-              type="text" 
-              placeholder="Nombre del Área" 
-              value={newArea} 
-              onChange={(e) => setNewArea(e.target.value)} 
+            <input
+              type="text"
+              placeholder="Nombre del Área"
+              value={newArea}
+              onChange={(e) => setNewArea(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Descripción del Área"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
             />
             <button className="save-button" onClick={handleAddArea}>Guardar</button>
           </div>
         </div>
       )}
 
+      {/* Modal para categorías */}
       {showCategoryModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-button" onClick={() => setShowCategoryModal(false)}>✖</button>
-            <h3>Selecciona Categorías</h3>
+            <h3>Agregar Categorías</h3>
+            <input
+              type="text"
+              placeholder="Nombre de categoría"
+              value={customCategoryName}
+              onChange={(e) => setCustomCategoryName(e.target.value)}
+            />
+            <label>Descripción</label>
             <div className="checkbox-grid">
               {categoryOptions.map((category) => (
                 <label key={category} className="checkbox-item">
@@ -168,9 +318,21 @@ const Area = () => {
           </div>
         </div>
       )}
+      <div className="button-group">
+        <button type="submit" className="siguiente" onClick={handleSiguiente}>
+          Publicar
+        </button>
+        <button type="button" className="cancelar" onClick={handleCancelar}>
+          Cancelar
+        </button>
+        <button
+          onClick={handleMostrarJSON}
+          className="boton"
+        >Mostrar JSON</button>
+      </div>
     </div>
+
   );
 };
 
 export default Area;
-

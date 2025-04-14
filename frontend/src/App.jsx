@@ -14,7 +14,7 @@ import Convocatorias from "./views/Convocatorias";
 import TipoInscripcion from "./pages/TipoInscripcion";
 import InscripcionManual from "./pages/InscripcionManual";
 import Registro from "./components/Recibo";
-import EditarDesdeRuta from './components/EditarDesdeRuta';
+//import EditarDesdeRuta from './components/EditarDesdeRuta';
 
 import OrdenPago from "./components/OrdenPago";
 import Recibo from "./components/Recibo";
@@ -41,7 +41,7 @@ function App() {
         <Route path="/convocatorias" element={<Convocatorias />} />
         <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
-        <Route path="/editar" element={<EditarDesdeRuta />} />
+        {/* <Route path="/editar" element={<EditarDesdeRuta />} /> */}
         <Route path="/ordenPago" element={<OrdenPago />} />
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
