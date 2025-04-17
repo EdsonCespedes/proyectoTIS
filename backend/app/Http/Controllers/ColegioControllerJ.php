@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Colegio;
 
-class ColegioControllerJ extends Controller
+class ColegioController extends Controller
 {
     public function index() //obtiene 
     {
@@ -15,8 +15,22 @@ class ColegioControllerJ extends Controller
 
     public function store(Request $request) //guarda
     {
-        $colegio = Colegio::create($request->all());
-        return response()->json($colegio, 201);
+        $validated = $request->validate([
+            'nombreColegio' => 'required|string',
+            'departamento' => 'required|string',
+            'provincia' => 'required|string',
+            'RUE' => 'required|string',
+            'direccion' => 'required|string',
+            'fecha_creacion' => 'required|date',
+        ]);
+    
+        $colegio = Colegio::create($validated);
+    
+        return response()->json([
+            'message' => 'Colegio registrado correctamente',
+            'data' => $colegio
+        ], 201);
+    
     }
 
     public function getDepartamentos()
@@ -53,4 +67,19 @@ class ColegioControllerJ extends Controller
           return response()->json($colegios);
 
     }
+
+
+    //obtiene los datos de un colegio por su id
+    public function muestraColegioconid($id)
+    {
+        $colegio = Colegio::find($id);
+
+        if (!$colegio) {
+            return response()->json(['message' => 'Colegio no encontrado'], 404);
+        }
+
+        return response()->json($colegio);
+    }
+
+
 }

@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
-
-
-const DetalleInscripcion = ({ estudiantes, onEliminar, onEditar }) => {
-    console.log("Estudiantes actuales:", estudiantes); // Verifica que se pase el estado actualizado
-
+const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
 
+    console.log(estudiantes);
 
     const startIndex = currentPage * itemsPerPage;
     const currentEstudiantes = estudiantes.slice(startIndex, startIndex + itemsPerPage);
@@ -29,7 +26,7 @@ const DetalleInscripcion = ({ estudiantes, onEliminar, onEditar }) => {
                     <tbody>
                         {currentEstudiantes.map((estudiante, index) => (
                             <tr key={index}>
-                                <td>{estudiante.nombre} {estudiante.apellidos}</td>
+                                <td>{estudiante.nombrePost} {estudiante.apellidoPost}</td>
                                 <td>
                                     {estudiante.areas.map((area, index) => (
                                         <React.Fragment key={area.idArea}>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
+use App\Http\Controllers\EstructuraConvocatoriaController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -57,17 +58,19 @@ Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
 //Crear Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
 
+
+
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
 
 //Crear Convocatoria
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
 
 //Crear Categoría
-Route::post('/categorias', [CategoriaController::class, 'store']);
+//Route::post('/categorias', [CategoriaController::class, 'store']);
 
 Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
     // $convocatorias = DB::table('convocatoria')->get();
@@ -75,3 +78,13 @@ Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
     // });
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
+
+
+
+
+// obtener areas y categorias de los cursos habilitados mediante el nombre del curso
+
+Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
+
+//guarda Convocatoria junto con todos su datos
+Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);

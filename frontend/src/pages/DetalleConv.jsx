@@ -25,8 +25,8 @@ const DetalleConv = () => {
   }, []);
 
   return (
-    <div className="container">
-      <h2>DETALLE DE CONVOCATORIAS</h2>
+    <div className="container-detalleCov">
+      <h2 className="title-detalleConv">Detalle de convocatorias</h2>
       <table className="convocatoria-table">
         <thead>
           <tr>
@@ -62,12 +62,12 @@ const DetalleConv = () => {
           ))} */}
           {convocatorias.map((convocatoria) => (
             <tr key={convocatoria.idConvocatoria}>
-              <td>Titulo {convocatoria.titulo == null ? convocatoria.idConvocatoria : convocatoria.titulo}</td>
+              <td>{convocatoria.titulo}</td>
               <td>{convocatoria.fechaInicioInsc} - {convocatoria.fechaFinInsc}</td>
               <td>{convocatoria.fechaInicioOlimp} - {convocatoria.fechaFinOlimp}</td>
               <td>
-                <span className={`estado ${convocatoria.activo === 0 ? "rojo" : "verde"}`}>
-                  {convocatoria.activo === 0 ? "Inactivo" : "Activo"}
+                <span className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"}`}>
+                  {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
                 </span>
               </td>
               <td>

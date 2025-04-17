@@ -24,12 +24,12 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             CategoriaSeeder::class,
             ConvocatoriaAreaSeeder::class,
-            AreaCategoriaSeeder::class,
+            CategoriaCursoSeeder::class,
+            //AreaCategoriaSeeder::class,
             TutorSeeder::class,
-            DelegacionSeeder::class,
+            //DelegacionSeeder::class,
             PostulanteSeeder::class,
-            PostulacionSeeder::class,
-            CategoriaCursoSeeder::class
+            PostulacionSeeder::class
         ]);
     }
 }

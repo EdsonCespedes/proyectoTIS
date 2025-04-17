@@ -15,6 +15,7 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     overflow: hidden;
+    /* box-sizing: border-box; */
 }
 
 /* Encabezado principal */
@@ -107,6 +108,7 @@ input, select {
 
 /* Botones anteriores (si decides usarlos también) */
 .btn-competencia {
+    margin: 0 20px;
     background: #1e40af;
     color: white;
 }

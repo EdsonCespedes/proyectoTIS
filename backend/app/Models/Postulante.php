@@ -23,7 +23,7 @@ class Postulante extends Model
         'provincia',
         'idTutor',
         'idColegio',
-        'idDelegacion',
+        'delegacion',
         'idCurso',
     ];
 
@@ -39,7 +39,7 @@ class Postulante extends Model
 
     public function delegacion()
     {
-        return $this->belongsTo(Delegacion::class, 'idDelegacion');
+        return $this->belongsTo(Delegacion::class, 'delegacion');
     }
 
     public function curso()

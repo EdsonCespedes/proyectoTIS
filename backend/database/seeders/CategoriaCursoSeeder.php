@@ -14,13 +14,11 @@ class CategoriaCursoSeeder extends Seeder
      */
     public function run()
     {
-        // Obtener todas las categorías y cursos
         $categorias = DB::table('categoria')->get();
         $cursos = DB::table('curso')->get();
 
         foreach ($categorias as $categoria) {
             foreach ($cursos as $curso) {
-                // Aquí puedes personalizar las relaciones entre cursos y categorías
                 DB::table('categoria_curso')->insert([
                     'idCategoria' => $categoria->idCategoria,
                     'idCurso'     => $curso->idCurso,

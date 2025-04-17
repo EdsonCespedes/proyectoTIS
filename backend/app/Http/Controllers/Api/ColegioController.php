@@ -16,6 +16,9 @@ class ColegioController extends Controller
             'nombreColegio' => 'required|string|max:45|unique:colegio,nombreColegio',
             'departamento'  => 'required|string|max:45',
             'provincia'     => 'required|string|max:45',
+            'RUE' => 'required|string',
+            'direccion' => 'required|string',
+            'fecha_creacion' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -25,7 +28,10 @@ class ColegioController extends Controller
         $colegio = Colegio::create($request->only([
             'nombreColegio',
             'departamento',
-            'provincia'
+            'provincia',
+            'RUE',
+            'direccion',
+            'fecha_creacion'
         ]));
 
         return response()->json([
@@ -79,5 +85,17 @@ class ColegioController extends Controller
           ->pluck('nombreColegio','idColegio'); //pluck hace que salga directamente los datos sin el nombre de su atributo si lo quitas saldra el nombre del atributo
           return response()->json($colegios);
 
+    }
+
+    //obtiene los datos de un colegio por su id
+    public function muestraColegioconid($id)
+    {
+        $colegio = Colegio::find($id);
+
+        if (!$colegio) {
+            return response()->json(['message' => 'Colegio no encontrado'], 404);
+        }
+
+        return response()->json($colegio);
     }
 }
