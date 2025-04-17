@@ -3,7 +3,7 @@ import "./styles/Registro.css";
 import AreaCompetencia from "./AreaCompetencia";
 import { useNavigate } from "react-router-dom";
 
-const nombreApellidoRegex = /^[A-Za-z\s]+$/;
+const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const carnetRegex = /^[0-9]+$/;
 
 const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
@@ -224,6 +224,9 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     console.log(areasSeleccionadas);
     console.log(categoriasSeleccionadas);
   };
+  const handleCancelar = (idConvocatoria) => {
+    navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  
+};
 
   return (
     <div className="registro-container">
@@ -372,7 +375,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
 
         <div className="botones">
           <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
-          <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
+          <button className="boton btn-red" onClick={handleCancelar}>Cancelar</button>
         </div>
       </div>
     </div>

@@ -132,23 +132,12 @@ const InscripcionManual = () => {
                         <button className="boton-style btn-aceptacion" type="button" onClick={() => setRegistro(true)}>
                             Añadir nuevo
                         </button>
-<<<<<<< HEAD
-                        <button 
-                            className="boton-style btn-aceptacion" 
-                            onClick={() => {
-                                console.log("Estudiantes guardados:", estudiantes);
-                                navigate("/ordenPago"); // 👈 Paso 3
-                            }}
-                        >
-                            Orden Pago
-=======
                         <button
                             className="boton-style btn-aceptacion"
                             // onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
                             onClick={handleSubmit}
                         >
                             Guardar
->>>>>>> isaac-dev
                         </button>
                         <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
                     </div>
