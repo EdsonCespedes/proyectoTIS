@@ -90,9 +90,12 @@ const InscripcionManual = () => {
                         </button>
                         <button 
                             className="boton-style btn-aceptacion" 
-                            onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
+                            onClick={() => {
+                                console.log("Estudiantes guardados:", estudiantes);
+                                navigate("/ordenPago"); // 👈 Paso 3
+                            }}
                         >
-                        Guardar
+                            Orden Pago
                         </button>
                              <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
                      </div>

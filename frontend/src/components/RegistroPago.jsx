@@ -3,9 +3,9 @@ import './styles/RegistroPago.css';
 import Recibo from './Recibo';
 
 const tutores = [
-  { nombre: 'Juan Pérez', ordenes: ['orden001', 'orden002'] },
-  { nombre: 'María López', ordenes: ['orden003'] },
-  { nombre: 'Luis Sánchez', ordenes: ['orden004', 'orden005', 'orden006'] },
+  { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
+  { nombre: 'Maria Lopez', ordenes: ['orden003'] },
+  { nombre: 'Luis Sanchez', ordenes: ['orden004', 'orden005', 'orden006'] },
 ];
 
 const RegistroPago = () => {

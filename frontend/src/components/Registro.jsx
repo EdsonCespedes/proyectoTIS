@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const nombreApellidoRegex = /^[A-Za-z\s]+$/;
 const carnetRegex = /^[0-9]+$/;
 
-const Registro = ({ setRegistro }) => {
+const Registro = ({ areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const [provinciasColegio, setProvinciasColegio] = useState([]);
 
@@ -15,30 +15,17 @@ const Registro = ({ setRegistro }) => {
   const [departamentos, setDepartamentos] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [provincias, setProvincias] = useState([]);
-  const [areasDisponibles, setAreasDisponibles] = useState([]);
-  const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
-
-  const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
-  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8000/api/verdepartamentos")
       .then(response => response.json())
       .then(data => setDepartamentos(data))
-      .catch(error => console.error("Error al obtener departamentos:", error));
+      .catch(error => console.error("Error al obtener colegios:", error));
 
     fetch("http://localhost:8000/api/vercursos")
       .then(response => response.json())
       .then(data => setCursos(data))
-      .catch(error => console.error("Error al obtener cursos:", error));
-
-    fetch("http://localhost:8000/api/areas")
-      .then(response => response.json())
-      .then(data => {
-        console.log("Áreas cargadas:", data);
-        setAreasDisponibles(data); // Guardamos las áreas en el estado
-      })
-      .catch(error => console.error("Error al obtener áreas:", error));
+      .catch(error => console.error("Error al obtener colegios:", error));
   }, []);
 
   const [form, setForm] = useState({
@@ -53,10 +40,9 @@ const Registro = ({ setRegistro }) => {
     provincia: "",
     departamentoColegio: "",
     provinciaColegio: "",
-    departamentoNacimiento: "",
-    provinciaNacimiento: "",
+    areas: [],
+    categorias: [],
   });
-
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   const handleChange = (e) => {
@@ -71,7 +57,9 @@ const Registro = ({ setRegistro }) => {
       alert("El carnet solo puede contener números.");
       return;
     }
+    setForm({ ...form, [name]: value });
 
+    // Actualizar el estado del formulario
     if (name === "departamento") {
       setForm({ ...form, departamento: value, provincia: "", colegio: "" });
       fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
@@ -106,7 +94,7 @@ const Registro = ({ setRegistro }) => {
     }
   };
 
-  const handleRegistrar = () => {
+  const handleAceptar = () => {
     const camposRequeridos = [
       "nombre", "apellidos", "carnet", "correo", "fechaNacimiento",
       "curso", "departamento", "provincia"
@@ -119,34 +107,7 @@ const Registro = ({ setRegistro }) => {
       return;
     }
 
-    const datosEnviar = {
-      ...form,
-      areas: areasSeleccionadas,
-      categorias: categoriasSeleccionadas
-    };
-
-    fetch("http://localhost:8000/api/registrar-postulante", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(datosEnviar)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Error al registrar al postulante");
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log("Postulante registrado:", data);
-        alert("¡Postulante registrado correctamente!");
-        setRegistro(false);
-      })
-      .catch(error => {
-        console.error("Error al enviar los datos:", error);
-        alert("Hubo un error al registrar el postulante.");
-      });
+    handleRegistrar(form);
   };
 
   return (
@@ -155,7 +116,6 @@ const Registro = ({ setRegistro }) => {
         <div className="seccion">
           <h2 className="subtitulo">Datos del Estudiante</h2>
           <div className="grid-container">
-            {/* Entradas de datos del estudiante */}
             <input type="text" placeholder="Nombre(s)" name="nombre" onChange={handleChange} />
             <input type="text" placeholder="Apellido(s)" name="apellidos" onChange={handleChange} />
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
@@ -185,8 +145,10 @@ const Registro = ({ setRegistro }) => {
           </div>
         </div>
 
+        {/* Recuadro para Departamento, Provincia y Colegio */}
         <div className="recuadro-container">
-          <h3>Datos del Colegio</h3>
+          <h3> </h3>
+          <h3> Datos del Colegio </h3>
           <select name="departamento" onChange={handleChange} value={form.departamento}>
             <option value="">Selecciona un departamento</option>
             {departamentos.map((dep) => (
@@ -208,36 +170,36 @@ const Registro = ({ setRegistro }) => {
                 {nombre}
               </option>
             ))}
+
           </select>
         </div>
 
-        {/* Mostrar Áreas seleccionadas */}
+        {/* Áreas seleccionadas */}
         {areasSeleccionadas.length > 0 && (
           <div className="areas-seleccionadas">
             <h3>Áreas Seleccionadas:</h3>
             <ul>
               {areasSeleccionadas.map(({ idArea, tituloArea }) => (
                 <div key={idArea}>
-                  {categoriasSeleccionadas
-                    .filter((categoria) => categoria.idArea === idArea)
-                    .map(({ idCategoria, nombreCategoria }) => (
-                      <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
-                    ))}
+                  {categoriasSeleccionadas.filter((categoria) => categoria.idArea === idArea).map(({ idCategoria, nombreCategoria }) => (
+                    <li key={idCategoria}>{tituloArea} - {nombreCategoria}</li>
+                  ))}
                 </div>
               ))}
             </ul>
           </div>
         )}
       </div>
-
+      {/* Botón para mostrar/ocultar área de competencia */}
       <button className="boton btn-competencia" onClick={() => setMostrarArea(!mostrarArea)}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
 
+      {/* Mostrar Área de Competencia si está activado */}
+
       {mostrarArea && (
         <div className="area-competencia-container">
           <AreaCompetencia
-            areasDisponibles={areasDisponibles}
             areasSeleccionadas={areasSeleccionadas}
             setAreasSeleccionadas={setAreasSeleccionadas}
             categoriasSeleccionadas={categoriasSeleccionadas}
@@ -246,18 +208,22 @@ const Registro = ({ setRegistro }) => {
           />
         </div>
       )}
-
+      {/* Botones de acción */}
       <div className="seccion-container">
         <div className="botones">
-          <button className="boton btn-blue" onClick={handleRegistrar}>Registrar</button>
+          <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
           <button type="button" className="boton btn-red" onClick={() => setRegistro(false)}>Cancelar</button>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Registro;
+
+
+
+
 
 
 
