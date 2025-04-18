@@ -22,6 +22,9 @@ import RegistroPago from "./components/RegistroPago";
 import Area from "./pages/Area";
 
 
+//Excel
+import InscripcionExcel from "./pages/InscripcionExcel";
+
 function App() {
 
   return (
@@ -46,6 +49,9 @@ function App() {
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
         <Route path="/area" element={<Area />} />
+
+        {/* Excel */}
+        <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
       </Routes>
     </div>
     
