@@ -10,7 +10,7 @@ use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class ConvocatoriaController extends Controller
+class ConvocatoriaControllerJ extends Controller
 {
     //obtiene todas las convocatorias
     public function index(){

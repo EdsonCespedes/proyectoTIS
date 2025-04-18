@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('tituloArea');
             $table->string('descArea');
             $table->boolean('habilitada');
-            $table->unsignedInteger ('idConvocatoria');
         });
     }
 

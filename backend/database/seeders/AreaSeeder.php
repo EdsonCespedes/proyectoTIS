@@ -26,7 +26,6 @@ class AreaSeeder extends Seeder
                 'tituloArea'     => $area,
                 'descArea'       => 'Area de ' . strtolower($area),
                 'habilitada'     => true,
-                'idConvocatoria' => $idConvocatoria,
             ]);
         }
     }

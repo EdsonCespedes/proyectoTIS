@@ -64,7 +64,8 @@ Route::post('/colegios', [ColegioController::class, 'store']);
 Route::post('/cursos', [CursoController::class, 'store']);
 
 //Crear Convocatoria
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+Route::post('/convocatorias', [ConvocatoriaController::class, 'storeV']);
+\Log::info('Ruta de Convocatoria alcanzada');
 
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
@@ -87,4 +88,4 @@ Route::get('/postulantes', [PostulanteController::class, 'index']);
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
 
 //guarda Convocatoria junto con todos su datos
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);

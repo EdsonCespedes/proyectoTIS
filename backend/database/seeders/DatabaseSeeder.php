@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ConvocatoriaSeeder::class,
             AreaSeeder::class,
             CategoriaSeeder::class,
-            ConvocatoriaAreaSeeder::class,
+            //ConvocatoriaAreaSeeder::class,
             CategoriaCursoSeeder::class,
             //AreaCategoriaSeeder::class,
             TutorSeeder::class,
