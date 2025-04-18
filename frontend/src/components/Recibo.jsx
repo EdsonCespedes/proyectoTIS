@@ -62,18 +62,6 @@ const Recibo = () => {
                 📤 Subir foto
               </label>
 
-              {/* Input oculto para abrir la cámara en móviles/laptops */}
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                hidden
-                ref={inputCamaraRef}
-                onChange={handleImagenChange}
-              />
-              <button className="btn-tomar" onClick={() => inputCamaraRef.current.click()}>
-                📷 Tomar foto
-              </button>
             </>
           )}
         </div>

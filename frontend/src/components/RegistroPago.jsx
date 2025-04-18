@@ -4,7 +4,7 @@ import Recibo from './Recibo';
 
 const tutores = [
   { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
-  { nombre: 'Maria Lopez', ordenes: ['orden003'] },
+  { nombre: 'Maria Lopez', ordenes: ['orden001', 'orden004', 'orden005', 'orden006'] },
   { nombre: 'Luis Sanchez', ordenes: ['orden004', 'orden005', 'orden006'] },
 ];
 

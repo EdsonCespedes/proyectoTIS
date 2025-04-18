@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./styles/Registro.css";
-import AreaCompetencia from "./AreaCompetencia";
 import { useNavigate } from "react-router-dom";
 
 const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const carnetRegex = /^[0-9]+$/;
 
-const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, setRegistro }) => {
+const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const [provinciasColegio, setProvinciasColegio] = useState([]);
-
   const [areas, setAreas] = useState([]);
-
   const navigate = useNavigate();
-
   const [departamentos, setDepartamentos] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [provincias, setProvincias] = useState([]);
@@ -27,10 +23,10 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     telefonoPost: "",
     departamento: "",
     provincia: "",
-    idColegio: "", // puede ser string o id real
-    idCurso: "",     // igual
-    idTutor: null,           // si es nuevo tutor
-    delegacion: "", // opcional
+    idColegio: "",
+    idCurso: "",
+    idTutor: null,
+    delegacion: "",
     departamentoColegio: "",
     provinciaColegio: "",
     tutor: {
@@ -43,6 +39,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     areas: [],
     categorias: [],
   });
+
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   useEffect(() => {
@@ -54,7 +51,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     fetch("http://localhost:8000/api/verdepartamentos")
       .then(response => response.json())
       .then(data => setDepartamentos(data))
-      .catch(error => console.error("Error al obtener cursos:", error));
+      .catch(error => console.error("Error al obtener departamentos:", error));
   }, []);
 
   const handleChange = (e) => {
@@ -69,6 +66,18 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     if (name === "carnet" && value && !carnetRegex.test(value)) {
       alert("El carnet solo puede contener números.");
       return;
+    }
+
+    // Validación de fecha de nacimiento
+    if (name === "fechaNaciPost") {
+      const selectedDate = new Date(value);
+      const minDate = new Date(31, 4, 1990); // 1 de enero de 1990
+      const maxDate = new Date(31, 4, 2019); // 31 de diciembre de 2019
+
+      if (value && (selectedDate < minDate || selectedDate > maxDate)) {
+        alert("La fecha de nacimiento debe estar entre el 1 de enero de 1990 y el 31 de diciembre de 2019.");
+        return; // No actualiza el estado si la fecha es inválida
+      }
     }
 
     setForm((prevForm) => {
@@ -120,8 +129,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
   const handleAceptar = () => {
     console.log(form);
 
-    console.log(form.tutor);
-
     const camposRequeridos = [
       "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
       "idCurso", "departamento", "provincia",
@@ -155,11 +162,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
   };
 
   const showModal = () => {
-    console.log("ID:", idConvocatoria);
-    console.log(form.idCurso);
-
     const cursoSeleccionado = cursos.find((curso) => curso.idCurso == form.idCurso);
-    console.log(typeof cursoSeleccionado?.Curso);
 
     if (!idConvocatoria) {
       console.error("El parámetro 'id' es undefined.");
@@ -184,7 +187,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
           nombre: item.area.nombre,
           categorias: item.categorias
         }));
-        console.log(areasTransformadas);
         setAreas(areasTransformadas);
       })
       .catch(error => console.error("Error al obtener cursos:", error));
@@ -213,20 +215,17 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
       const categoriasMismaArea = area.categorias.map((c) => c.id);
 
       if (yaSeleccionada) {
-        // Si ya está seleccionada, la quitamos
         return prev.filter((a) => a.id !== categoria.id);
       } else {
-        // Si ya hay una categoría seleccionada de esta área, la reemplazamos
         const sinMismaArea = prev.filter((a) => !categoriasMismaArea.includes(a.id));
         return [...sinMismaArea, { ...categoria }];
       }
     });
-    console.log(areasSeleccionadas);
-    console.log(categoriasSeleccionadas);
   };
-  const handleCancelar = (idConvocatoria) => {
+
+  const handleCancelar = () => {
     navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  
-};
+  };
 
   return (
     <div className="registro-container">
@@ -238,7 +237,13 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
             <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} />
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
             <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} />
-            <input type="date" name="fechaNaciPost" onChange={handleChange} />
+            <input 
+              type="date" 
+              name="fechaNaciPost" 
+              onChange={handleChange} 
+              min="1990-01-01" 
+              max="2019-12-31" 
+            />
 
             <select name="idCurso" onChange={handleChange} value={form.idCurso}>
               <option value="">Selecciona un curso</option>
@@ -264,7 +269,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
         </div>
 
         <div className="recuadro-container">
-          <h3> </h3>
           <h3> Datos del Colegio </h3>
           <select name="departamentoColegio" onChange={handleChange} value={form.departamentoColegio}>
             <option value="">Selecciona un departamento</option>
@@ -294,19 +298,17 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
           <div className="areas-seleccionadas">
             <h3>Áreas Seleccionadas:</h3>
             <ul>
-              {areasSeleccionadas.length > 0 && categoriasSeleccionadas.length > 0 &&
-                areasSeleccionadas.map((area) => (
-                  <div key={area.id}>
-                    {area?.nombre || "Sin Area"} - {
-                      (
-                        categoriasSeleccionadas.find((categoria) =>
-                          area.categorias.some((c) => c.id === categoria.id)
-                        )?.nombre || "Sin categoría"
-                      )
-                    }
-                  </div>
-                ))
-              }
+              {areasSeleccionadas.map((area) => (
+                <div key={area.id}>
+                  {area?.nombre || "Sin Area"} - {
+                    (
+                      categoriasSeleccionadas.find((categoria) =>
+                        area.categorias.some((c) => c.id === categoria.id)
+                      )?.nombre || "Sin categoría"
+                    )
+                  }
+                </div>
+              ))}
             </ul>
           </div>
         )}
@@ -335,7 +337,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
                 {areasSeleccionadas.some((a) => a.id === area.id) && (
                   <div>
                     {area.categorias.map((categoria) => (
-                      <label>
+                      <label key={categoria.id}>
                         <input
                           type="checkbox"
                           checked={categoriasSeleccionadas.some((a) => a.id === categoria.id)}
@@ -359,7 +361,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
         </div>
       )}
 
-
       {/* Botones de acción */}
       <div className="seccion-container">
         <div className="seccion">
@@ -369,7 +370,13 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
             <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} />
             <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} />
             <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} />
-            <input type="date" name="tutor.fechaNaciTutor" onChange={handleChange} />
+            <input 
+              type="date" 
+              name="tutor.fechaNaciTutor" 
+              onChange={handleChange} 
+              min="1990-01-01" 
+              max="2019-12-31" 
+            />
           </div>
         </div>
 
@@ -383,6 +390,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
 }
 
 export default Registro;
+
 
 
 
