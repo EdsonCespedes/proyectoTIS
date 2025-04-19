@@ -7,34 +7,31 @@ const InscripcionManual = () => {
     const { idConvocatoria } = useParams();
     const [registro, setRegistro] = useState(false);
 
+    const [indexEdit, setIndexEdit] = useState(-1);
+    const [estudianteEdit, setEstudianteEdit] = useState({});
+
     const navigate = useNavigate();
 
-    //Logica backend va aqui plis
     const [estudiantes, setEstudiantes] = useState([]);
 
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
 
     const handleRegistrar = (nuevoEstudiante) => {
-        // Transformar áreas al formato esperado
         const areasFormateadas = areasSeleccionadas.map((area) => ({
             idArea: area.id,
             tituloArea: area.nombre,
-            descArea: area.descripcion || "", // si tenés esta info
+            descArea: area.descripcion || "",
             habilitada: area.habilitada ?? true, // por defecto true si no existe
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
 
-        // Transformar categorías si también necesitan adaptar formato
         const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
             idCategoria: categoria.id,
             nombreCategoria: categoria.nombre,
             descripcionCategoria: categoria.descripcion || "", // si se requiere
             idArea: areasFormateadas[index].idArea,
         }));
-
-        // nuevoEstudiante.areas = areasSeleccionadas;
-        // nuevoEstudiante.categorias = categoriasSeleccionadas;
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -45,8 +42,37 @@ const InscripcionManual = () => {
         setRegistro(false);  // Cambiar el estado de registro a false
     };
 
-    const handleEditar = (index) => {
+    const handleActualizar = (nuevoEstudiante, estudiante) => {
+        const areasFormateadas = areasSeleccionadas.map((area) => ({
+            idArea: area.id,
+            tituloArea: area.nombre,
+            descArea: area.descripcion || "",
+            habilitada: area.habilitada ?? true, // por defecto true si no existe
+            idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
+        }));
 
+        const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
+            idCategoria: categoria.id,
+            nombreCategoria: categoria.nombre,
+            descripcionCategoria: categoria.descripcion || "", // si se requiere
+            idArea: areasFormateadas[index].idArea,
+        }));
+
+        nuevoEstudiante.areas = areasFormateadas;
+        nuevoEstudiante.categorias = categoriasFormateadas;
+
+        const estudiantesActualizados = [...estudiantes];
+        if (indexEdit !== -1) {
+            estudiantesActualizados[indexEdit] = nuevoEstudiante;
+            setEstudiantes(estudiantesActualizados);
+        }
+
+             
+        setAreasSeleccionadas([]);
+        setCategoriasSeleccionadas([]);
+        setIndexEdit(-1); 
+        setEstudianteEdit({});
+        setRegistro(false);  // Cambiar el estado de registro a false
     }
 
     const handleEliminar = (index) => {
@@ -127,14 +153,21 @@ const InscripcionManual = () => {
         <div>
             {registro === false && (
                 <div>
-                    <DetalleInscripcion estudiantes={estudiantes} onEliminar={handleEliminar} onEditar={handleEditar} />
+                    <DetalleInscripcion
+                        estudiantes={estudiantes}
+                        onEliminar={handleEliminar}
+                        setRegistro={setRegistro}
+                        setEstudianteEdit={setEstudianteEdit}
+                        setAreasSeleccionadas={setAreasSeleccionadas}
+                        setCategoriasSeleccionadas={setCategoriasSeleccionadas}
+                        setIndexEdit={setIndexEdit}
+                    />
                     <div className="control">
                         <button className="boton-style btn-aceptacion" type="button" onClick={() => setRegistro(true)}>
                             Añadir nuevo
                         </button>
                         <button
                             className="boton-style btn-aceptacion"
-                            // onClick={() => console.log("Estudiantes guardados:", estudiantes)} // TEMPORAL Solo para verificar
                             onClick={handleSubmit}
                         >
                             Guardar
@@ -145,7 +178,6 @@ const InscripcionManual = () => {
             )}
             {registro === true && (
                 <div>
-                    Vista Registro
                     <Registro
                         idConvocatoria={idConvocatoria}
                         estudiantes={estudiantes}
@@ -154,8 +186,10 @@ const InscripcionManual = () => {
                         categoriasSeleccionadas={categoriasSeleccionadas}
                         setAreasSeleccionadas={setAreasSeleccionadas}
                         setCategoriasSeleccionadas={setCategoriasSeleccionadas}
-                        // setRegistro={setRegistro}
                         handleRegistrar={handleRegistrar}
+                        handleActualizar={handleActualizar}
+                        setRegistro={setRegistro}
+                        estudiante={estudianteEdit}
                     />
                 </div>
             )}

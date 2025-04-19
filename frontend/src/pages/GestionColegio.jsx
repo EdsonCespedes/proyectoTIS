@@ -25,7 +25,7 @@ const GestionColegios = () => {
                 <table>
                     <thead>
                         <tr>
-                            {/* <th className="col-rue">RUE</th> */}
+                            <th className="col-rue">RUE</th>
                             <th className="col-rue">ID</th>
                             <th className="col-nombre">UNIDAD EDUCATIVA</th>
                             <th className="col-accion">ACCIÓN</th>
@@ -34,7 +34,7 @@ const GestionColegios = () => {
                     <tbody>
                         {currentColegios.map((colegio) => (
                             <tr key={colegio.idColegio}>
-                                {/* <td>{colegio.rue}</td> */}
+                                <td>{colegio.RUE}</td>
                                 <td>{colegio.idColegio}</td>
                                 <td>{colegio.nombreColegio}</td>
                                 <td className="actions">
@@ -72,7 +72,6 @@ const GestionColegios = () => {
             </div>
             <div className="control">
                 <Link to="/registro-colegios" className="boton-style btn-aceptacion">Añadir nuevo</Link>
-                <button className="boton-style btn-aceptacion">Guardar</button>
                 <Link to="/" className="boton-style btn-rechazo">Cancelar</Link>
             </div>
         </div>

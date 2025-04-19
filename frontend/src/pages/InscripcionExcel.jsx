@@ -49,29 +49,40 @@ const InscripcionExcel = () => {
                 const errores = [];
 
                 camposObligatorios.forEach(campo => {
-                    if (!fila[campo]  || fila[campo].trim() === "") {
-                        errores.push(`Campo "${campo}" vacío o inválido`);
+                    const valor = fila[campo];
+                    const esVacio =
+                        valor === undefined || valor === null ||
+                        (typeof valor === "string" && valor.trim() === "");
+
+                    if (esVacio) {
+                        errores.push(`Campo "${campo}" vacío o faltante`);
                     }
                 });
 
-                // Validación de correo básico
-                if (fila["correoPost"] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fila["correoPost"])) {
-                    errores.push(`Correo inválido en fila ${i + 2}`); // +2 por el encabezado
+                // Validación de correo (solo si existe)
+                const correo = fila["correoPost"];
+                if (correo && typeof correo === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+                    errores.push(`Correo inválido en fila ${i + 2}`);
                 }
 
-                // Validación de teléfono numérico
-                if (fila["telefonoPost"] && !/^\d{6,15}$/.test(fila["telefonoPost"])) {
+                // Validación de teléfono (solo si es string o número)
+                const telefono = fila["telefonoPost"];
+                if (
+                    telefono !== undefined &&
+                    !/^\d{6,15}$/.test(String(telefono))
+                ) {
                     errores.push(`Teléfono inválido en fila ${i + 2}`);
                 }
 
-                // Validación de fecha (formato simple YYYY-MM-DD o similar)
-                if (fila["fechaNaciPost"] && isNaN(Date.parse(fila["fechaNaciPost"]))) {
+                // Validación de fecha (se convierte a Date y se verifica)
+                const fecha = fila["fechaNaciPost"];
+                if (fecha && isNaN(new Date(fecha).getTime())) {
                     errores.push(`Fecha de nacimiento inválida en fila ${i + 2}`);
                 }
 
                 if (errores.length > 0) {
                     alert(`Error en fila ${i + 2}:\n- ${errores.join("\n- ")}`);
-                    return; // Cortar proceso
+                    return; // Detener el proceso
                 }
             }
 

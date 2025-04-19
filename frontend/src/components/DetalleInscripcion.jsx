@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
-const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
+const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudianteEdit, setIndexEdit, setAreasSeleccionadas, setCategoriasSeleccionadas }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
 
@@ -10,6 +10,29 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
 
     const startIndex = currentPage * itemsPerPage;
     const currentEstudiantes = estudiantes.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleEdit = (e, estudiante, index) => {
+        e.preventDefault();
+        setEstudianteEdit(estudiante);
+        setIndexEdit(index);
+
+        // Revertir categorías formateadas
+        const categoriasOriginales = estudiante.categorias.map((categoria) => ({
+            id: categoria.idCategoria,
+            nombre: categoria.nombreCategoria,
+        }));
+
+        // Revertir áreas formateadas
+        const areasOriginales = estudiante.areas.map((area) => ({
+            id: area.idArea,
+            nombre: area.tituloArea,
+            categorias: categoriasOriginales,
+        }));
+
+        setAreasSeleccionadas(areasOriginales);
+        setCategoriasSeleccionadas(categoriasOriginales);
+        setRegistro(true)
+    }
 
     return (
         <div className="contenedor">
@@ -36,8 +59,11 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                                     ))}
                                 </td>
                                 <td className="actions">
-                                    <Link to="/editar" state={{estudiante}} className="boton-style btn-rechazo">Modificar</Link>
-                                    <button onClick={()=>onEliminar(index)} className="boton-style btn-rechazo">Retirar</button>
+                                    <button
+                                        onClick={e => handleEdit(e, estudiante, index)}
+                                        className="boton-style btn-rechazo"
+                                    >Modificar</button>
+                                    <button onClick={() => onEliminar(index)} className="boton-style btn-rechazo">Retirar</button>
                                 </td>
                             </tr>
                         ))}

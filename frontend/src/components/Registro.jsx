@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const carnetRegex = /^[0-9]+$/;
 
-const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar }) => {
+const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, handleActualizar }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const [provinciasColegio, setProvinciasColegio] = useState([]);
   const [areas, setAreas] = useState([]);
@@ -15,34 +15,37 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
   const [provincias, setProvincias] = useState([]);
 
   const [form, setForm] = useState({
-    nombrePost: "",
-    apellidoPost: "",
-    carnet: "",
-    fechaNaciPost: "",
-    correoPost: "",
-    telefonoPost: "",
-    departamento: "",
-    provincia: "",
-    idColegio: "",
-    idCurso: "",
-    idTutor: null,
-    delegacion: "",
-    departamentoColegio: "",
-    provinciaColegio: "",
+    nombrePost: estudiante?.nombrePost || "",
+    apellidoPost: estudiante?.apellidoPost || "",
+    carnet: estudiante?.carnet || "",
+    fechaNaciPost: estudiante?.fechaNaciPost || "",
+    correoPost: estudiante?.correoPost || "",
+    telefonoPost: estudiante?.telefonoPost || "",
+    departamento: estudiante?.departamento || "",
+    provincia: estudiante?.provincia || "",
+    idColegio: estudiante?.idColegio || "",
+    idCurso: estudiante?.idCurso || "",
+    idTutor: estudiante?.idTutor || null,
+    delegacion: estudiante?.delegacion || "",
+    departamentoColegio: estudiante?.departamentoColegio || "",
+    provinciaColegio: estudiante?.provinciaColegio || "",
     tutor: {
-      nombreTutor: "",
-      apellidoTutor: "",
-      correoTutor: "",
-      telefonoTutor: "",
-      fechaNaciTutor: ""
+      nombreTutor: estudiante?.tutor?.nombreTutor || "",
+      apellidoTutor: estudiante?.tutor?.apellidoTutor || "",
+      correoTutor: estudiante?.tutor?.correoTutor || "",
+      telefonoTutor: estudiante?.tutor?.telefonoTutor || "",
+      fechaNaciTutor: estudiante?.tutor?.fechaNaciTutor || ""
     },
-    areas: [],
-    categorias: [],
+    areas: estudiante?.areas || [],
+    categorias: estudiante?.categorias || [],
   });
 
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   useEffect(() => {
+    console.log(areasSeleccionadas);
+    console.log(categoriasSeleccionadas);
+
     fetch("http://localhost:8000/api/vercursos")
       .then(response => response.json())
       .then(data => setCursos(data))
@@ -54,10 +57,36 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
       .catch(error => console.error("Error al obtener departamentos:", error));
   }, []);
 
+  useEffect(() => {
+    if (form.departamentoColegio) {
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${form.departamentoColegio}`)
+        .then(res => res.json())
+        .then(data => setProvinciasColegio(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+    }
+  }, [form.departamentoColegio]);
+
+  useEffect(() => {
+    if (form.departamentoColegio && form.provinciaColegio) {
+      fetch(`http://localhost:8000/api/departamentos/${form.departamentoColegio}/provincias/${form.provinciaColegio}/colegios`)
+        .then(res => res.json())
+        .then(data => setColegiosDisponibles(data))
+        .catch(error => console.error("Error al obtener colegios:", error));
+    }
+  }, [form.departamentoColegio, form.provinciaColegio]);
+
+  useEffect(() => {
+    if (form.departamento) {
+      fetch(`http://localhost:8000/api/verprovincias/departamento/${form.departamento}`)
+        .then(response => response.json())
+        .then(data => setProvincias(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
+    }
+  }, [form.departamento]);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Validaciones personalizadas
     if ((name === "nombrePost" || name === "apellidoPost") && value && !nombreApellidoRegex.test(value)) {
       alert("El nombre y apellido solo pueden contener letras.");
       return;
@@ -67,12 +96,10 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
       alert("El carnet solo puede contener números.");
       return;
     }
-
-    // Validación de fecha de nacimiento
     if (name === "fechaNaciPost") {
       const selectedDate = new Date(value);
-      const minDate = new Date(31, 4, 1990); // 1 de enero de 1990
-      const maxDate = new Date(31, 4, 2019); // 31 de diciembre de 2019
+      const minDate = new Date(1990, 0, 1); // 1 de enero de 1990
+      const maxDate = new Date(2019, 11, 31); // 31 de diciembre de 2019
 
       if (value && (selectedDate < minDate || selectedDate > maxDate)) {
         alert("La fecha de nacimiento debe estar entre el 1 de enero de 1990 y el 31 de diciembre de 2019.");
@@ -81,10 +108,8 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
     }
 
     setForm((prevForm) => {
-      // Si el name tiene puntos, significa que es un campo anidado (ej. tutor.nombreTutor)
       if (name.includes(".")) {
         const [parent, child] = name.split(".");
-
         return {
           ...prevForm,
           [parent]: {
@@ -94,18 +119,16 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
         };
       }
 
-      // Para campos simples
       return {
         ...prevForm,
         [name]: value,
       };
     });
 
-    // Fetchs condicionales, que deben venir después del setForm
     if (name === "departamentoColegio") {
       fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
         .then(response => response.json())
-        .then(data => setProvincias(data))
+        .then(data => setProvinciasColegio(data))
         .catch(error => console.error("Error al obtener provincias:", error));
       setColegiosDisponibles([]);
     }
@@ -136,7 +159,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
       "tutor.telefonoTutor", "tutor.correoTutor", "tutor.fechaNaciTutor"
     ];
 
-    // Función para acceder a campos anidados
     const getValorCampo = (obj, path) => {
       return path.split('.').reduce((acc, parte) => {
         if (acc && acc[parte] !== undefined) return acc[parte];
@@ -144,7 +166,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
       }, obj);
     };
 
-    // Para detectar cuál campo está vacío (debug)
     const camposVacios = camposRequeridos.filter((campo) => {
       const valor = getValorCampo(form, campo);
       return valor === null || valor === undefined || valor === "";
@@ -158,7 +179,16 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
 
     const colegioSeleccionado = colegiosDisponibles[form.idColegio];
     form.delegacion = colegioSeleccionado;
-    handleRegistrar(form);
+
+    console.log(estudiante);
+
+    if (Object.keys(estudiante).length > 0) {
+      handleActualizar(form, estudiante); // función que puedes definir tú
+      console.log("Hizo actualizzar");
+    } else {
+      handleRegistrar(form);
+      console.log("Hizo añadir");
+    }
   };
 
   const showModal = () => {
@@ -195,19 +225,24 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
   }
 
   const handleCheckboxChange = (area) => {
-    setAreasSeleccionadas((prev) =>
-      prev.some((a) => a.id === area.id)
-        ? prev.filter((a) => a.id !== area.id)
-        : [...prev, { ...area }]
-    );
+    const yaSeleccionada = areasSeleccionadas.some((a) => a.id === area.id);
 
-    categoriasSeleccionadas
-      .filter((categoria) =>
-        area.categorias.some((c) => c.id === categoria.id)
-      )
-      .forEach((categoria) => handleCategoriaChange(categoria));
+    if (yaSeleccionada) {
+      // ✅ Si se deselecciona, quitamos el área...
+      setAreasSeleccionadas((prev) => prev.filter((a) => a.id !== area.id));
 
+      // 🧹 ...y también sus categorías asociadas
+      setCategoriasSeleccionadas((prev) =>
+        prev.filter(
+          (categoria) => !area.categorias.some((c) => c.id === categoria.id)
+        )
+      );
+    } else {
+      // ✅ Si se selecciona, la agregamos normalmente
+      setAreasSeleccionadas((prev) => [...prev, { ...area }]);
+    }
   };
+
 
   const handleCategoriaChange = (categoria, area) => {
     setCategoriasSeleccionadas((prev) => {
@@ -224,7 +259,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
   };
 
   const handleCancelar = () => {
-    navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  
+    setRegistro(false);
   };
 
   return (
@@ -233,16 +268,17 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
         <div className="seccion">
           <h2 className="subtitulo">Postulante</h2>
           <div className="grid-container">
-            <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} />
-            <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} />
-            <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} />
-            <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} />
-            <input 
-              type="date" 
-              name="fechaNaciPost" 
-              onChange={handleChange} 
-              min="1990-01-01" 
-              max="2019-12-31" 
+            <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
+            <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
+            <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
+            <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
+            <input
+              type="date"
+              name="fechaNaciPost"
+              onChange={handleChange}
+              min="1990-01-01"
+              max="2019-12-31"
+              value={form.fechaNaciPost}
             />
 
             <select name="idCurso" onChange={handleChange} value={form.idCurso}>
@@ -279,7 +315,7 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
 
           <select name="provinciaColegio" onChange={handleChange} value={form.provinciaColegio} disabled={!form.departamentoColegio}>
             <option value="">Selecciona una provincia</option>
-            {provincias.map((prov) => (
+            {provinciasColegio.map((prov) => (
               <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
             ))}
           </select>
@@ -361,27 +397,30 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
         </div>
       )}
 
-      {/* Botones de acción */}
       <div className="seccion-container">
         <div className="seccion">
           <h2 className="subtitulo">Tutor</h2>
           <div className="grid-container">
-            <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} />
-            <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} />
-            <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} />
-            <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} />
-            <input 
-              type="date" 
-              name="tutor.fechaNaciTutor" 
-              onChange={handleChange} 
-              min="1990-01-01" 
-              max="2019-12-31" 
+            <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={form.tutor?.nombreTutor} />
+            <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={form.tutor?.apellidoTutor} />
+            <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={form.tutor?.telefonoTutor} />
+            <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={form.tutor?.correoTutor} />
+            <input
+              type="date"
+              name="tutor.fechaNaciTutor"
+              onChange={handleChange}
+              min="1990-01-01"
+              max="2019-12-31"
+              value={form.tutor?.fechaNaciTutor}
             />
           </div>
         </div>
 
+        {/* Botones de acción */}
         <div className="botones">
-          <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>
+          {Object.keys(estudiante).length > 0
+            ? <button className="boton btn-blue" onClick={handleAceptar}>Modificar</button>
+            : <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>}
           <button className="boton btn-red" onClick={handleCancelar}>Cancelar</button>
         </div>
       </div>
@@ -390,10 +429,6 @@ const Registro = ({ idConvocatoria, areasSeleccionadas, setAreasSeleccionadas, c
 }
 
 export default Registro;
-
-
-
-
 
 
 

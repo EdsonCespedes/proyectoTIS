@@ -70,7 +70,7 @@ export const CrearConvForm = () => {
       fechaInicioInsc: formData.fechaInicioInscripcion,
       fechaFinInsc: formData.fechaCierreInscripcion,
       portada: formData.imagenPortada,
-      habilitada: true,
+      habilitada: 1,
       fechaInicioOlimp: formData.fechaInicioOlimpiada,
       fechaFinOlimp: formData.fechaFinOlimpiada,
       maximoPostPorArea: formData.maxConcursantes,
