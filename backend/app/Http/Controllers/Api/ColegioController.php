@@ -40,9 +40,9 @@ class ColegioController extends Controller
         ], 201);
     }
 
-    public function index() //obtiene 
+    public function index() //obtiene
     {
-       
+
         return Colegio::obtenerDatosColegio();
     }
 
@@ -97,5 +97,34 @@ class ColegioController extends Controller
         }
 
         return response()->json($colegio);
+    }
+    public function update(Request $request, $id)
+    {
+        $colegio = Colegio::find($id);
+
+        if (!$colegio) {
+            return response()->json(['message' => 'Colegio no encontrado'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nombreColegio' => 'required|string|min:3|max:255',
+            'departamento' => 'required|string|min:3|max:255',
+            'provincia' => 'required|string|min:3|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Errores de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $colegio->update($validator->validated());
+
+        return response()->json([
+            'message' => 'Colegio actualizado con éxito',
+            'data' => $colegio
+        ], 200);
     }
 }
