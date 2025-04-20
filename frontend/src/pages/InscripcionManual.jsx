@@ -26,12 +26,39 @@ const InscripcionManual = () => {
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
 
-        const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-            idCategoria: categoria.id,
-            nombreCategoria: categoria.nombre,
-            descripcionCategoria: categoria.descripcion || "", // si se requiere
-            idArea: areasFormateadas[index].idArea,
-        }));
+        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
+        //     idCategoria: categoria.id,
+        //     nombreCategoria: categoria.nombre,
+        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+        //     idArea: areasFormateadas[index].idArea,
+        //     monto: categoria.monto || 50,
+        // }));
+
+        // Ahora, para cada categoría, asignamos correctamente el idArea
+        const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
+            // Buscar el área que contiene esta categoría por el idCategoria
+            let idAreaEncontrado = null;
+
+            // Recorremos las áreas seleccionadas
+            areasSeleccionadas.forEach((area) => {
+                // Verificar si esta categoría pertenece a este área comparando el idCategoria
+                const categoriaEncontrada = area.categorias.find(
+                    (cat) => cat.id === categoria.id
+                );
+                if (categoriaEncontrada) {
+                    idAreaEncontrado = area.id; // Asignar el idArea de la categoría
+                }
+            });
+
+            // Si encontramos el área correspondiente, formateamos la categoría
+            return {
+                idCategoria: categoria.id,
+                nombreCategoria: categoria.nombre,
+                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                idArea: idAreaEncontrado, // Asignar el idArea encontrado
+                monto: categoria.monto || 50,
+            };
+        });
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -51,12 +78,38 @@ const InscripcionManual = () => {
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
 
-        const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-            idCategoria: categoria.id,
-            nombreCategoria: categoria.nombre,
-            descripcionCategoria: categoria.descripcion || "", // si se requiere
-            idArea: areasFormateadas[index].idArea,
-        }));
+        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
+        //     idCategoria: categoria.id,
+        //     nombreCategoria: categoria.nombre,
+        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+        //     idArea: areasFormateadas[index].idArea,
+        // }));
+
+        // Ahora, para cada categoría, asignamos correctamente el idArea
+        const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
+            // Buscar el área que contiene esta categoría por el idCategoria
+            let idAreaEncontrado = null;
+
+            // Recorremos las áreas seleccionadas
+            areasSeleccionadas.forEach((area) => {
+                // Verificar si esta categoría pertenece a este área comparando el idCategoria
+                const categoriaEncontrada = area.categorias.find(
+                    (cat) => cat.id === categoria.id
+                );
+                if (categoriaEncontrada) {
+                    idAreaEncontrado = area.id; // Asignar el idArea de la categoría
+                }
+            });
+
+            // Si encontramos el área correspondiente, formateamos la categoría
+            return {
+                idCategoria: categoria.id,
+                nombreCategoria: categoria.nombre,
+                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                idArea: idAreaEncontrado, // Asignar el idArea encontrado
+                monto: categoria.monto || 50,
+            };
+        });
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -67,10 +120,10 @@ const InscripcionManual = () => {
             setEstudiantes(estudiantesActualizados);
         }
 
-             
+
         setAreasSeleccionadas([]);
         setCategoriasSeleccionadas([]);
-        setIndexEdit(-1); 
+        setIndexEdit(-1);
         setEstudianteEdit({});
         setRegistro(false);  // Cambiar el estado de registro a false
     }
