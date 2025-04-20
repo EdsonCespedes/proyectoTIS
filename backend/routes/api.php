@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
@@ -27,7 +28,6 @@ Route::get('/verprovincias/departamento/{nombre}', [ProvinciaController::class, 
 
 
 
-Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 //Route::post('/colegio', [ColegioController::class, 'store']);     //guarda colegios
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
@@ -55,8 +55,10 @@ Route::get('/prueba', function (Request $request) {
 //Registrar un postulante
 Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
 
-//Crear Colegio
+// Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
+Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
+Route::put('/colegio/{id}', [ColegioController::class, 'update']);
 
 
 
@@ -88,3 +90,7 @@ Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocator
 
 //guarda Convocatoria junto con todos su datos
 Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+
+// RUTAS PARA TUTOR
+Route::get('/tutor/{id}', [TutorController::class, 'show']);
+Route::get('/tutor', [TutorController::class, 'index']);
