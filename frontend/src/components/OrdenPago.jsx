@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf"; // Importa jsPDF
 import "./styles/ordenPago.css";
 
-
 const OrdenPago = () => {
   const [mostrarDescargar, setMostrarDescargar] = useState(false);
   const [mostrarBotones, setMostrarBotones] = useState(true);
@@ -24,6 +23,11 @@ const OrdenPago = () => {
   const handleAceptar = () => {
     setMostrarDescargar(true);
     setMostrarBotones(false);
+  };
+
+  const handleCancelar = () => {
+    setMostrarDescargar(false);
+    setMostrarBotones(true);
   };
 
   const handleDescargarPDF = () => {
@@ -103,13 +107,21 @@ const OrdenPago = () => {
               <button className="btn-descargar" onClick={handleAceptar}>
                 Aceptar
               </button>
-              <button className="btn-cancelar">Cancelar</button>
+              <button className="btn-cancelar" onClick={handleCancelar}>
+                Cancelar
+              </button>
             </>
           )}
+
           {mostrarDescargar && (
-            <button className="btn-descargar" onClick={handleDescargarPDF}>
-              Descargar PDF
-            </button>
+            <>
+              <button className="btn-descargar" onClick={handleDescargarPDF}>
+                Descargar PDF
+              </button>
+              <button className="btn-cancelar" onClick={handleCancelar}>
+                Cancelar
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -118,6 +130,7 @@ const OrdenPago = () => {
 };
 
 export default OrdenPago;
+
 
 
 

@@ -430,7 +430,3 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
 export default Registro;
 
-
-
-
-

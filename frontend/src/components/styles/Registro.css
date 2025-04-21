@@ -43,6 +43,8 @@ body {
     border-radius: 8px;
     border: 1px solid #ddd;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 5);
+    position: relative;           /* 🔧 Nuevo: para que el DatePicker se posicione correctamente */
+    overflow: visible;            /* 🔧 Nuevo: evita que el calendario se recorte */
 }
 
 /* Subtítulos */
@@ -158,6 +160,20 @@ input, select {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 5);
     margin-top: 20px;
 }
+
+/* Asegura que el popper del calendario esté por encima de todo */
+.react-datepicker-popper {
+    z-index: 9999 !important;
+  }
+  
+  /* Permite que el calendario no se recorte en ambas secciones */
+  .fecha-postulante-container,
+  .fecha-tutor-container {
+    position: relative;
+    overflow: visible;
+  }
+  
+  
 
 
 
