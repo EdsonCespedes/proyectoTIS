@@ -17,6 +17,13 @@ import InscripcionManual from "./pages/InscripcionManual";
 import Niveles from "./pages/Niveles";
 
 
+//prueba
+import RegistrarColegio from "./pages/RegistrarColegio";  
+
+
+
+
+
 
 function App() {
 
@@ -38,6 +45,14 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
         <Route path="/nivel" element={<Niveles />} />
+
+
+
+        {/* Agregar la ruta para RegistrarColegio */}
+        <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
+
+
+
       </Routes>
     </div>
     
