@@ -3,12 +3,17 @@ import * as XLSX from "xlsx";
 
 import ExcelDownload from "../components/ExcelDownload";
 import "../components/styles/ImageUpload.css"
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import "./styles/InscripcionExcel.css";
 
 const InscripcionExcel = () => {
-    const [estudiantes, setEstudiantes] = useState([]);
+    const location = useLocation();
+    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+
+    //const [estudiantes, setEstudiantes] = useState([]);
     const [archivoNombre, setArchivoNombre] = useState("");
+
+    const navigate = useNavigate();
 
     const { idConvocatoria } = useParams();
 
@@ -246,6 +251,15 @@ const InscripcionExcel = () => {
         if (file) handleArchivo(file);
     };
 
+    const handleSiguiente = () => {
+        navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
+            state: {
+                estudiantes,
+                from: "Excel",
+            },
+        });
+    }
+
     return (
         <div className="excel-container">
             <div className="excel-title">
@@ -318,6 +332,16 @@ const InscripcionExcel = () => {
                         </h1>
                     )}
                 </div>
+            </div>
+
+            <div className="control">
+                <button
+                    className="boton-style btn-aceptacion"
+                    onClick={handleSiguiente}
+                >
+                    Siguiente
+                </button>
+                <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
             </div>
         </div>
     );
