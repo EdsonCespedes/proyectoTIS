@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Header from "../layout/Header";
 import "../components/styles/GestionColegios.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const GestionColegios = () => {
+    const navigate = useNavigate();
+
     const [colegios, setColegios] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
@@ -13,10 +14,17 @@ const GestionColegios = () => {
             .then(response => response.json())
             .then(data => setColegios(data))
             .catch(error => console.error("Error al obtener colegios:", error));
-    },[]);
+    }, []);
 
     const startIndex = currentPage * itemsPerPage;
     const currentColegios = colegios.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleModificar = (colegio) => {
+        navigate("/edit-colegios", {
+            state: { colegio },
+        });
+    };
+    
 
     return (
         <div className="contenedor-colegio">
@@ -38,7 +46,9 @@ const GestionColegios = () => {
                                 <td>{colegio.idColegio}</td>
                                 <td>{colegio.nombreColegio}</td>
                                 <td className="actions">
-                                    <Link to="/edit-colegios" className="boton-style btn-rechazo">Modificar</Link>
+                                    <button onClick={() => handleModificar(colegio)} className="boton-style btn-rechazo">
+                                        Modificar
+                                    </button>
                                     <button className="boton-style btn-rechazo">Retirar</button>
                                 </td>
                             </tr>
