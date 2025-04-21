@@ -68,6 +68,8 @@ Route::post('/areas', [AreaController::class, 'store']);
 //Crear Categoría
 Route::post('/categorias', [CategoriaController::class, 'store']);
 
+//crear solo en tabla convocatoria
+Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
 
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
