@@ -16,7 +16,8 @@ class Categoria extends Model
         'descCategoria',
         'habilitada', // AÑADIDO (si no existe, agregar a la tabla)
         'idArea',
-        'maxPost'
+        'maxPost',
+        'montoCate', 
     ];
 
     public function area()

@@ -104,3 +104,9 @@ Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::
 
 //obtiene  convocatoria mediante id convocatoria
 Route::get('/editaconvocatoria/{idConvocatoria}', [ConvocatoriaController::class, 'editarConvocatoria']); //edita convocatoria
+
+//actualizar las convocatorias mediante id convocatoria
+Route::put('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'update']);
+
+//eliminar convocatoria mediante id convocatoria
+Route::delete('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
