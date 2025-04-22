@@ -100,7 +100,7 @@ const Historial = () => {
         <div className="formulario-inputs">
           {ordenesPago.map((orden, index) => (
             <div className="formulario-row" key={orden.idOrdenPago}>
-              <input type="text" disabled defaultValue={orden.montoTotal} className={orden.cancelado ? 'input-valid' : 'input-invalid'}/>
+              <input type="text" disabled defaultValue={`Orden de Pago ${orden.idOrdenPago} Bs.- ${orden.montoTotal}`} className={orden.cancelado ? 'input-valid' : 'input-invalid'}/>
               {!orden.cancelado ? (
                 <button onClick={() => handlePagar(orden)}>Subir Recibo</button>
               ) : (
