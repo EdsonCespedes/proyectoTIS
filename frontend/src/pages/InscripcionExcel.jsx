@@ -3,11 +3,17 @@ import * as XLSX from "xlsx";
 
 import ExcelDownload from "../components/ExcelDownload";
 import "../components/styles/ImageUpload.css"
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import "./styles/InscripcionExcel.css";
 
 const InscripcionExcel = () => {
-    const [estudiantes, setEstudiantes] = useState([]);
+    const location = useLocation();
+    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+
+    //const [estudiantes, setEstudiantes] = useState([]);
     const [archivoNombre, setArchivoNombre] = useState("");
+
+    const navigate = useNavigate();
 
     const { idConvocatoria } = useParams();
 
@@ -16,7 +22,6 @@ const InscripcionExcel = () => {
     useEffect(() => {
         fetch("http://localhost:8000/api/vercursos")
             .then(res => res.json())
-            //   .then(data => setCursosDisponibles(data))
             .then(data => {
                 console.log("Cursos recibidos:", data); // 👀 VER QUÉ LLEGA AQUÍ
                 setCursosDisponibles(data); // o data.cursos si aplica
@@ -37,7 +42,6 @@ const InscripcionExcel = () => {
             const hoja = workbook.Sheets[workbook.SheetNames[0]];
             const datos = XLSX.utils.sheet_to_json(hoja, { defval: "" });
 
-            // Validación previa del formato del Excel
             const camposObligatorios = [
                 "nombrePost", "apellidoPost", "carnet", "fechaNaciPost",
                 "correoPost", "telefonoPost", "departamento", "provincia",
@@ -103,34 +107,93 @@ const InscripcionExcel = () => {
 
                 try {
                     const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/curso/${encodeURIComponent(nombreCurso)}`);
+
                     const data = await res.json();
-                    const estructura = data.estructura;
+
+                    const areas = data.estructura.map(item => ({
+                        id: item.area.id,
+                        nombre: item.area.nombre,
+                        categorias: item.categorias
+                    }));
 
                     const areasExcel = (fila["areas"] || "").split(",").map(a => a.trim()).filter(Boolean);
                     const categoriasExcel = (fila["categorias"] || "").split(",").map(c => c.trim()).filter(Boolean);
 
                     // Validar que todas las áreas existan
-                    const nombresAreasBackend = estructura.map(e => e.area.nombre);
+                    const nombresAreasBackend = areas.map(a => a.nombre);
                     const areasValidas = areasExcel.every(area => nombresAreasBackend.includes(area));
                     if (!areasValidas) {
                         console.warn(`Áreas inválidas para estudiante ${fila["nombrePost"]}:`, areasExcel);
                         continue;
                     }
 
-                    // Validar que las categorías correspondan con sus áreas
-                    const categoriasValidas = categoriasExcel.every((cat, idx) => {
-                        const areaNombre = areasExcel[idx];
-                        const areaData = estructura.find(e => e.area.nombre === areaNombre);
-                        if (!areaData) return false;
+                    const areasConfirmadas = areas.filter(area => areasExcel.includes(area.nombre));
 
-                        const nombresCategorias = areaData.categorias.map(c => c.nombre);
-                        return nombresCategorias.includes(cat);
+                    // Validar que las categorías corresponden a las áreas confirmadas
+                    const categoriasConfirmadas = areasConfirmadas.map(area => {
+                        const categoriasValidas = area.categorias.filter(cat => {
+                            return categoriasExcel.includes(cat.nombre);
+                        });
+
+                        if (!categoriasValidas) {
+                            console.warn(`Categorías inválidas para el área "${area.nombre}":`, categoriasExcel);
+                        }
+
+                        return categoriasValidas;
                     });
 
-                    if (!categoriasValidas) {
-                        console.warn(`Categorías inválidas para estudiante ${fila["nombrePost"]}:`, categoriasExcel);
-                        continue;
-                    }
+                    console.log(categoriasConfirmadas);
+
+                    const areasFormateadas = areasConfirmadas.map((area) => ({
+                        idArea: area.id,
+                        tituloArea: area.nombre,
+                        descArea: area.descripcion || "",
+                        habilitada: area.habilitada ?? true, // por defecto true si no existe
+                        idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
+                    }));
+
+                    // const categoriasFormateadas = categoriasConfirmadas.map((categoria, index) => ({
+                    //     idCategoria: categoria.id,
+                    //     nombreCategoria: categoria.nombre,
+                    //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+                    //     idArea: areasConfirmadas[index].idArea,
+                    //     monto: categoria.monto || 50,
+                    // }));
+
+                    // // Aplanamos el array de categorías confirmadas para obtener un solo array de categorías
+                    // const categoriasFormateadas = categoriasConfirmadas.flat().map((categoria, index) => ({
+                    //     idCategoria: categoria.id,
+                    //     nombreCategoria: categoria.nombre,
+                    //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+                    //     idArea: categoria.idArea || areasFormateadas[index].idArea,  // Aquí usamos el id del área que corresponde
+                    //     monto: categoria.monto || 50, // Si el monto no está definido, asignamos un valor por defecto
+                    // }));
+
+                    // Ahora, para cada categoría, asignamos correctamente el idArea
+                    const categoriasFormateadas = categoriasConfirmadas.flat().map((categoria) => {
+                        // Buscar el área que contiene esta categoría por el idCategoria
+                        let idAreaEncontrado = null;
+
+                        // Recorremos las áreas seleccionadas
+                        areasConfirmadas.forEach((area) => {
+                            // Verificar si esta categoría pertenece a este área comparando el idCategoria
+                            const categoriaEncontrada = area.categorias.find(
+                                (cat) => cat.id === categoria.id
+                            );
+                            if (categoriaEncontrada) {
+                                idAreaEncontrado = area.id; // Asignar el idArea de la categoría
+                            }
+                        });
+
+                        // Si encontramos el área correspondiente, formateamos la categoría
+                        return {
+                            idCategoria: categoria.id,
+                            nombreCategoria: categoria.nombre,
+                            descripcionCategoria: categoria.descripcion || "", // si se requiere
+                            idArea: idAreaEncontrado, // Asignar el idArea encontrado
+                            monto: categoria.monto || 50,
+                        };
+                    });
 
                     // ✅ Si todo está OK, formateamos el estudiante
                     const estudiante = {
@@ -153,12 +216,12 @@ const InscripcionExcel = () => {
                             telefonoTutor: "",
                             fechaNaciTutor: ""
                         },
-                        areas: areasExcel,
-                        categorias: categoriasExcel,
+                        areas: areasFormateadas,
+                        categorias: categoriasFormateadas,
                         departamentoColegio: "",
                         provinciaColegio: ""
                     };
-
+                    console.log(estudiante);
                     estudiantesValidados.push(estudiante);
                 } catch (error) {
                     console.error("Error al obtener áreas y categorías:", error);
@@ -188,11 +251,22 @@ const InscripcionExcel = () => {
         if (file) handleArchivo(file);
     };
 
+    const handleSiguiente = () => {
+        navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
+            state: {
+                estudiantes,
+                from: "Excel",
+            },
+        });
+    }
+
     return (
-        <div>
-            <h2>TODOS LOS POSTULANTES DEBEN PERTENECER AL MISMO COLEGIO Y TENER EL MISMO TUTOR</h2>
-            <h2>Descague la plantilla aqui y suba el archivo .xlsx con el formato dado</h2>
-            <ExcelDownload />
+        <div className="excel-container">
+            <div className="excel-title">
+                <h2>TODOS LOS POSTULANTES DEBEN PERTENECER AL MISMO COLEGIO Y TENER EL MISMO TUTOR</h2>
+                <h2>Descague la plantilla aqui y suba el archivo .xlsx con el formato dado</h2>
+                <ExcelDownload />
+            </div>
 
             <div
                 className={`image-upload-container ${dragging ? "dragging" : ""}`}
@@ -224,18 +298,51 @@ const InscripcionExcel = () => {
                 </label>
             </div>
 
+            <div className="excel-previa">
+                <h3>Vista previa ({estudiantes.length} estudiantes)</h3>
 
-            {archivoNombre && <p>Archivo cargado: {archivoNombre}</p>}
+                <div className="excel-tabla">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className="col-nombre-estudiante">NOMBRE COMPLETO</th>
+                                <th className="col-area">AREA DE COMPETENCIA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {estudiantes.map((estudiante, index) => (
+                                <tr key={index}>
+                                    <td>{estudiante.nombrePost} {estudiante.apellidoPost}</td>
+                                    <td>
+                                        {estudiante.areas.map((area, index) => (
+                                            <React.Fragment key={area.idArea}>
+                                                {area.tituloArea} - {estudiante.categorias[index]?.nombreCategoria}
+                                                <br />
+                                            </React.Fragment>
+                                        ))}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-            {/* Vista previa */}
-            <h3>Vista previa ({estudiantes.length} estudiantes)</h3>
-            <ul>
-                {estudiantes.slice(0, 5).map((est, i) => (
-                    <li key={i}>
-                        {est.nombrePost} {est.apellidoPost} - {est.carnet} - {est.areas.join(", ")} / {est.categorias.join(", ")}
-                    </li>
-                ))}
-            </ul>
+                    {estudiantes.length === 0 && (
+                        <h1 className="no-data">
+                            NO HAY ESTUDIANTES PARA REGISTRAR AÚN...
+                        </h1>
+                    )}
+                </div>
+            </div>
+
+            <div className="control">
+                <button
+                    className="boton-style btn-aceptacion"
+                    onClick={handleSiguiente}
+                >
+                    Siguiente
+                </button>
+                <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
+            </div>
         </div>
     );
 };

@@ -46,6 +46,7 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
         {/* <Route path="/editar" element={<EditarDesdeRuta />} /> */}
         <Route path="/ordenPago" element={<OrdenPago />} />
+        <Route path="/convocatoria/:idConvocatoria/ordenPago" element={<OrdenPago />} />
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
         <Route path="/area" element={<Area />} />

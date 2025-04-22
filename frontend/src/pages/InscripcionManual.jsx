@@ -170,7 +170,8 @@ const InscripcionManual = () => {
                             className="boton-style btn-aceptacion"
                             onClick={handleSubmit}
                         >
-                            Generar Orden Pago
+                            {/* Guardar */}
+                            Siguiente
                         </button>
                         <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>
                     </div>
