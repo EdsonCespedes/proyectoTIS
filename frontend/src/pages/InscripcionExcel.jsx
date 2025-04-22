@@ -169,7 +169,7 @@ const InscripcionExcel = () => {
 
                     const areasConfirmadas = areas.filter(area => areasExcel.includes(area.nombre));
                     console.log(areasConfirmadas);
-                    
+
 
                     // Validar que las categorías corresponden a las áreas confirmadas
                     const categoriasConfirmadas = areasConfirmadas.map(area => {
@@ -181,7 +181,7 @@ const InscripcionExcel = () => {
                             console.warn(`Categorías inválidas para el área "${area.nombre}":`, categoriasExcel);
                         }
                         console.log(categoriasExcel);
-                        
+
                         return categoriasValidas;
                     });
 
@@ -238,6 +238,8 @@ const InscripcionExcel = () => {
                         };
                     });
 
+                    fila["fechaNaciPost"] = convertirFecha(fila["fechaNaciPost"]);
+
                     // ✅ Si todo está OK, formateamos el estudiante
                     const estudiante = {
                         nombrePost: fila["nombrePost"] || "",
@@ -276,6 +278,27 @@ const InscripcionExcel = () => {
         reader.readAsArrayBuffer(file);
     };
 
+    const convertirFechaExcel = (numeroExcel) => {
+        if (typeof numeroExcel !== "number") return "";
+
+        const fechaBase = new Date(1900, 0, 1); // 01/01/1900
+        const offset = numeroExcel - 2; // Excel empieza en 1, pero tiene un bug con 1900 siendo año bisiesto
+        fechaBase.setDate(fechaBase.getDate() + offset);
+
+        return fechaBase.toISOString().split("T")[0]; // YYYY-MM-DD
+    };
+
+    const convertirFecha = (valor) => {
+        if (typeof valor === "number") {
+            return convertirFechaExcel(valor);
+        }
+        if (typeof valor === "string") {
+            const [d, m, a] = valor.split("/");
+            return `${a}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+        }
+        return "";
+    };
+
     const onDrop = (e) => {
         e.preventDefault();
 
@@ -304,7 +327,7 @@ const InscripcionExcel = () => {
         //     tutor: { ...tutor }
         // }));
         console.log(tutor);
-        
+
         // setEstudiantes(estudiantes.map(est => ({
         //     ...est,
         //     departamentoColegio,  // Asignar el valor de departamentoColegio a cada estudiante
@@ -358,14 +381,14 @@ const InscripcionExcel = () => {
 
         if (name === "idColegio") {
             console.log(colegiosDisponibles);
-            
+
             setIdColegio(value); // actualiza el colegio
             setDelegacion(Object.entries(colegiosDisponibles).find(([id, nombre]) => id == value)?.[1] || "")
         }
 
         // Cambiar valores del tutor
         if (name.includes("tutor.")) {
-            const [,child] = name.split(".");
+            const [, child] = name.split(".");
             setTutor((prevTutor) => ({
                 ...prevTutor,
                 [child]: value

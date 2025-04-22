@@ -120,13 +120,27 @@ const OrdenPago = () => {
       // Excluir campos innecesarios
       const { departamentoColegio, provinciaColegio, ...estudiante } = estudianteOriginal;
 
+      const postulante = {
+        ...estudiante,
+        carnet: String(estudiante.carnet ?? ""),
+        telefonoPost: String(estudiante.telefonoPost ?? ""),
+        idCurso: String(estudiante.idCurso ?? ""),
+        idColegio: String(estudiante.idColegio ?? ""),
+        fechaNaciPost: estudiante.fechaNaciPost,
+        tutor: {
+          ...estudiante.tutor,
+          telefonoTutor: String(estudiante.tutor?.telefonoTutor ?? ""),
+          //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
+        }
+      };
+
       try {
         const response = await fetch('http://localhost:8000/api/registrar-postulante', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(estudiante)
+          body: JSON.stringify(postulante)
         });
 
         if (!response.ok) {
