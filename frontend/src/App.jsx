@@ -25,6 +25,8 @@ import Area from "./pages/Area";
 //Excel
 import InscripcionExcel from "./pages/InscripcionExcel";
 
+import Historial from "./components/Historial";
+
 function App() {
 
   return (
@@ -53,6 +55,8 @@ function App() {
 
         {/* Excel */}
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
+
+        <Route path="/ordenes-pago" element={<Historial />} />
       </Routes>
     </div>
     
