@@ -64,7 +64,7 @@ class EstructuraConvocatoriaController extends Controller
         ],
         'curso' => [
             'id' => $curso->idCurso,
-            'nombre' => $curso->nombreCurso
+            'nombre' => $curso->Curso
         ],
         'estructura' => []
     ];

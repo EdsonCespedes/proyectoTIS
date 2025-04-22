@@ -7,6 +7,8 @@ const OrdenPago = () => {
   const [mostrarDescargar, setMostrarDescargar] = useState(false);
   const [mostrarBotones, setMostrarBotones] = useState(true);
 
+  const [salirActivo, setSalirActivo] = useState(false);
+
   const navigate = useNavigate();
 
   const { idConvocatoria } = useParams();
@@ -14,7 +16,7 @@ const OrdenPago = () => {
   const estudiantes = location.state?.estudiantes;
   const from = location.state?.from || "default";
   console.log(estudiantes);
-  
+
   // [
   //   { nombre: "Katerin Marza Caro", monto: "100,00", disciplina: "Fisica" },
   //   { nombre: "Juan Pérez", monto: "150,00", disciplina: "Matematica" },
@@ -58,15 +60,17 @@ const OrdenPago = () => {
 
     doc.text("Estudiante", 20, 70);
     doc.text("Monto", 100, 70);
-    doc.text("Disciplina", 150, 70);
+    doc.text("Disciplinas", 150, 70);
 
     doc.line(10, 75, 200, 75);
 
     let yPosition = 80;
     estudiantes.forEach((est) => {
-      doc.text(est.nombre, 20, yPosition);
-      doc.text(est.monto, 100, yPosition);
-      doc.text(est.disciplina, 150, yPosition);
+      doc.text(est.nombrePost + " " + est.apellidoPost, 20, yPosition);
+      // doc.text(est.monto, 100, yPosition);
+      doc.text(est.categorias.reduce((acc, cat) => acc + cat.monto, 0).toString(), 100, yPosition);
+      // doc.text(est.disciplina, 150, yPosition);
+      doc.text(est.areas.map(area => area.tituloArea).join(" - "), 150, yPosition);
       yPosition += 10;
     });
 
@@ -74,6 +78,7 @@ const OrdenPago = () => {
     doc.text(`Monto Total: ${montoTotal}`, 20, yPosition + 10);
 
     doc.save("recibo_pago.pdf");
+    setSalirActivo(true);
   };
 
   const handleSubmit = async () => {
@@ -112,13 +117,27 @@ const OrdenPago = () => {
       // Excluir campos innecesarios
       const { departamentoColegio, provinciaColegio, ...estudiante } = estudianteOriginal;
 
+      const postulante = {
+        ...estudiante,
+        carnet: String(estudiante.carnet ?? ""),
+        telefonoPost: String(estudiante.telefonoPost ?? ""),
+        idCurso: String(estudiante.idCurso ?? ""),
+        idColegio: String(estudiante.idColegio ?? ""),
+        fechaNaciPost: estudiante.fechaNaciPost,
+        tutor: {
+          ...estudiante.tutor,
+          telefonoTutor: String(estudiante.tutor?.telefonoTutor ?? ""),
+          //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
+        }
+      };
+
       try {
         const response = await fetch('http://localhost:8000/api/registrar-postulante', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(estudiante)
+          body: JSON.stringify(postulante)
         });
 
         if (!response.ok) {
@@ -154,6 +173,10 @@ const OrdenPago = () => {
     } else {
       navigate(-1); // por si acaso
     }
+  }
+
+  const handleSalir = () => {
+    navigate("/");
   }
 
   return (
@@ -216,6 +239,10 @@ const OrdenPago = () => {
               </button>
             </>
           )}
+
+          <button onClick={handleSalir} disabled={!salirActivo}>
+            Salir
+          </button>
         </div>
       </div>
     </div>

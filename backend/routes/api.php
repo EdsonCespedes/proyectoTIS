@@ -9,11 +9,15 @@ use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\OrdenPagoController;
+
+
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaEstructuraController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -41,13 +45,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Ruta de prueba
-Route::get('/prueba', function (Request $request) {
-    return response()->json([
-        'message' => 'Ruta de prueba funcionando',
-        'timestamp' => now()
-    ]);
-});
 
 
 // Rutas para registrar/insertar entidades
@@ -72,25 +69,43 @@ Route::post('/cursos', [CursoController::class, 'store']);
 Route::post('/areas', [AreaController::class, 'store']);
 
 //Crear Categoría
-//Route::post('/categorias', [CategoriaController::class, 'store']);
+Route::post('/categorias', [CategoriaController::class, 'store']);
 
-Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
-    // $convocatorias = DB::table('convocatoria')->get();
-    //     return response()->json($convocatorias);
-    // });
+//crear solo en tabla convocatoria
+Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
+
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
 
 
+
+//obtiene todo los datos de la tabla area 
+
+Route::get('/todasAreas', [AreaController::class, 'index']);
+
+//obtiene los datos de un colegio por su id
+
+Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegioconid']);
 
 
 // obtener areas y categorias de los cursos habilitados mediante el nombre del curso
 
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
 
-//guarda Convocatoria junto con todos su datos
+//guarda Convocatoria junto con todos su datos asociados
 Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
-// RUTAS PARA TUTOR
-Route::get('/tutor/{id}', [TutorController::class, 'show']);
-Route::get('/tutor', [TutorController::class, 'index']);
+//obtiene todas las convocatorias
+Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
+
+
+//buscador por nombre e id al tutor
+Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
+
+//guarda areas y todo lo demas d convocatoria
+
+Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
+
+
+//obtiene  convocatoria mediante id convocatoria
+Route::get('/editaconvocatoria/{idConvocatoria}', [ConvocatoriaController::class, 'editarConvocatoria']); //edita convocatoria

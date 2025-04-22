@@ -98,4 +98,17 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+
+  /* Estilos cuando el input es válido (paleta verde) */
+.input-valid:disabled {
+  border: 2px solid green !important;
+  background-color: #e0f7e0;  /* Fondo verde claro */
+}
+
+/* Estilos cuando el input es inválido (paleta roja) */
+.input-invalid:disabled {
+  border: 2px solid red !important;
+  background-color: #f8d7da;  /* Fondo rojo claro */
+}
   

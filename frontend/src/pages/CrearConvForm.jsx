@@ -49,7 +49,38 @@ export const CrearConvForm = () => {
     }
   };
 
-  const handleSiguiente = (e) => {
+  // const handleSiguiente = (e) => {
+  //   if (
+  //     !formData.titulo ||
+  //     !formData.descripcion ||
+  //     !formData.fechaInicioInscripcion ||
+  //     !formData.fechaCierreInscripcion ||
+  //     !formData.fechaInicioOlimpiada ||
+  //     !formData.fechaFinOlimpiada ||
+  //     !formData.imagenPortada
+  //   ) {
+  //     setError("Por favor, complete todos los campos obligatorios.");
+  //     return;
+  //   }
+  //   setError("");
+  //   //handleSubmit(e);
+  //   agregarConvocatoria({
+  //     titulo: formData.titulo,
+  //     fechaPublicacion: new Date().toISOString().split("T")[0],
+  //     fechaInicioInsc: formData.fechaInicioInscripcion,
+  //     fechaFinInsc: formData.fechaCierreInscripcion,
+  //     portada: formData.imagenPortada,
+  //     habilitada: 1,
+  //     fechaInicioOlimp: formData.fechaInicioOlimpiada,
+  //     fechaFinOlimp: formData.fechaFinOlimpiada,
+  //     maximoPostPorArea: formData.maxConcursantes,
+  //   });
+  //   navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (
       !formData.titulo ||
       !formData.descripcion ||
@@ -63,20 +94,44 @@ export const CrearConvForm = () => {
       return;
     }
     setError("");
-    //handleSubmit(e);
-    agregarConvocatoria({
-      titulo: formData.titulo,
-      fechaPublicacion: new Date().toISOString().split("T")[0],
-      fechaInicioInsc: formData.fechaInicioInscripcion,
-      fechaFinInsc: formData.fechaCierreInscripcion,
-      portada: formData.imagenPortada,
-      habilitada: 1,
-      fechaInicioOlimp: formData.fechaInicioOlimpiada,
-      fechaFinOlimp: formData.fechaFinOlimpiada,
-      maximoPostPorArea: formData.maxConcursantes,
-    });
-    navigate("/area"); // Asegúrate de que esta ruta coincida con tu configuración
+
+    const newformData = new FormData();
+    newformData.append('titulo', formData.titulo);
+    newformData.append('descripcion', formData.descripcion);
+    newformData.append('fechaPublicacion', new Date().toISOString().split("T")[0]);
+    newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
+    newformData.append('fechaFinInsc', formData.fechaCierreInscripcion);
+    newformData.append('portada', formData.imagenPortada); // <-- tu imagen
+    newformData.append('habilitada', '1');
+    newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
+    newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
+    newformData.append('maximoPostPorArea', formData.maxConcursantes);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/solo-convocatoria', {
+        method: 'POST',
+        body: newformData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Errores de validación:', errorData.errors);
+        return;
+      }
+
+      const data = await response.json();
+      console.log('ID de la convocatoria creada:', data.idConvocatoria);
+      const idConvocatoria = data.idConvocatoria;
+
+      // aquí podrías redirigir o guardar el ID
+      navigate(`/area`, {
+        state: { idConvocatoria },
+      });
+    } catch (error) {
+      console.error('Error al guardar la convocatoria:', error);
+    }
   };
+
 
   const handleCancelar = () => {
     navigate("/detalle-convocatoria");
@@ -171,7 +226,7 @@ export const CrearConvForm = () => {
 
       </form>
       <div className="button-group">
-        <button type="submit" className="siguiente" onClick={handleSiguiente}>
+        <button type="submit" className="siguiente" onClick={handleSubmit}>
           Siguiente
         </button>
         <button type="button" className="cancelar" onClick={handleCancelar}>
