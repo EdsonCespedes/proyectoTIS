@@ -10,7 +10,7 @@ const Convocatorias = () => {
     const [convocatorias,setConvocatorias] =useState([]);
 
     useEffect(() => { //para hacer un get
-            fetch("http://localhost:8000/api/convocatorias")
+            fetch("http://localhost:8000/api/todasconvocatorias")
                 .then(response => response.json())
                 // .then(data => setConvocatorias(data))
                 .then(data => {

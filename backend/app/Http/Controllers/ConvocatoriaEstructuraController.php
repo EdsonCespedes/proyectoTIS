@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
 // ConvocatoriaEstructuraController.php
+class ConvocatoriaEstructuraController extends Controller
+{
 public function areasEstructura(Request $request, $id)
 {
     $convocatoria = Convocatoria::find($id);
@@ -24,7 +26,10 @@ public function areasEstructura(Request $request, $id)
     try {
         foreach ($request->input('areas') as $areaData) {
             $area = Area::firstOrCreate(
-                ['tituloArea' => $areaData['tituloArea']],
+                [
+                    'tituloArea' => $areaData['tituloArea'],
+                    'idConvocatoria' => $convocatoria->idConvocatoria
+                ],
                 [
                     'descArea' => $areaData['descArea'] ?? null,
                     'habilitada' => $areaData['habilitada'] ?? true
@@ -45,6 +50,7 @@ public function areasEstructura(Request $request, $id)
                 $categoria = Categoria::create([
                     'nombreCategoria' => $catData['nombreCategoria'],
                     'descCategoria' => $catData['descCategoria'],
+                    'habilitada' => $areaData['habilitada'] ?? true,
                     'maxPost' => $catData['maxPost'] ?? 0,
                     'idArea' => $area->idArea
                 ]);
@@ -77,6 +83,24 @@ public function areasEstructura(Request $request, $id)
 }
 
 
+    private function compararNombres($nombre1, $nombre2)
+    {
+        $normalizar = function ($cadena) {
+            // Eliminar tildes (acentos)
+            $cadena = str_replace(
+                ['á', 'é', 'í', 'ó', 'ú', 'ñ'],
+                ['a', 'e', 'i', 'o', 'u', 'n'],
+                mb_strtolower(trim($cadena), 'UTF-8')
+            );
+
+            // Reemplazar caracteres especiales
+            $cadena = preg_replace('/[^a-z0-9]/i', '', $cadena); // solo letras y números
+
+            return $cadena;
+        };
+
+        return $normalizar($nombre1) === $normalizar($nombre2);
+    }
 
 
 

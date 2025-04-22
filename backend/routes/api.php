@@ -4,7 +4,7 @@ use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
-use App\Http\Controllers\ColegioController;
+use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
@@ -17,6 +17,7 @@ use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaEstructuraController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 

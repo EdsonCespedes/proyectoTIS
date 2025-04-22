@@ -18,7 +18,7 @@ const DetalleConv = () => {
   const [convocatorias, setConvocatorias] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/convocatorias")
+    fetch("http://localhost:8000/api/todasconvocatorias")
       .then(response => response.json())
       .then(data => setConvocatorias(data))
       .catch(error => console.error("Error al obtener colegios:", error));

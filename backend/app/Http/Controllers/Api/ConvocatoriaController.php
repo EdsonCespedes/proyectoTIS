@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
 class ConvocatoriaController extends Controller
 {
     //
-    public function index(){
-        $convocatorias = Convocatoria::all();
-        return response()->json($convocatorias);
-    }
+    // public function index(){
+    //     $convocatorias = Convocatoria::all();
+    //     return response()->json($convocatorias);
+    // }
 
     //agregar post
     public function store(Request $request)
@@ -58,6 +58,9 @@ class ConvocatoriaController extends Controller
             // 'convocatoria' => $convocatoria
             'convocatorias' => $convocatoria
         ], 201);
+        } catch(Exception $e) {
+            echo 'Message: ' .$e->getMessage();
+        }
     }
 
     public function storeConvocatoria(Request $request)

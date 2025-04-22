@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./styles/Area.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useContext } from "react";
 import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
 
 const Area = () => {
+  const location = useLocation();
+  const idConvocatoria = location.state?.idConvocatoria;
+  console.log(idConvocatoria);
+  
+
   const [areas, setAreas] = useState([
     // "Matemáticas", "Física", "Química", "Biología", "Informática", "Robótica"
   ]);
@@ -36,12 +41,18 @@ const Area = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/areas")
+    // fetch("http://localhost:8000/api/areas")
+    fetch("http://localhost:8000/api/todasAreas")
       .then(response => response.json())
       // .then(data => setAreas(data))
       .then((data) => {
         const nombres = data.map(area => area.tituloArea);
-        setAreas(nombres); // ← aquí solo guardamos los títulos
+        setAreas(nombres);
+        const descripciones = data.reduce((acc, area) => {
+          acc[area.tituloArea] = area.descArea;
+          return acc;
+        }, {});        
+        setAreaDescriptions(descripciones);
       })
       .catch(error => console.error("Error al obtener colegios:", error));
 
@@ -161,35 +172,79 @@ const Area = () => {
 
   const handlePublicar = async (e) => {
     e.preventDefault();
-    const jsonFinal = generarJSONFinal();
+
+    if (!idConvocatoria) {
+      alert("ID de convocatoria no disponible");
+      return;
+    }
+
+    const areasData = activeCards.map(area => ({
+      tituloArea: editedCardNames[area] || area,
+      descArea: areaDescriptions[area] || "",
+      habilitada: true,
+      idConvocatoria: idConvocatoria,
+      categorias: (areaCategories[area] || []).map(cat => ({
+        nombreCategoria: cat.name,
+        descCategoria: (cat.levels || []).join(", "),
+        habilitada: true,
+        maxPost: 50 // ← Podés reemplazar este valor si querés que sea editable
+      }))
+    }));
 
     try {
-      const response = await fetch('http://localhost:8000/api/convocatorias', {
+      const response = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(jsonFinal)
+        body: JSON.stringify({ areas: areasData }),
       });
-
+  
+      const data = await response.json();
+  
       if (response.ok) {
-        const data = await response.json();
-        alert('Convocatoria publicada con éxito');
-        console.log('Respuesta del servidor:', data);
+        alert("Estructura publicada con éxito ✅");
+        console.log("Respuesta del servidor:", data);
+        //navigate("/detalle-convocatoria"); // o donde quieras redirigir
       } else {
-        const errorData = await response.json();
-        alert('Error al publicar: ' + errorData.message);
-        console.error('Error al publicar:', errorData);
+        alert(`Error al guardar estructura: ${data.error || data.message}`);
+        console.error("Error del backend:", data);
       }
+  
     } catch (error) {
-      alert('Error de conexión con el servidor');
-      console.error('Error de red:', error);
+      alert("Error de red al guardar la estructura");
+      console.error("Error de red:", error);
     }
+
+    // const jsonFinal = generarJSONFinal();
+
+    // try {
+    //   const response = await fetch('http://localhost:8000/api/convocatorias', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(jsonFinal)
+    //   });
+
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     alert('Convocatoria publicada con éxito');
+    //     console.log('Respuesta del servidor:', data);
+    //   } else {
+    //     const errorData = await response.json();
+    //     alert('Error al publicar: ' + errorData.message);
+    //     console.error('Error al publicar:', errorData);
+    //   }
+    // } catch (error) {
+    //   alert('Error de conexión con el servidor');
+    //   console.error('Error de red:', error);
+    // }
   };
 
   const handleSiguiente = (e) => {
     handlePublicar(e);
-    navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
+    //navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
   };
 
   const handleCancelar = () => {
