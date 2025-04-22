@@ -244,7 +244,7 @@ const Area = () => {
 
   const handleSiguiente = (e) => {
     handlePublicar(e);
-    //navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
+    navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
   };
 
   const handleCancelar = () => {

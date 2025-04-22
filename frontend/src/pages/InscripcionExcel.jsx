@@ -8,7 +8,23 @@ import "./styles/InscripcionExcel.css";
 
 const InscripcionExcel = () => {
     const location = useLocation();
-    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes || []);
+
+    const [departamentoColegio, setDepartamentoColegio] = useState(estudiantes[0]?.departamentoColegio || "");
+    const [provinciaColegio, setProvinciaColegio] = useState(estudiantes[0]?.provinciaColegio || "");
+    const [idColegio, setIdColegio] = useState(estudiantes[0]?.idColegio || "");
+    const [delegacion, setDelegacion] = useState(estudiantes[0]?.delegacion || ""); // o podés calcularlo
+    const [tutor, setTutor] = useState({
+        nombreTutor: estudiantes[0]?.tutor.nombreTutor || "",
+        apellidoTutor: estudiantes[0]?.tutor.apellidoTutor || "",
+        correoTutor: estudiantes[0]?.tutor.correoTutor || "",
+        telefonoTutor: estudiantes[0]?.tutor.telefonoTutor || "",
+        fechaNaciTutor: estudiantes[0]?.tutor.fechaNaciTutor || ""
+    });
+
+    const [provinciasColegio, setProvinciasColegio] = useState([]);
+    const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
+    const [departamentos, setDepartamentos] = useState([]);
 
     //const [estudiantes, setEstudiantes] = useState([]);
     const [archivoNombre, setArchivoNombre] = useState("");
@@ -27,7 +43,30 @@ const InscripcionExcel = () => {
                 setCursosDisponibles(data); // o data.cursos si aplica
             })
             .catch(err => console.error("Error cargando cursos:", err));
+
+        fetch("http://localhost:8000/api/verdepartamentos")
+            .then(response => response.json())
+            .then(data => setDepartamentos(data))
+            .catch(error => console.error("Error al obtener departamentos:", error));
     }, []);
+
+    useEffect(() => {
+        if (departamentoColegio) {
+            fetch(`http://localhost:8000/api/verprovincias/departamento/${departamentoColegio}`)
+                .then(res => res.json())
+                .then(data => setProvinciasColegio(data))
+                .catch(error => console.error("Error al obtener provincias:", error));
+        }
+    }, [departamentoColegio]);
+
+    useEffect(() => {
+        if (departamentoColegio && provinciaColegio) {
+            fetch(`http://localhost:8000/api/departamentos/${departamentoColegio}/provincias/${provinciaColegio}/colegios`)
+                .then(res => res.json())
+                .then(data => setColegiosDisponibles(data))
+                .catch(error => console.error("Error al obtener colegios:", error));
+        }
+    }, [departamentoColegio, provinciaColegio]);
 
     const [dragging, setDragging] = useState(false);
 
@@ -121,6 +160,7 @@ const InscripcionExcel = () => {
 
                     // Validar que todas las áreas existan
                     const nombresAreasBackend = areas.map(a => a.nombre);
+                    console.log(nombresAreasBackend);
                     const areasValidas = areasExcel.every(area => nombresAreasBackend.includes(area));
                     if (!areasValidas) {
                         console.warn(`Áreas inválidas para estudiante ${fila["nombrePost"]}:`, areasExcel);
@@ -128,6 +168,8 @@ const InscripcionExcel = () => {
                     }
 
                     const areasConfirmadas = areas.filter(area => areasExcel.includes(area.nombre));
+                    console.log(areasConfirmadas);
+                    
 
                     // Validar que las categorías corresponden a las áreas confirmadas
                     const categoriasConfirmadas = areasConfirmadas.map(area => {
@@ -138,7 +180,8 @@ const InscripcionExcel = () => {
                         if (!categoriasValidas) {
                             console.warn(`Categorías inválidas para el área "${area.nombre}":`, categoriasExcel);
                         }
-
+                        console.log(categoriasExcel);
+                        
                         return categoriasValidas;
                     });
 
@@ -252,13 +295,83 @@ const InscripcionExcel = () => {
     };
 
     const handleSiguiente = () => {
+        // const estudiantes = estudiantes.map(est => ({
+        //     ...est,
+        //     departamentoColegio,
+        //     provinciaColegio,
+        //     idColegio,
+        //     delegacion,
+        //     tutor: { ...tutor }
+        // }));
+        console.log(tutor);
+        
+        // setEstudiantes(estudiantes.map(est => ({
+        //     ...est,
+        //     departamentoColegio,  // Asignar el valor de departamentoColegio a cada estudiante
+        //     provinciaColegio,     // Asignar el valor de provinciaColegio a cada estudiante
+        //     idColegio,            // Asignar el valor de idColegio a cada estudiante
+        //     delegacion,           // Asignar el valor de delegacion a cada estudiante
+        //     tutor: { ...tutor }   // Asignar los datos del tutor (copia del objeto tutor)
+        // })));
+
+        // navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
+        //     state: {
+        //         estudiantes,
+        //         from: "Excel",
+        //     },
+        // });
         navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
             state: {
-                estudiantes,
+                estudiantes: estudiantes.map(est => ({
+                    ...est,
+                    departamentoColegio,
+                    provinciaColegio,
+                    idColegio,
+                    delegacion,
+                    tutor: { ...tutor },  // Datos del tutor actualizados
+                })),
                 from: "Excel",
             },
         });
     }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "departamentoColegio") {
+            setDepartamentoColegio(value);
+            fetch(`http://localhost:8000/api/verprovincias/departamento/${value}`)
+                .then(response => response.json())
+                .then(data => setProvinciasColegio(data))
+                .catch(error => console.error("Error al obtener provincias:", error));
+            setColegiosDisponibles([]);
+        }
+
+        if (name === "provinciaColegio") {
+            setProvinciaColegio(value);
+            const departamentoActual = departamentoColegio;
+            fetch(`http://localhost:8000/api/departamentos/${departamentoActual}/provincias/${value}/colegios`)
+                .then(response => response.json())
+                .then(data => setColegiosDisponibles(data))
+                .catch(error => console.error("Error al obtener colegios:", error));
+        }
+
+        if (name === "idColegio") {
+            console.log(colegiosDisponibles);
+            
+            setIdColegio(value); // actualiza el colegio
+            setDelegacion(Object.entries(colegiosDisponibles).find(([id, nombre]) => id == value)?.[1] || "")
+        }
+
+        // Cambiar valores del tutor
+        if (name.includes("tutor.")) {
+            const [,child] = name.split(".");
+            setTutor((prevTutor) => ({
+                ...prevTutor,
+                [child]: value
+            }));
+        }
+    };
 
     return (
         <div className="excel-container">
@@ -331,6 +444,50 @@ const InscripcionExcel = () => {
                             NO HAY ESTUDIANTES PARA REGISTRAR AÚN...
                         </h1>
                     )}
+                </div>
+            </div>
+
+            <div className="recuadro-container">
+                <h3> Datos del Colegio </h3>
+                <select name="departamentoColegio" onChange={handleChange} value={departamentoColegio}>
+                    <option value="">Selecciona un departamento</option>
+                    {departamentos.map((dep) => (
+                        <option key={dep.idDepartamento} value={dep.nombreDepartamento}>{dep.nombreDepartamento}</option>
+                    ))}
+                </select>
+
+                <select name="provinciaColegio" onChange={handleChange} value={provinciaColegio} disabled={!departamentoColegio}>
+                    <option value="">Selecciona una provincia</option>
+                    {provinciasColegio.map((prov) => (
+                        <option key={prov.idProvincia} value={prov.nombreProvincia}>{prov.nombreProvincia}</option>
+                    ))}
+                </select>
+
+                <select name="idColegio" onChange={handleChange} value={idColegio} disabled={!provinciaColegio}>
+                    <option value="">Selecciona un colegio</option>
+                    {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
+                        <option key={id} value={id}>
+                            {nombre}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="seccion">
+                <h2 className="subtitulo">Tutor</h2>
+                <div className="grid-container">
+                    <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={tutor.nombreTutor} />
+                    <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={tutor.apellidoTutor} />
+                    <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={tutor.telefonoTutor} />
+                    <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={tutor.correoTutor} />
+                    <input
+                        type="date"
+                        name="tutor.fechaNaciTutor"
+                        onChange={handleChange}
+                        min="1990-01-01"
+                        max="2019-12-31"
+                        value={tutor.fechaNaciTutor}
+                    />
                 </div>
             </div>
 

@@ -75,6 +75,10 @@ const Historial = () => {
     return <Recibo reciboData={reciboData} onVolver={handleVolver} />;
   }
 
+  const handleSalir = () => {
+    navigate("/");
+  }
+
   const handlePagar = (orden) => {
     navigate("/Recibo", {
       state: { orden },
@@ -96,9 +100,9 @@ const Historial = () => {
         <div className="formulario-inputs">
           {ordenesPago.map((orden, index) => (
             <div className="formulario-row" key={orden.idOrdenPago}>
-              <input type="text" disabled defaultValue={orden.montoTotal} />
+              <input type="text" disabled defaultValue={orden.montoTotal} className={orden.cancelado ? 'input-valid' : 'input-invalid'}/>
               {!orden.cancelado ? (
-                <button onClick={handlePagar(orden)}>Subir Recibo</button>
+                <button onClick={() => handlePagar(orden)}>Subir Recibo</button>
               ) : (
                 <button disabled>Pagado</button>
               )}
@@ -109,16 +113,11 @@ const Historial = () => {
 
 
         <div className="formulario-botones">
-          <button className="guardar-btn" onClick={handleGuardar}>Guardar</button>
           <button
             className="cancelar-btn"
-            onClick={() => {
-              setSearchText('');
-              setTutorEncontrado(null);
-              setMensaje('');
-            }}
+            onClick={() => {handleSalir()}}
           >
-            Cancelar
+            Salir
           </button>
         </div>
       </div>
