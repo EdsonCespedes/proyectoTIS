@@ -3,9 +3,9 @@ import './styles/RegistroPago.css';
 import Recibo from './Recibo';
 
 const tutores = [
-  { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
-  { nombre: 'Maria Lopez', ordenes: ['orden001', 'orden004', 'orden005', 'orden006'] },
-  { nombre: 'Luis Sanchez', ordenes: ['orden004', 'orden005', 'orden006'] },
+  { nombre: 'Juan Perez', ordenes: ['Orden de Pago 1', 'Orden de Pago 2'] },
+  { nombre: 'Maria Lopez', ordenes: ['Orden de Pago 3', 'Orden de Pago 4', 'Orden de Pago 5', 'Orden de Pago 6'] },
+  { nombre: 'Luis Sanchez', ordenes: ['Orden de Pago 7', 'Orden de Pago 8', 'Orden de Pago 9'] },
 ];
 
 const RegistroPago = () => {
@@ -108,7 +108,10 @@ const RegistroPago = () => {
         )}
 
         <div className="formulario-botones">
-          <button className="guardar-btn" onClick={handleGuardar}>Guardar</button>
+          <button 
+            className="guardar-btn" 
+            // onClick={handleGuardar}
+          >Guardar</button>
           <button
             className="cancelar-btn"
             onClick={() => {
