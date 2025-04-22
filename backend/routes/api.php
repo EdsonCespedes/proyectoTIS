@@ -112,3 +112,7 @@ Route::put('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'u
 
 //eliminar convocatoria mediante id convocatoria
 Route::delete('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
+
+//actualiza los datos de orden pago mediante id convocatoria
+Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
+
