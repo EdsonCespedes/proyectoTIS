@@ -24,4 +24,11 @@ class Tutor extends Model
     {
         return $this->hasMany(Postulante::class, 'idTutor');
     }
+
+
+    public function ordenesPago()
+    {
+        return $this->hasMany(OrdenPago::class, 'idTutor', 'idTutor');
+    }
 }
+
