@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
 import './styles/RegistroPago.css';
-import Recibo from './Recibo';
 
 const tutores = [
-  { nombre: 'Juan Perez', ordenes: ['Orden de Pago 1', 'Orden de Pago 2'] },
-  { nombre: 'Maria Lopez', ordenes: ['Orden de Pago 3', 'Orden de Pago 4', 'Orden de Pago 5', 'Orden de Pago 6'] },
-  { nombre: 'Luis Sanchez', ordenes: ['Orden de Pago 7', 'Orden de Pago 8', 'Orden de Pago 9'] },
+  {
+    nombre: 'Juan Perez',
+    ordenes: [
+      { nombre: 'Orden de Pago 1', idIngresado: '1234', idOCR: '1234' },
+      { nombre: 'Orden de Pago 2', idIngresado: '5670', idOCR: '5670' }
+    ]
+  },
+  {
+    nombre: 'Maria Lopez',
+    ordenes: [
+      { nombre: 'Orden de Pago 3', idIngresado: '8888', idOCR: '8888' },
+      { nombre: 'Orden de Pago 4', idIngresado: '4444', idOCR: '4444' },
+      { nombre: 'Orden de Pago 5', idIngresado: '9999', idOCR: '9991' },
+      { nombre: 'Orden de Pago 6', idIngresado: '0000', idOCR: '0001' }
+    ]
+  },
+  
 ];
 
 const RegistroPago = () => {
   const [searchText, setSearchText] = useState('');
   const [tutorEncontrado, setTutorEncontrado] = useState(null);
-  const [mostrarRecibo, setMostrarRecibo] = useState(false);
   const [mensaje, setMensaje] = useState('');
-  const [reciboData, setReciboData] = useState(null);
 
   const buscarTutor = () => {
     const resultado = tutores.find(tutor =>
@@ -29,38 +40,6 @@ const RegistroPago = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      buscarTutor();
-    }
-  };
-
-  const handleGuardar = () => {
-    if (tutorEncontrado) {
-      const nuevoRecibo = {
-        idRecibo: `R-${Math.floor(Math.random() * 10000)}`,
-        nombreTutor: tutorEncontrado.nombre,
-        ciTutor: '12345678',
-        monto: tutorEncontrado.ordenes.length * 50 + ',00',
-        fecha: new Date().toLocaleDateString(),
-        detalle: `Pago de ${tutorEncontrado.ordenes.length} orden(es) de matrícula.`,
-      };
-      setReciboData(nuevoRecibo);
-      setMostrarRecibo(true);
-    }
-  };
-
-  const handleVolver = () => {
-    setMostrarRecibo(false);
-    setSearchText('');
-    setTutorEncontrado(null);
-    setReciboData(null);
-  };
-
-  if (mostrarRecibo && reciboData) {
-    return <Recibo reciboData={reciboData} onVolver={handleVolver} />;
-  }
-
   return (
     <div className="formulario-pago-container">
       <div className="formulario-card">
@@ -75,20 +54,14 @@ const RegistroPago = () => {
             placeholder="Buscar por nombre del tutor"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={(e) => e.key === 'Enter' && buscarTutor()}
           />
-          <span
-            className="search-icon"
-            onClick={buscarTutor}
-            style={{ cursor: 'pointer' }}
-          >
+          <span className="search-icon" onClick={buscarTutor}>
             🔍
           </span>
         </div>
 
-        {mensaje && (
-          <p style={{ textAlign: 'center', color: 'red' }}>{mensaje}</p>
-        )}
+        {mensaje && <p style={{ textAlign: 'center', color: 'red' }}>{mensaje}</p>}
 
         {tutorEncontrado && (
           <>
@@ -96,22 +69,41 @@ const RegistroPago = () => {
               {tutorEncontrado.nombre} tiene {tutorEncontrado.ordenes.length} orden(es) de pago.
             </p>
 
-            <div className="formulario-inputs">
-              {tutorEncontrado.ordenes.map((orden, index) => (
-                <div className="formulario-row" key={index}>
-                  <input type="text" defaultValue={orden} />
-                  <input type="checkbox" />
-                </div>
-              ))}
-            </div>
+            <table className="tabla-pago">
+              <thead>
+                <tr>
+                  <th>Orden</th>
+                  <th>Id ingresado</th>
+                  <th>Id OcR</th>
+                  <th>Verificado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tutorEncontrado.ordenes.map((orden, index) => (
+                  <tr key={index}>
+                    <td>{orden.nombre}</td>
+                    <td>
+                      <input type="text" value={orden.idIngresado} disabled className="input-disabled" />
+                    </td>
+                    <td>
+                      <input type="text" value={orden.idOCR} disabled className="input-disabled" />
+                    </td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={orden.idIngresado === orden.idOCR}
+                        readOnly
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </>
         )}
 
         <div className="formulario-botones">
-          <button 
-            className="guardar-btn" 
-            // onClick={handleGuardar}
-          >Guardar</button>
+          <button className="guardar-btn">Guardar</button>
           <button
             className="cancelar-btn"
             onClick={() => {
@@ -129,4 +121,6 @@ const RegistroPago = () => {
 };
 
 export default RegistroPago;
+
+
 
