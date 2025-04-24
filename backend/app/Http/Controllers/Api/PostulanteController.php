@@ -159,6 +159,33 @@ class PostulanteController extends Controller
         }
     }
 
+    private function buscarOCrearColegio($nombre)
+    {
+        $colegio = DB::table('colegio')->where('nombreColegio', $nombre)->first();
+        if ($colegio) {
+            return $colegio->idColegio;
+        }
+        return DB::table('colegio')->insertGetId([
+            'nombreColegio' => $nombre,
+            'departamento'  => 'Sin definir',
+            'provincia'     => 'Sin definir',
+            'rue'           => 'Sin definir',
+            'direccion'     => 'Sin definir',
+            'fecha_creacion' => date('Y-m-d')
+        ]);
+    }
+
+    private function buscarOCrearCurso($nombre)
+    {
+        $curso = DB::table('curso')->where('Curso', $nombre)->first();
+        if ($curso) {
+            return $curso->idCurso;
+        }
+        return DB::table('curso')->insertGetId([
+            'Curso' => $nombre
+        ]);
+    }
+
     public function index()
     {
         $postulantes = Postulante::all();
