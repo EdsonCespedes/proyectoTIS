@@ -89,14 +89,19 @@ Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegiocon
 
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
 
-//guarda Convocatoria junto con todos su datos asociados
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
 //obtiene todas las convocatorias
 Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 
+//obtiene los datos de una convocatoria activa mediante su id 
+Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
 
-//buscador por nombre e id al tutor
+
+//obtiene todas las convocatorias activas 
+Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
+
+
+//buscador por nombre e id al tutor o nombre
 Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
 
 //guarda areas y todo lo demas d convocatoria
@@ -104,15 +109,18 @@ Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
 Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
 
 
-//obtiene  convocatoria mediante id convocatoria
-Route::get('/editaconvocatoria/{idConvocatoria}', [ConvocatoriaController::class, 'editarConvocatoria']); //edita convocatoria
-
-//actualizar las convocatorias mediante id convocatoria
-Route::put('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'update']);
-
 //eliminar convocatoria mediante id convocatoria
-Route::delete('/convocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
+Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
 
 //actualiza los datos de orden pago mediante id convocatoria
 Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
+
+//edita solo convocatorias 
+// Para editar solo la convocatoria
+Route::put('/editconvocatorias/{id}', [ConvocatoriaController::class, 'updateConvocatoria']);
+
+// Para editar las áreas y categorías de una convocatoria
+Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaController::class, 'updateAreasCategorias']);
+
+
 
