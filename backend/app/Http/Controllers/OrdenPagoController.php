@@ -42,7 +42,31 @@ class OrdenPagoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validación de los datos recibidos
+        $request->validate([
+            'montoTotal' => 'required|numeric|min:0', // Validación de monto total
+            'cancelado' => 'required|boolean', // Validación de cancelado (booleano)
+            'vigencia' => 'required|date', // Validación de vigencia (fecha)
+            'recibido' => 'required|boolean', // Validación de recibido (booleano)
+            'idTutor' => 'required|exists:tutor,idTutor', // El id del tutor debe existir
+        ]);
+
+        // Crear una nueva orden de pago
+        $ordenPago = new OrdenPago();
+        $ordenPago->montoTotal = $request->montoTotal;
+        $ordenPago->cancelado = $request->cancelado;
+        $ordenPago->vigencia = $request->vigencia;
+        $ordenPago->recibido = $request->recibido;
+        $ordenPago->idTutor = $request->idTutor;
+
+        // Guardar la orden de pago en la base de datos
+        $ordenPago->save();
+
+        // Respuesta exitosa con los detalles de la nueva orden
+        return response()->json([
+            'message' => 'Orden de pago creada exitosamente.',
+            'ordenPago' => $ordenPago
+        ], 201); // Código de respuesta 201: Creado
     }
 
     /**

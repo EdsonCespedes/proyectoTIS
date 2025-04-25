@@ -54,7 +54,13 @@ Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
 //Crear Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
 
-
+//Crear ordenPago
+   // "montoTotal": ,
+  //  "cancelado": ,
+ //   "vigencia": ,
+//    "recibido": ,
+//    "idTutor":
+Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
 
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
