@@ -30,6 +30,13 @@ import PruebaLogin from './pages/PruebaLogin';
 import InscripcionExcel from "./pages/InscripcionExcel";
 
 import Historial from "./components/Historial";
+//prueba
+import RegistrarColegio from "./pages/RegistrarColegio";  
+
+
+
+
+
 
 function App() {
 
@@ -65,6 +72,17 @@ function App() {
         {/*pruebas */}
         <Route path="/registro-tutor" element={<PruebaRegister />} />
         <Route path="/login" element={<PruebaLogin />} />
+
+        
+        <Route path="/nivel" element={<Niveles />} />
+
+
+
+        {/* Agregar la ruta para RegistrarColegio */}
+        <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
+
+
+
       </Routes>
     </div>
     

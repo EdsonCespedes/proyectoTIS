@@ -10,6 +10,7 @@ class OrdenPago extends Model
     protected $table = 'ordenpago';
     protected $primaryKey = 'idordenPago';
     public $timestamps = false;
+    protected $fillable = ['idTutor','montoTotal','cancelado','vigencia','recibido'];
 
     public function tutor()
     {
