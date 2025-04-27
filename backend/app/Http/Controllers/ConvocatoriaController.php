@@ -79,7 +79,50 @@ public function areasEstructura(Request $request, $id)
 }
 
 
+public function storeConvocatoria(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'titulo'              => 'required|string|max:45',
+            'descripcion'         => 'required|string|max:75',
+            'fechaPublicacion'    => 'required|date',
+            'fechaInicioInsc'     => 'required|date',
+            'fechaFinInsc'        => 'required|date',
+            'portada'             => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'habilitada'          => 'required|boolean',
+            'fechaInicioOlimp'    => 'required|date',
+            'fechaFinOlimp'       => 'required|date',
+            'maximoPostPorArea'   => 'required|integer',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+            // guarda la imagen en la carpeta portadas
+        if ($request->hasFile('portada')) {
+            $path = $request->file('portada')->store('portadas', 'public');
+        } else {
+            $path = null;
+        }
+
+        $convocatoria = Convocatoria::create([
+            'titulo'              => $request->input('titulo'),
+            'descripcion'         => $request->input('descripcion'),
+            'fechaPublicacion'    => $request->input('fechaPublicacion'),
+            'fechaInicioInsc'     => $request->input('fechaInicioInsc'),
+            'fechaFinInsc'        => $request->input('fechaFinInsc'),
+            'portada'             => $path,
+            'habilitada'          => $request->input('habilitada'),
+            'fechaInicioOlimp'    => $request->input('fechaInicioOlimp'),
+            'fechaFinOlimp'       => $request->input('fechaFinOlimp'),
+            'maximoPostPorArea'   => $request->input('maximoPostPorArea'),
+            'eliminado' => true,
+        ]);
+
+        // devuelve el id del a convocatoria creada
+        return response()->json([
+            'idConvocatoria' => $convocatoria->idConvocatoria
+        ], 201);
+    }
 
 
 
