@@ -16,11 +16,14 @@ class ConvocatoriaAreaSeeder extends Seeder
     public function run()
     {
         $areas = DB::table('area')->get();
-        foreach ($areas as $area) {
-            DB::table('convocatoria_area')->insert([
-                'idConvocatoria' => $area->idConvocatoria,
-                'idArea'         => $area->idArea,
-            ]);
+        $convocatorias = DB::table('convocatoria')->get();
+        foreach ($convocatorias as $convocatoria) {
+            foreach ($areas as $area) {
+                DB::table('convocatoria_area')->insert([
+                    'idConvocatoria' => $convocatoria->idConvocatoria,
+                    'idArea'         => $area->idArea,
+                ]);
+            }
         }
     }
 }

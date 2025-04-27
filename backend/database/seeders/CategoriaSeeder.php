@@ -18,10 +18,6 @@ class CategoriaSeeder extends Seeder
         $areas = DB::table('area')->get();
 
         foreach ($areas as $area) {
-            Log::info('Area data: ' . json_encode($area)); 
-            Log::info("Processing area: " . $area->tituloArea);
-
-            Log::info('Checking area: ' . $area->tituloArea);
 
             if (in_array($area->tituloArea, ['Matematicas', 'Fisica', 'Quimica', 'Biologia'])) {
                 for ($i = 1; $i <= 6; $i++) {
@@ -30,9 +26,9 @@ class CategoriaSeeder extends Seeder
                         'descCategoria'   => 'Grado ' . $i . ' de Primaria',
                         'idArea'          => $area->idArea,
                         'maxPost'          => 20,
+                        'idConvocatoria'   => 1
                     ];
                     DB::table('categoria')->insert($data);
-                    Log::info('Inserting category: ' . json_encode($data));
                 }
                 for ($i = 1; $i <= 6; $i++) {
                     $data = [
@@ -40,9 +36,9 @@ class CategoriaSeeder extends Seeder
                         'descCategoria'   => 'Grado ' . $i . ' de Secundaria',
                         'idArea'          => $area->idArea,
                         'maxPost'          => 20,
+                        'idConvocatoria'   => 2
                     ];
                     DB::table('categoria')->insert($data);
-                    Log::info('Inserting category: ' . json_encode($data));
                 }
             } elseif ($area->tituloArea === 'Informática') {
                 $data = [
@@ -50,18 +46,18 @@ class CategoriaSeeder extends Seeder
                     'descCategoria'   => 'Desde 1° Secundaria hasta 3° Secundaria',
                     'idArea'          => $area->idArea,
                     'maxPost'          => 20,
+                    'idConvocatoria'   => 3
                 ];
                 DB::table('categoria')->insert($data);
-                Log::info('Inserting category: ' . json_encode($data));
             } elseif ($area->tituloArea === 'Robótica') {
                 $data = [
                     'nombreCategoria' => 'LEGO',
                     'descCategoria'   => 'Desde 3° Secundaria hasta 5° Secundaria',
                     'idArea'          => $area->idArea,
                     'maxPost'          => 20,
+                    'idConvocatoria'   => 1
                 ];
                 DB::table('categoria')->insert($data);
-                Log::info('Inserting category: ' . json_encode($data));
             }
         }
     }

@@ -19,7 +19,7 @@ class ConvocatoriaSeeder extends Seeder
     {
         DB::table('convocatoria')->insert([
             [
-                'titulo' => 'conv1',
+                'tituloConvocatoria' => 'conv1',
                 'descripcion'  => 'descripcion 1',
                 'fechaPublicacion' => '2022-01-01',
                 'fechaInicioInsc'  => '2022-01-05',
@@ -28,9 +28,10 @@ class ConvocatoriaSeeder extends Seeder
                 'habilitada'       => false,
                 'fechaInicioOlimp' => '2022-02-01',
                 'fechaFinOlimp'    => '2022-02-10',
+                'maximoPostPorArea' => 80
             ],
             [
-                'titulo' => 'conv2',
+                'tituloConvocatoria' => 'conv2',
                 'descripcion'  => 'descripcion 2',
                 'fechaPublicacion' => Carbon::now()->subDays(10)->toDateString(),
                 'fechaInicioInsc'  => Carbon::now()->subDays(5)->toDateString(),
@@ -39,9 +40,10 @@ class ConvocatoriaSeeder extends Seeder
                 'habilitada'       => true,
                 'fechaInicioOlimp' => Carbon::now()->addDays(10)->toDateString(),
                 'fechaFinOlimp'    => Carbon::now()->addDays(20)->toDateString(),
+                'maximoPostPorArea' => 80
             ],
              [
-                'titulo' => 'conv3',
+                'tituloConvocatoria' => 'conv3',
                 'descripcion'  => 'descripcion 3',
                 'fechaPublicacion' => Carbon::now()->addDays(30)->toDateString(),
                 'fechaInicioInsc'  => Carbon::now()->addDays(35)->toDateString(),
@@ -50,6 +52,7 @@ class ConvocatoriaSeeder extends Seeder
                 'habilitada'       => true,
                 'fechaInicioOlimp' => Carbon::now()->addDays(50)->toDateString(),
                 'fechaFinOlimp'    => Carbon::now()->addDays(60)->toDateString(),
+                'maximoPostPorArea' => 80
             ],
 
         ]);

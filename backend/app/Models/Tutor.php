@@ -24,4 +24,9 @@ class Tutor extends Model
     {
         return $this->hasMany(Postulante::class, 'idTutor');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'idUser', 'id');
+    }
 }
