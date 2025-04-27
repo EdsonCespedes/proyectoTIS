@@ -41,6 +41,8 @@ class ConvocatoriaController extends Controller
             'habilitada'       => $request->input('habilitada'),
             'fechaInicioOlimp' => $request->input('fechaInicioOlimp'),
             'fechaFinOlimp'    => $request->input('fechaFinOlimp'),
+            'eliminado' => true,
+            
         ]);
 
         return response()->json([
@@ -86,6 +88,7 @@ class ConvocatoriaController extends Controller
             'fechaInicioOlimp'    => $request->input('fechaInicioOlimp'),
             'fechaFinOlimp'       => $request->input('fechaFinOlimp'),
             'maximoPostPorArea'   => $request->input('maximoPostPorArea'),
+            'eliminado' => true,
         ]);
 
         // devuelve el id del a convocatoria creada

@@ -18,6 +18,7 @@ class Categoria extends Model
         'idArea',
         'maxPost',
         'montoCate', 
+        'idConvocatoria', 
     ];
 
     public function area()
@@ -29,4 +30,10 @@ class Categoria extends Model
     {
         return $this->belongsToMany(Curso::class, 'categoria_curso', 'idCategoria', 'idCurso');
     }
+
+    public function convocatoria()
+    {
+        return $this->belongsTo(Convocatoria::class, 'idConvocatoria');
+    }
+    
 }
