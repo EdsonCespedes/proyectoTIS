@@ -17,70 +17,107 @@ class ConvocatoriaController extends Controller
     }
 
     //agregar post
-    public function storeV(Request $request)
+    public function store(Request $request)
     {
-        \Log::info('Store method reached');
+        $request->validate([
+            'titulo' => 'required|string',
+            'fechaPublicacion' => 'required|date',
+            'fechaInicioInsc' => 'required|date',
+            'fechaFinInsc' => 'required|date',
+            'portada' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'habilitada' => 'required|boolean',
+            'fechaInicioOlimp' => 'required|date',
+            'fechaFinOlimp' => 'required|date',
+            'maximoPostPorArea' => 'required|integer',
+        ]);
     
-        // Log para ver los datos recibidos
-        \Log::info('Request Data:', $request->all());
+        DB::beginTransaction();
+        
     
         try {
-            $validatedData = $request->validate([
-                'titulo' => 'required|string',
-                'fechaPublicacion' => 'required|date',
-                'fechaInicioInsc' => 'required|date',
-                'fechaFinInsc' => 'required|date',
-                'portada' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-                'habilitada' => 'required|boolean',
-                'fechaInicioOlimp' => 'required|date',
-                'fechaFinOlimp' => 'required|date',
-                'maximoPostPorArea' => 'required|integer',
-            ]);
-    
-            \Log::info('Validated data:', $validatedData);
-    
-            DB::beginTransaction();
-    
+
             if ($request->hasFile('portada')) {
                 $portadaPath = $request->file('portada')->store('portadas', 'public');
-                \Log::info('Portada almacenada en: ' . $portadaPath);
             } else {
-                $portadaPath = null;
-                \Log::info('No se recibió portada');
+                $portadaPath = null;  
             }
-    
+
             $convocatoriaData = $request->has('convocatoria')
                 ? $request->input('convocatoria')
                 : $request->only([
-                    'titulo', 'descripcion', 'fechaPublicacion', 'fechaInicioInsc',
-                    'fechaFinInsc', 'habilitada', 'fechaInicioOlimp', 'fechaFinOlimp',
+                    'titulo',
+                    'descripcion',
+                    'fechaPublicacion',
+                    'fechaInicioInsc',
+                    'fechaFinInsc',
+                    'habilitada',
+                    'fechaInicioOlimp',
+                    'fechaFinOlimp',
                     'maximoPostPorArea'
                 ]);
-    
-            \Log::info('Convocatoria Data:', $convocatoriaData);
-    
-            $convocatoriaData['portada'] = $portadaPath;
+                
+                $convocatoriaData['portada'] = $portadaPath;
     
             $conv = Convocatoria::create($convocatoriaData);
-            \Log::info('Convocatoria creada: ', $conv->toArray());
     
-            // Aquí puedes seguir con la lógica de áreas y categorías, añadiendo logs similares
+            foreach ($request->input('areas') as $areaData) {
+                // Verifica si existe o crea el área (sin necesidad de usar idConvocatoria en el área)
+                $area = isset($areaData['idArea']) && Area::find($areaData['idArea'])
+                    ? Area::find($areaData['idArea'])
+                    : Area::firstOrCreate(
+                        ['tituloArea' => $areaData['tituloArea']],
+                        [
+                            'descArea' => $areaData['descArea'] ?? null,
+                            'habilitada' => $areaData['habilitada'] ?? true
+                        ]
+                    );
+    
+                // Insertar relación en tabla intermedia (evita duplicados)
+                DB::table('convocatoria_area')->updateOrInsert(
+                    [
+                        'idConvocatoria' => $conv->idConvocatoria,
+                        'idArea' => $area->idArea
+                    ],
+                    [] // Sin cambios extra, solo asegúrate de que exista
+                );
+    
+                // Procesar categorías
+                foreach ($areaData['categorias'] as $catData) {
+                    $categoria = Categoria::create([
+                        'nombreCategoria' => $catData['nombreCategoria'],
+                        'descCategoria' => $catData['descCategoria'],
+                        'maxPost' => $catData['maxPost'] ?? 0,
+                        'idArea' => $area->idArea
+                    ]);
+    
+                    // Separar niveles de descCategoria (ej: "1° Primaria, 2° Primaria")
+                    $niveles = array_map('trim', explode(',', $catData['descCategoria']));
+    
+                    // Comparar con cursos existentes
+                    $cursos = Curso::all();
+    
+                    foreach ($cursos as $curso) {
+                        foreach ($niveles as $nivel) {
+                            if ($this->compararNombres($curso->Curso, $nivel)) {
+                                DB::table('categoria_curso')->insert([
+                                    'idCategoria' => $categoria->idCategoria,
+                                    'idCurso' => $curso->idCurso
+                                ]);
+                                break; // Ya lo encontró, salir del foreach
+                            }
+                        }
+                    }
+                }
+            }
     
             DB::commit();
-    
             return response()->json(['message' => 'Convocatoria creada con éxito'], 201);
     
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::error('Error al guardar: ' . $e->getMessage());
-            \Log::error('Trace: ' . $e->getTraceAsString());
-            return response()->json([
-                'error' => 'Error al guardar: ' . $e->getMessage(),
-                'trace' => $e->getTraceAsString()  // Incluye el trace para obtener detalles
-            ], 500);
+            return response()->json(['error' => 'Error al guardar: ' . $e->getMessage()], 500);
         }
     }
-    
     
     // Comparación de nombres flexible
     private function compararNombres($curso, $categoriaNivel)

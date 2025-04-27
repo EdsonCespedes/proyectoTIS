@@ -4,10 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 
+import { ConvocatoriaProvider } from './context/ConvocatoriaContext.jsx'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />    
-    </BrowserRouter>
+    <ConvocatoriaProvider>
+      <BrowserRouter>
+        <App />    
+      </BrowserRouter>
+    </ConvocatoriaProvider>
   </StrictMode>,
 )
