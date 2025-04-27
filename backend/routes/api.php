@@ -4,12 +4,15 @@ use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
-use App\Http\Controllers\Api\ColegioController;
+use App\Http\Controllers\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\OrdenPagoController;
+
+
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
@@ -42,13 +45,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Ruta de prueba
-Route::get('/prueba', function (Request $request) {
-    return response()->json([
-        'message' => 'Ruta de prueba funcionando',
-        'timestamp' => now()
-    ]);
-});
 
 
 // Rutas para registrar/insertar entidades
@@ -63,7 +59,13 @@ Route::post('/colegios', [ColegioController::class, 'store']);
 Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 Route::put('/colegio/{id}', [ColegioController::class, 'update']);
 
-
+//Crear ordenPago
+   // "montoTotal": ,
+  //  "cancelado": ,
+ //   "vigencia": ,
+//    "recibido": ,
+//    "idTutor":
+Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
 
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
@@ -83,20 +85,22 @@ Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocat
 //Crear Categoría
 //Route::post('/categorias', [CategoriaController::class, 'store']);
 
-Route::get('/convocatorias', [ConvocatoriaController::class, 'index']);
-    // $convocatorias = DB::table('convocatoria')->get();
-    //     return response()->json($convocatorias);
-    // });
+//crear solo en tabla convocatoria
+Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
+
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
 
 
 
 //obtiene todo los datos de la tabla area 
+
 Route::get('/todasAreas', [AreaController::class, 'index']);
 
 //obtiene los datos de un colegio por su id
+
 Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegioconid']);
+
 
 // obtener areas y categorias de los cursos habilitados mediante el nombre del curso
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
@@ -106,6 +110,11 @@ Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 
 //obtiene los datos de una convocatoria activa mediante su id 
 Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
+
+
+//obtiene todas las convocatorias activas 
+Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
+
 
 //buscador por nombre e id al tutor o nombre
 Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);

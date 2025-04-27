@@ -8,19 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pago extends Model
 {
     use HasFactory;
-
-    protected $table = 'pagos';
+    protected $table = 'pago';
     protected $primaryKey = 'idPago';
-
-    protected $fillable = [
-        'idAdmin',
-        'idOrden',
-    ];
-
-    public $timestamps = false;
-
-    public function administrador()
-    {
-        return $this->belongsTo(Administrador::class, 'idAdmin', 'idAdmin');
-    }
+    protected $fillable = ['idOrdenPago'];
 }

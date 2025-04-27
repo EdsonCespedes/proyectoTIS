@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Area; 
 use Illuminate\Support\Facades\DB;
 
 class AreaSeeder extends Seeder
@@ -16,10 +17,10 @@ class AreaSeeder extends Seeder
     public function run()
     {
         $areas = [
-            'Matematicas', 'Fisica', 'Quimica', 'Biologia', 'Informatica', 'Robotica'
+           
+            ['tituloArea' => 'Lenguaje', 'descArea' => 'Area lenguaje'],
+            ['tituloArea' => 'Filosofia', 'descArea' => 'Area filosofia'],
         ];
-
-        $idConvocatoria = 2;
 
         foreach ($areas as $area) {
             DB::table('area')->insert([
@@ -28,6 +29,7 @@ class AreaSeeder extends Seeder
                 'habilitada'     => true,
                 //'idConvocatoria' => $idConvocatoria,
             ]);
+            Area::create(array_merge($area, ['habilitada' => true]));
         }
     }
 }

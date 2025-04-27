@@ -42,28 +42,58 @@ class OrdenPagoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'montoTotal' => 'required|numeric|min:0',
-            'cancelado' => 'required|boolean',
-            'vigencia' => 'required|date',
-            'recibido' => 'required|boolean',
-            'idTutor' => 'required|exists:tutor,idTutor',
+        $data = $request->validate([
+            'idTutor'      => 'required|integer|exists:tutor,idTutor',
+            'montoTotal'   => 'required|numeric|min:0',
+            'vigencia'     => 'required|date',
+            'cancelado'    => 'required|boolean',
+            'recibido'     => 'required|boolean',
+            'detalles'     => 'required|array|min:1',
+            'detalles.*.idPostulacion' => 'required|integer|exists:postulacion,idPostulacion',
+            'detalles.*.descripcion'   => 'required|string|max:255',
+            'detalles.*.monto'         => 'required|numeric|min:0',
         ]);
 
-        // Crear una nueva orden de pago
-        $ordenPago = new OrdenPago();
-        $ordenPago->montoTotal = $request->montoTotal;
-        $ordenPago->cancelado = $request->cancelado;
-        $ordenPago->vigencia = $request->vigencia;
-        $ordenPago->recibido = $request->recibido;
-        $ordenPago->idTutor = $request->idTutor;
+        DB::beginTransaction();
+        try {
+            //Crea la orden
+            $orden = OrdenPago::create([
+                'idTutor'     => $data['idTutor'],
+                'montoTotal'  => $data['montoTotal'],
+                'cancelado'   => $data['cancelado'],
+                'vigencia'    => $data['vigencia'],
+                'recibido'    => $data['recibido'],
+            ]);
 
-        $ordenPago->save();
+            //Crea el registro en pago
+            $pago = Pago::create([
+                'idOrdenPago' => $orden->idOrdenPago,
+            ]);
 
-        return response()->json([
-            'message' => 'Orden de pago creada exitosamente.',
-            'ordenPago' => $ordenPago
-        ], 201); 
+            //Crea cada línea en pagodetalle
+            $detallesCreados = [];
+            foreach ($data['detalles'] as $d) {
+                $det = PagoDetalle::create([
+                    'idOrdenPago'   => $orden->idOrdenPago,
+                    'idPostulacion' => $d['idPostulacion'],
+                    'descripcion'   => $d['descripcion'],
+                    'monto'         => $d['monto'],
+                ]);
+                $detallesCreados[] = $det;
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'idOrdenPago' => $orden->idOrdenPago,
+                'idPago'      => $pago->idPago,
+                'detalles'    => $detallesCreados
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**

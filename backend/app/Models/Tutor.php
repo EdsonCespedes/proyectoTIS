@@ -29,4 +29,10 @@ class Tutor extends Model
     {
         return $this->belongsTo(User::class, 'idUser', 'id');
     }
+
+    public function ordenesPago()
+    {
+        return $this->hasMany(OrdenPago::class, 'idTutor', 'idTutor');
+    }
 }
+

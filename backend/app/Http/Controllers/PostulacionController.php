@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Postulacion;
 
-class PostulacionController extends Controller
+class PostulacionControllerG extends Controller
 {
     /**
      * Display a listing of the resource.
