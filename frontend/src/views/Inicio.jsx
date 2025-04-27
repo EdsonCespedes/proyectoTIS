@@ -1,43 +1,67 @@
 import React from "react";
-import "./styles/Inicio.css"; // Archivo de estilos
+import "./styles/Inicio.css";
 
-const datosInicio = [
-   {
-    nombre: "NOSOTROS",
-    imagen: "https://w7.pngwing.com/pngs/535/3/png-transparent-person-s-head-with-thoughts-illustration-international-physics-olympiad-digital-marketing-science-learning-whiteboard-science-text-service-public-relations-thumbnail.png",
+const datosAreas = [
+  {
+    nombre: "MATEMATICA",
+    imagen: "https://static.vecteezy.com/system/resources/previews/013/086/795/non_2x/cartoon-maths-elements-background-education-logo-vector.jpg",
+  },
+  {
+    nombre: "FISICA",
+    imagen: "https://img.freepik.com/vector-gratis/cientifico_1308-6633.jpg",
+    
+  },
+  {
+    nombre: "QUIMICA",
+    imagen: "https://img.freepik.com/vector-gratis/objetos-laboratorio-ciencias_23-2148488312.jpg",
+    
+  },
+  {
+    nombre: "BIOLOGIA",
+    imagen: "https://udocz-images.b-cdn.net/documents_html/440199-7897589dc241c900c46719f96130e367/bg1.jpg?width=2688",
+    
+  },
+  {
+    nombre: "ASTRONOMIA Y ASTROFISICA",
+    imagen: "https://media.istockphoto.com/id/1174984515/es/vector/%C3%A1%C3%B1%C3%A1-o-%C3%A1-%C3%A1.jpg?s=612x612&w=0&k=20&c=J2qSnIRazrNSfabOUuJYWksecZXEjoTBGG5dH4M3T_8=",
+  
+  },
+  {
+    nombre: "INFORMATICA",
+    imagen: "https://img.freepik.com/vector-gratis/concepto-diseno-web-dibujado-mano_23-2147839737.jpg",
 
-   },
-   {
-    nombre: "INSCRIPCION",
-    imagen: "https://images.icon-icons.com/20/PNG/256/businessregistration_signpen_negocio_inscripcio_2358.png",
-   },
-   {
-   nombre: "DISCIPLINA",
-    imagen: "https://oce2022.fcpn.edu.bo/olimpiadas/images/DISCIPLINAS.jpg;jsessionid=AD4555CF87A130C41666CBDEBB6FE25B",
-   },
-   {
-    nombre: "EVENTOS",
-    imagen: "https://pbs.twimg.com/media/ErdP28EXcAE8vrI.png",
-   }
+  },
+  {
+    nombre: "ROBOTICA",
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1UfYGOA_94gtMbw2F-MusMOULhOQdvj8_sQ&s",
+  },
 ];
 
 const Inicio = () => {
   return (
     <div className="inicio-container">
+      <header className="banner">
+        <h1>Olimpiadas Científicas</h1>
+        <h2>Oh! SanSi</h2>
+      </header>
 
-      <div className="grid-container">
-        {datosInicio.map((item, index) => (
-          <div key={index} className="card">
-            <img src={item.imagen} alt={item.nombre} className="imagen" />
-            <h3>{item.nombre}</h3>
-            {/* <div
-              className="icono-container"
-              style={{ backgroundColor: item.color }}
-            ></div> */}
-          </div>
-        ))}
+      <div className="subtitulo">Áreas de competencia</div>
+
+      <div className="carrusel">
+        <button className="flecha">❮</button>
+        <div className="areas">
+          {datosAreas.map((area, index) => (
+            <div className="area-card" key={index}>
+              <img src={area.imagen} alt={area.nombre} />
+              <p>{area.nombre}</p>
+            </div>
+          ))}
+        </div>
+        <button className="flecha">❯</button>
       </div>
     </div>
   );
 };
+
 export default Inicio;
+

@@ -165,14 +165,14 @@ class PostulanteController extends Controller
         if ($colegio) {
             return $colegio->idColegio;
         }
-        return DB::table('colegio')->insertGetId([
-            'nombreColegio' => $nombre,
-            'departamento'  => 'Sin definir',
-            'provincia'     => 'Sin definir',
-            'rue'           => 'Sin definir',
-            'direccion'     => 'Sin definir',
-            'fecha_creacion' => date('Y-m-d')
-        ]);
+        // return DB::table('colegio')->insertGetId([
+        //     'nombreColegio' => $nombre,
+        //     'departamento'  => 'Sin definir',
+        //     'provincia'     => 'Sin definir',
+        //     'rue'           => 'Sin definir',
+        //     'direccion'     => 'Sin definir',
+        //     'fecha_creacion' => date('Y-m-d')
+        // ]);
     }
 
     private function buscarOCrearCurso($nombre)
@@ -181,9 +181,9 @@ class PostulanteController extends Controller
         if ($curso) {
             return $curso->idCurso;
         }
-        return DB::table('curso')->insertGetId([
-            'Curso' => $nombre
-        ]);
+        // return DB::table('curso')->insertGetId([
+        //     'Curso' => $nombre
+        // ]);
     }
 
     public function index()
@@ -191,4 +191,64 @@ class PostulanteController extends Controller
         $postulantes = Postulante::all();
         return response()->json($postulantes);
     }
+
+    public function updatePostulante(Request $request, $idPostulante)
+    {
+        $validator = Validator::make($request->all(), [
+            'nombrePost'        => 'sometimes|required|string|max:45',
+            'apellidoPost'      => 'sometimes|required|string|max:45',
+            'carnet'            => 'sometimes|required|string|max:45|unique:postulante,carnet,' . $idPostulante . ',idPostulante',
+            'fechaNaciPost'     => 'sometimes|required|date',
+            'correoPost'        => 'sometimes|required|email|max:45|unique:postulante,correoPost,' . $idPostulante . ',idPostulante',
+            'telefonoPost'      => 'nullable|string|max:45',
+            'departamento'      => 'sometimes|required|string|max:45',
+            'provincia'         => 'sometimes|required|string|max:45',
+            'delegacion'        => 'nullable|string|max:255',
+            'idColegio'         => 'nullable|string',
+            'idCurso'           => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $postulante = Postulante::findOrFail($idPostulante);
+
+            if ($request->filled('idColegio')) {
+                $postulante->idColegio = $this->buscarOCrearColegio($request->input('idColegio'));
+            }
+
+            if ($request->filled('idCurso')) {
+                $postulante->idCurso = $this->buscarOCrearCurso($request->input('idCurso'));
+            }
+
+            $postulante->fill($request->only([
+                'nombrePost',
+                'apellidoPost',
+                'carnet',
+                'fechaNaciPost',
+                'correoPost',
+                'telefonoPost',
+                'departamento',
+                'provincia',
+                'delegacion',
+            ]));
+
+            $postulante->save();
+
+            DB::commit();
+            return response()->json([
+                'message'    => 'Postulante actualizado correctamente',
+                'postulante' => $postulante
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }

@@ -1,79 +1,80 @@
-/* .inicio-container {
-  text-align: center;
-  padding: 50px;
-}
-
-.titulo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 50px;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-  gap: 0px;
-  padding: 30px;
-}
-
-.card {
-  background: rgb(255, 255, 255);
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.card:hover {
-  transform: scale(1.05);
-}
-
-.card h3:hover{
-  cursor: default;
-}
-
-.imagen {
-  width: 100%;
-  border-radius: 10px;
-  height: 200px;
-  object-fit: cover;
-} */
-
 .inicio-container {
+  background-color: #DBEDEF;
+  font-family: sans-serif;
   text-align: center;
-  padding: 50px;
+  padding: 0;
+  margin: 0;
 }
 
-.titulo {
-  font-size: 24px;
+.banner {
+  background: url("https://drea.mep.go.cr/sites/default/files/styles/publicacion_portada_1155x595/public/articles/DREA3%20Publicacion-Principal%201155x595_2.png?itok=jU7ZwRmU") no-repeat center center;
+  background-size: cover;
+  color: white;
+  padding: 180px 90px;
+}
+
+.banner h1 {
+  font-size: 50px;
   font-weight: bold;
-  margin-bottom: 50px;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-  gap: 0px;
-  padding: 30px;
+.banner h2 {
+  font-size: 50px;
+  margin-top: 10px;
+  color: white;
 }
 
-.card {
-  background: rgb(255, 255, 255);
+.subtitulo {
+  background-color: #027791;
+  color: #027791;
+  padding: 10px;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 20px;
+}
+
+.carrusel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.flecha {
+  background-color: #000;
+  color: #027791;
+  border: none;
+  font-size: 30px;
+  padding: 5px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.areas {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.area-card {
+  background:  #027791;
   border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
   text-align: center;
-  transition: transform 0.3s ease;
+  width: 180px;
+  min-width: 180px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.card:hover {
-  transform: scale(1.05);
+.area-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
 }
 
-.imagen {
-  width: 20%;
-  border-radius: 10px;
-  height: 10px;
-  object-fit: cover;
+.area-card p {
+  font-weight: bold;
 }

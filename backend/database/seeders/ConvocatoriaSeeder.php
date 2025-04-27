@@ -51,6 +51,7 @@ class ConvocatoriaSeeder extends Seeder
                 'fechaInicioOlimp' => Carbon::now()->addDays(50)->toDateString(),
                 'fechaFinOlimp'    => Carbon::now()->addDays(60)->toDateString(),
             ],
+
         ]);
     }
 }

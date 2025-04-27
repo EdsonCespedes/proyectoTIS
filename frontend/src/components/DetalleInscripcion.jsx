@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./styles/GestionColegios.css";
 import { Link } from "react-router-dom";
 
-const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
+const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudianteEdit, setIndexEdit, setAreasSeleccionadas, setCategoriasSeleccionadas }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
 
@@ -10,6 +10,29 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
 
     const startIndex = currentPage * itemsPerPage;
     const currentEstudiantes = estudiantes.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleEdit = (e, estudiante, index) => {
+        e.preventDefault();
+        setEstudianteEdit(estudiante);
+        setIndexEdit(index);
+
+        // Revertir categorías formateadas
+        const categoriasOriginales = estudiante.categorias.map((categoria) => ({
+            id: categoria.idCategoria,
+            nombre: categoria.nombreCategoria,
+        }));
+
+        // Revertir áreas formateadas
+        const areasOriginales = estudiante.areas.map((area) => ({
+            id: area.idArea,
+            nombre: area.tituloArea,
+            categorias: categoriasOriginales,
+        }));
+
+        setAreasSeleccionadas(areasOriginales);
+        setCategoriasSeleccionadas(categoriasOriginales);
+        setRegistro(true)
+    }
 
     return (
         <div className="contenedor">
@@ -26,7 +49,7 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                     <tbody>
                         {currentEstudiantes.map((estudiante, index) => (
                             <tr key={index}>
-                                <td>{estudiante.nombre} {estudiante.apellidos}</td>
+                                <td>{estudiante.nombrePost} {estudiante.apellidoPost}</td>
                                 <td>
                                     {estudiante.areas.map((area, index) => (
                                         <React.Fragment key={area.idArea}>
@@ -35,9 +58,12 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                                         </React.Fragment>
                                     ))}
                                 </td>
-                                <td>
-                                    <Link to="/" className="boton btn-red">MODIFICAR</Link>
-                                    <button onClick={()=>onEliminar(index)} className="boton btn-red">RETIRAR</button>
+                                <td className="actions">
+                                    <button
+                                        onClick={e => handleEdit(e, estudiante, index)}
+                                        className="boton-style btn-rechazo"
+                                    >Modificar</button>
+                                    <button onClick={() => onEliminar(index)} className="boton-style btn-rechazo">Retirar</button>
                                 </td>
                             </tr>
                         ))}
@@ -56,14 +82,14 @@ const DetalleInscripcion = ({ estudiantes, onEliminar }) => {
                             onClick={() => setCurrentPage(currentPage - 1)}
                             disabled={currentPage === 0}
                         >
-                            ANTERIOR
+                            Anterior
                         </button>
                         <span>Página {currentPage + 1} de {Math.ceil(estudiantes.length / itemsPerPage)}</span>
                         <button
                             onClick={() => setCurrentPage(currentPage + 1)}
                             disabled={startIndex + itemsPerPage >= estudiantes.length}
                         >
-                            SIGUIENTE
+                            Siguiente
                         </button>
                     </div>
                 )}

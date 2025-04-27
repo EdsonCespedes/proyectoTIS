@@ -10,20 +10,25 @@ const TipoInscripcion = () => {
         navigate(`/convocatoria/${idConvocatoria}/inscripcion-manual`);
     }
 
+    //Excel
+    const handleExcel = () => {
+        navigate(`/convocatoria/${idConvocatoria}/inscripcion-excel`);
+    }
+
     return (
         <div className="container-tipo">
             <h1 className="title-tipo">Puede registrar al postulante(s) mediante:</h1>
             <div className="buttons-tipo">
                 <div className='button-tipo'>
                     <h1>Planilla de Excel</h1>
-                    <button className="image-button">                    
+                    <button className="image-button" onClick={handleExcel}>                    
                         <img src="/ExcelImage.png" alt="Mediante Excel" />
                     </button>
                 </div>                
                 <div className='button-tipo'>
                     <h1>Manualmente</h1>
                     <button className="image-button" onClick={handleManual}>                                      
-                        <img src="/ManoImage.png" alt="Mediante Excel" />
+                        <img src="/ManoImage.png" alt="Manualmente" />
                     </button>
                 </div>                
             </div>
