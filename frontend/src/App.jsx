@@ -21,6 +21,10 @@ import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
 import Area from "./pages/Area";
 
+//pruebas de login y registro
+import PruebaRegister from './pages/PruebaRegister';
+import PruebaLogin from './pages/PruebaLogin';
+
 
 //Excel
 import InscripcionExcel from "./pages/InscripcionExcel";
@@ -57,6 +61,10 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
 
         <Route path="/ordenes-pago" element={<Historial />} />
+
+        {/*pruebas */}
+        <Route path="/registro-tutor" element={<PruebaRegister />} />
+        <Route path="/login" element={<PruebaLogin />} />
       </Routes>
     </div>
     
