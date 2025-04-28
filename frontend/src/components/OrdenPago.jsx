@@ -17,19 +17,6 @@ const OrdenPago = () => {
   const from = location.state?.from || "default";
   console.log(estudiantes);
 
-  // [
-  //   { nombre: "Katerin Marza Caro", monto: "100,00", disciplina: "Fisica" },
-  //   { nombre: "Juan Pérez", monto: "150,00", disciplina: "Matematica" },
-  //   { nombre: "María González", monto: "120,00", disciplina: "Fisica" }
-  // ];
-
-  // const montoTotal = estudiantes
-  //   .reduce((total, est) => {
-  //     const monto = parseFloat(est.monto.replace(",", "."));
-  //     return total + (isNaN(monto) ? 0 : monto);
-  //   }, 0)
-  //   .toFixed(2)
-  //   .replace(".", ",");
 
   const montoTotal = estudiantes
     .reduce((total, est) => {
@@ -60,7 +47,7 @@ const OrdenPago = () => {
 
     doc.text("Estudiante", 20, 70);
     doc.text("Monto", 100, 70);
-    doc.text("Disciplinas", 150, 70);
+    doc.text("Area", 150, 70);
 
     doc.line(10, 75, 200, 75);
 
@@ -77,7 +64,7 @@ const OrdenPago = () => {
     doc.setFontSize(14);
     doc.text(`Monto Total: ${montoTotal}`, 20, yPosition + 10);
 
-    doc.save("recibo_pago.pdf");
+    doc.save("Orden_Pago.pdf");
     setSalirActivo(true);
   };
 
