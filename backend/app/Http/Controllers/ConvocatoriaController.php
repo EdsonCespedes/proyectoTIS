@@ -9,6 +9,10 @@ use App\Models\Categoria;
 use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+//
+use Illuminate\Support\Facades\Validator;
+
+
 class ConvocatoriaController extends Controller
 {
 // ConvocatoriaEstructuraController.php
@@ -325,7 +329,7 @@ public function storeConvocatoria(Request $request)
         }
 
         $convocatoria = Convocatoria::create([
-            'titulo'              => $request->input('titulo'),
+            'tituloConvocatoria'  => $request->input('titulo'),
             'descripcion'         => $request->input('descripcion'),
             'fechaPublicacion'    => $request->input('fechaPublicacion'),
             'fechaInicioInsc'     => $request->input('fechaInicioInsc'),

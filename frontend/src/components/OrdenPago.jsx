@@ -99,7 +99,7 @@ const OrdenPago = () => {
 
       const camposRequeridos = [
         "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
-        "idCurso", "departamento", "provincia",
+        "idCurso", "idColegio", "departamento", "provincia",
         "tutor.nombreTutor", "tutor.apellidoTutor", "tutor.telefonoTutor",
         "tutor.correoTutor", "tutor.fechaNaciTutor"
       ];
@@ -135,6 +135,9 @@ const OrdenPago = () => {
           //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
         }
       };
+      
+      console.log(postulante);
+      
 
       try {
         const response = await fetch('http://localhost:8000/api/registrar-postulante', {
@@ -207,7 +210,7 @@ const OrdenPago = () => {
                   </td>
                   <td className="monto">
                     {/* <input value={est.monto} readOnly /> */}
-                    <input value={est.categorias.reduce((acc, cat) => acc + cat.monto, 0)} readOnly />
+                    <input value={est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2)} readOnly />
                   </td>
                   <td>
                     {/* <input value={est.disciplina} readOnly /> */}

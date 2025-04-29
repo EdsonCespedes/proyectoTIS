@@ -85,7 +85,8 @@ class EstructuraConvocatoriaController extends Controller
 
             $resultado['estructura'][$areaId]['categorias'][] = [
                 'id' => $categoria->idCategoria,
-                'nombre' => $categoria->nombreCategoria
+                'nombre' => $categoria->nombreCategoria,
+                'monto' => $categoria ->montoCate
             ];
         }
     }

@@ -107,29 +107,52 @@ export const CrearConvForm = () => {
     newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
     newformData.append('maximoPostPorArea', formData.maxConcursantes);
 
+    // try {
+    //   const response = await fetch('http://localhost:8000/api/solo-convocatoria', {
+    //     method: 'POST',
+    //     body: newformData,
+    //   });
+
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     console.error('Errores de validación:', errorData.errors);
+    //     return;
+    //   }
+
+    //   const data = await response.json();
+    //   console.log('ID de la convocatoria creada:', data.idConvocatoria);
+    //   const idConvocatoria = data.idConvocatoria;
+
+    //   // aquí podrías redirigir o guardar el ID
+    //   navigate(`/area`, {
+    //     state: { idConvocatoria },
+    //   });
+    // } catch (error) {
+    //   console.error('Error al guardar la convocatoria:', error);
+    // }
+
     try {
       const response = await fetch('http://localhost:8000/api/solo-convocatoria', {
         method: 'POST',
         body: newformData,
       });
 
+      const text = await response.text();
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Errores de validación:', errorData.errors);
+        console.error('Error del servidor:', text); // en vez de tratar de hacer response.json() directamente
         return;
       }
 
-      const data = await response.json();
+      const data = JSON.parse(text);
       console.log('ID de la convocatoria creada:', data.idConvocatoria);
-      const idConvocatoria = data.idConvocatoria;
 
-      // aquí podrías redirigir o guardar el ID
       navigate(`/area`, {
-        state: { idConvocatoria },
+        state: { idConvocatoria: data.idConvocatoria },
       });
     } catch (error) {
       console.error('Error al guardar la convocatoria:', error);
     }
+
   };
 
 

@@ -31,7 +31,7 @@ class AreaSeeder extends Seeder
                 'habilitada'     => true,
                 //'idConvocatoria' => $idConvocatoria,
             ]);
-            Area::create(array_merge($area, ['habilitada' => true]));
+            //Area::create(array_merge($area, ['habilitada' => true]));
         }
     }
 }
