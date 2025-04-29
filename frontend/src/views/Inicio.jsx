@@ -1,8 +1,5 @@
-<<<<<<< HEAD
+
 import React, { useState } from "react";
-=======
-import React from "react";
->>>>>>> origin/develop
 import "./styles/Inicio.css";
 
 const datosAreas = [
@@ -13,42 +10,27 @@ const datosAreas = [
   {
     nombre: "FISICA",
     imagen: "https://img.freepik.com/vector-gratis/cientifico_1308-6633.jpg",
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/develop
+
   },
   {
     nombre: "QUIMICA",
     imagen: "https://img.freepik.com/vector-gratis/objetos-laboratorio-ciencias_23-2148488312.jpg",
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/develop
+
   },
   {
     nombre: "BIOLOGIA",
     imagen: "https://udocz-images.b-cdn.net/documents_html/440199-7897589dc241c900c46719f96130e367/bg1.jpg?width=2688",
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/develop
+
   },
   {
     nombre: "ASTRONOMIA Y ASTROFISICA",
     imagen: "https://media.istockphoto.com/id/1174984515/es/vector/%C3%A1%C3%B1%C3%A1-o-%C3%A1-%C3%A1.jpg?s=612x612&w=0&k=20&c=J2qSnIRazrNSfabOUuJYWksecZXEjoTBGG5dH4M3T_8=",
-<<<<<<< HEAD
-=======
-  
->>>>>>> origin/develop
+
   },
   {
     nombre: "INFORMATICA",
     imagen: "https://img.freepik.com/vector-gratis/concepto-diseno-web-dibujado-mano_23-2147839737.jpg",
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/develop
   },
   {
     nombre: "ROBOTICA",
@@ -79,7 +61,7 @@ const Inicio = () => {
       <div className="subtitulo">Áreas de competencia</div>
 
       <div className="carrusel">
-<<<<<<< HEAD
+
         <button className="flecha" onClick={moverIzquierda}>
           ❮
         </button>
@@ -94,25 +76,17 @@ const Inicio = () => {
                 transition: "transform 0.3s ease", // Animación de transición suave
               }}
             >
-=======
-        <button className="flecha">❮</button>
-        <div className="areas">
-          {datosAreas.map((area, index) => (
-            <div className="area-card" key={index}>
->>>>>>> origin/develop
               <img src={area.imagen} alt={area.nombre} />
               <p>{area.nombre}</p>
             </div>
           ))}
         </div>
-<<<<<<< HEAD
+
 
         <button className="flecha" onClick={moverDerecha}>
           ❯
         </button>
-=======
-        <button className="flecha">❯</button>
->>>>>>> origin/develop
+
       </div>
     </div>
   );
@@ -120,8 +94,3 @@ const Inicio = () => {
 
 export default Inicio;
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/develop

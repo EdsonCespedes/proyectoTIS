@@ -14,14 +14,13 @@
   background: url("https://drea.mep.go.cr/sites/default/files/styles/publicacion_portada_1155x595/public/articles/DREA3%20Publicacion-Principal%201155x595_2.png?itok=jU7ZwRmU") no-repeat center center;
   background-size: cover;
   color: white;
-
   padding: 100px 90px;
 }
 
 /* Títulos en el banner */
 .banner h1 {
   font-size: 70px;
-  padding: 180px 90px;
+  padding: 50px 50px;
 }
 
 

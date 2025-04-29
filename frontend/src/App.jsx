@@ -15,40 +15,21 @@ import TipoInscripcion from "./pages/TipoInscripcion";
 import InscripcionManual from "./pages/InscripcionManual";
 import Registro from "./components/Recibo";
 //import EditarDesdeRuta from './components/EditarDesdeRuta';
-<<<<<<< HEAD
-=======
 
 import OrdenPago from "./components/OrdenPago";
 import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
 import Area from "./pages/Area";
 
-//pruebas de login y registro
+
+//Excel
+import InscripcionExcel from "./pages/InscripcionExcel";
+
+import Historial from "./components/Historial";
+
 import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
-
-
-//Excel
-import InscripcionExcel from "./pages/InscripcionExcel";
-
-import Historial from "./components/Historial";
-//prueba
-import RegistrarColegio from "./pages/RegistrarColegio";  
->>>>>>> origin/develop
-
-import OrdenPago from "./components/OrdenPago";
-import Recibo from "./components/Recibo";
-import RegistroPago from "./components/RegistroPago";
-import Area from "./pages/Area";
-
-
-//Excel
-import InscripcionExcel from "./pages/InscripcionExcel";
-
-import Historial from "./components/Historial";
-
-
-
+import RegistrarColegio from './pages/RegistrarColegio';
 
 function App() {
 
@@ -80,24 +61,17 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
 
         <Route path="/ordenes-pago" element={<Historial />} />
-<<<<<<< HEAD
-=======
 
         {/*pruebas */}
         <Route path="/registro-tutor" element={<PruebaRegister />} />
         <Route path="/login" element={<PruebaLogin />} />
-
         
-        <Route path="/nivel" element={<Niveles />} />
-
-
+        {/*<Route path="/nivel" element={<Niveles />} />*/}
 
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
 
 
-
->>>>>>> origin/develop
       </Routes>
     </div>
     

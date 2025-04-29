@@ -1,16 +1,8 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf"; // Importa jsPDF
-<<<<<<< HEAD
-import "./styles/ordenPago.css";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-=======
 import "./styles/OrdenPago.css";
-
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-
->>>>>>> origin/develop
 const OrdenPago = () => {
   const [mostrarDescargar, setMostrarDescargar] = useState(false);
   const [mostrarBotones, setMostrarBotones] = useState(true);
@@ -25,8 +17,7 @@ const OrdenPago = () => {
   const from = location.state?.from || "default";
   console.log(estudiantes);
 
-<<<<<<< HEAD
-=======
+
   // [
   //   { nombre: "Katerin Marza Caro", monto: "100,00", disciplina: "Fisica" },
   //   { nombre: "Juan Pérez", monto: "150,00", disciplina: "Matematica" },
@@ -40,7 +31,7 @@ const OrdenPago = () => {
   //   }, 0)
   //   .toFixed(2)
   //   .replace(".", ",");
->>>>>>> origin/develop
+
 
   const montoTotal = estudiantes
     .reduce((total, est) => {
@@ -55,10 +46,7 @@ const OrdenPago = () => {
     setMostrarBotones(false);
     handleSubmit();
   };
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/develop
   const handleDescargarPDF = () => {
     const doc = new jsPDF();
 
@@ -75,11 +63,9 @@ const OrdenPago = () => {
 
     doc.text("Estudiante", 20, 70);
     doc.text("Monto", 100, 70);
-<<<<<<< HEAD
+
     doc.text("Area", 150, 70);
-=======
-    doc.text("Disciplinas", 150, 70);
->>>>>>> origin/develop
+
 
     doc.line(10, 75, 200, 75);
 
@@ -95,12 +81,8 @@ const OrdenPago = () => {
 
     doc.setFontSize(14);
     doc.text(`Monto Total: ${montoTotal}`, 20, yPosition + 10);
-
-<<<<<<< HEAD
     doc.save("Orden_Pago.pdf");
-=======
-    doc.save("recibo_pago.pdf");
->>>>>>> origin/develop
+
     setSalirActivo(true);
   };
 
@@ -251,7 +233,7 @@ const OrdenPago = () => {
               <button className="btn-cancelar" onClick={handleCancelar}>Cancelar</button>
             </>
           )}
-<<<<<<< HEAD
+
 
           {mostrarDescargar && (
             <>
@@ -262,12 +244,7 @@ const OrdenPago = () => {
                 Cancelar
               </button>
             </>
-=======
-          {mostrarDescargar && (
-            <button className="btn-descargar" onClick={handleDescargarPDF}>
-              Descargar PDF
-            </button>
->>>>>>> origin/develop
+
           )}
 
           <button onClick={handleSalir} disabled={!salirActivo}>
@@ -282,8 +259,3 @@ const OrdenPago = () => {
 export default OrdenPago;
 
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/develop
