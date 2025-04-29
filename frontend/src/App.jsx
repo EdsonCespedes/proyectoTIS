@@ -33,6 +33,8 @@ import Historial from "./components/Historial";
 //prueba
 import RegistrarColegio from "./pages/RegistrarColegio";  
 
+import Niveles from "./pages/Niveles";
+
 
 
 

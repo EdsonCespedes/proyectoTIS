@@ -291,6 +291,11 @@ public function getConvocatoriaById($idConvocatoria)
         if (!$convocatoria) {
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Error al recuperar la convocatoria',
+            'message' => $e->getMessage()
+        ], 500);
     }
 }
 
@@ -341,28 +346,28 @@ public function storeConvocatoria(Request $request)
 
 
 // obtiene convocatoria que no estan eliminadas mediante id convocatoria
-public function getConvocatoriaById($idConvocatoria)
-{
-    try {
-        // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
-        $convocatoria = Convocatoria::with('areas.categorias.cursos')
-            ->where('idConvocatoria', $idConvocatoria)
-            ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
-            ->first();
+// public function getConvocatoriaById($idConvocatoria)
+// {
+//     try {
+//         // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
+//         $convocatoria = Convocatoria::with('areas.categorias.cursos')
+//             ->where('idConvocatoria', $idConvocatoria)
+//             ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+//             ->first();
 
-        // Si no se encuentra la convocatoria
-        if (!$convocatoria) {
-            return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
-        }
+//         // Si no se encuentra la convocatoria
+//         if (!$convocatoria) {
+//             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
+//         }
 
-        // Retornar la convocatoria con todas sus relaciones
-        return response()->json($convocatoria, 200);
+//         // Retornar la convocatoria con todas sus relaciones
+//         return response()->json($convocatoria, 200);
 
-    } catch (\Exception $e) {
-        // Manejo de errores
-        return response()->json(['error' => 'Error al obtener la convocatoria: ' . $e->getMessage()], 500);
-    }
-}
+//     } catch (\Exception $e) {
+//         // Manejo de errores
+//         return response()->json(['error' => 'Error al obtener la convocatoria: ' . $e->getMessage()], 500);
+//     }
+// }
 
 
 public function getConvocatoriasActivas()
@@ -385,6 +390,11 @@ public function getConvocatoriasActivas()
             // Manejo de errores
             return response()->json(['error' => 'Error al obtener las convocatorias activas: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function index(){
+        $convocatorias = Convocatoria::all();
+        return response()->json($convocatorias);
     }
 
 }
