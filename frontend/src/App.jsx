@@ -29,6 +29,10 @@ import Historial from "./components/Historial";
 import GeneratePDF from "./components/GeneratePDF";
 import PDFTutor from "./components/PDFTutor";
 
+import PruebaRegister from './pages/PruebaRegister';
+import PruebaLogin from './pages/PruebaLogin';
+import RegistrarColegio from './pages/RegistrarColegio';
+
 function App() {
 
   return (
@@ -61,6 +65,17 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
 
         <Route path="/ordenes-pago" element={<Historial />} />
+
+        {/*pruebas */}
+        <Route path="/registro-tutor" element={<PruebaRegister />} />
+        <Route path="/login" element={<PruebaLogin />} />
+        
+        {/*<Route path="/nivel" element={<Niveles />} />*/}
+
+        {/* Agregar la ruta para RegistrarColegio */}
+        <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
+
+
       </Routes>
     </div>
     

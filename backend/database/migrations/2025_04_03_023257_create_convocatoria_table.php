@@ -10,9 +10,6 @@ return new class extends Migration
     {
         Schema::create('convocatoria', function (Blueprint $table) {
             $table->increments('idConvocatoria');
-
-            $table->string('titulo', 45)->nullable();
-            $table->string('descripcion', 75)->nullable();
             $table->dateTime('fechaPublicacion')->nullable();
             $table->dateTime('fechaInicioInsc')->nullable();
             $table->dateTime('fechaFinInsc')->nullable();
@@ -20,7 +17,6 @@ return new class extends Migration
             $table->boolean('habilitada')->default(false);
             $table->dateTime('fechaInicioOlimp')->nullable();
             $table->dateTime('fechaFinOlimp')->nullable();
-            $table->integer('maximoPostPorArea')->nullable();
 
             $table->timestamps();
         });

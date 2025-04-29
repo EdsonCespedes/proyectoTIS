@@ -12,8 +12,10 @@ const InscripcionManual = () => {
 
     const navigate = useNavigate();
 
+
     const location = useLocation();
     const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+
 
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
@@ -26,6 +28,7 @@ const InscripcionManual = () => {
             habilitada: area.habilitada ?? true, // por defecto true si no existe
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
+
 
         // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
         //     idCategoria: categoria.id,
@@ -60,6 +63,7 @@ const InscripcionManual = () => {
                 monto: categoria.monto || 50,
             };
         });
+
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -112,6 +116,7 @@ const InscripcionManual = () => {
             };
         });
 
+
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
 
@@ -143,7 +148,6 @@ const InscripcionManual = () => {
         });
     }
 
-
     return (
         <div>
             {registro === false && (
@@ -163,8 +167,10 @@ const InscripcionManual = () => {
                         </button>
                         <button
                             className="boton-style btn-aceptacion"
+
                             // onClick={handleSubmit}
                             onClick={handleSiguiente}
+
                         >
                             {/* Guardar */}
                             Siguiente

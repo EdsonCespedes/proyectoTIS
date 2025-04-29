@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf"; // Importa jsPDF
-import "./styles/ordenPago.css";
-
+import "./styles/OrdenPago.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
 
 const OrdenPago = () => {
   const [mostrarDescargar, setMostrarDescargar] = useState(false);
@@ -19,6 +17,7 @@ const OrdenPago = () => {
   const from = location.state?.from || "default";
   console.log(estudiantes);
 
+
   // [
   //   { nombre: "Katerin Marza Caro", monto: "100,00", disciplina: "Fisica" },
   //   { nombre: "Juan Pérez", monto: "150,00", disciplina: "Matematica" },
@@ -32,6 +31,7 @@ const OrdenPago = () => {
   //   }, 0)
   //   .toFixed(2)
   //   .replace(".", ",");
+
 
   const montoTotal = estudiantes
     .reduce((total, est) => {
@@ -63,7 +63,9 @@ const OrdenPago = () => {
 
     doc.text("Estudiante", 20, 70);
     doc.text("Monto", 100, 70);
-    doc.text("Disciplinas", 150, 70);
+
+    doc.text("Area", 150, 70);
+
 
     doc.line(10, 75, 200, 75);
 
@@ -79,8 +81,8 @@ const OrdenPago = () => {
 
     doc.setFontSize(14);
     doc.text(`Monto Total: ${montoTotal}`, 20, yPosition + 10);
+    doc.save("Orden_Pago.pdf");
 
-    doc.save("recibo_pago.pdf");
     setSalirActivo(true);
   };
 
@@ -97,7 +99,7 @@ const OrdenPago = () => {
 
       const camposRequeridos = [
         "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
-        "idCurso", "departamento", "provincia",
+        "idCurso", "idColegio", "departamento", "provincia",
         "tutor.nombreTutor", "tutor.apellidoTutor", "tutor.telefonoTutor",
         "tutor.correoTutor", "tutor.fechaNaciTutor"
       ];
@@ -133,6 +135,9 @@ const OrdenPago = () => {
           //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
         }
       };
+      
+      console.log(postulante);
+      
 
       try {
         const response = await fetch('http://localhost:8000/api/registrar-postulante', {
@@ -205,7 +210,7 @@ const OrdenPago = () => {
                   </td>
                   <td className="monto">
                     {/* <input value={est.monto} readOnly /> */}
-                    <input value={est.categorias.reduce((acc, cat) => acc + cat.monto, 0)} readOnly />
+                    <input value={est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2)} readOnly />
                   </td>
                   <td>
                     {/* <input value={est.disciplina} readOnly /> */}
@@ -231,10 +236,18 @@ const OrdenPago = () => {
               <button className="btn-cancelar" onClick={handleCancelar}>Cancelar</button>
             </>
           )}
+
+
           {mostrarDescargar && (
-            <button className="btn-descargar" onClick={handleDescargarPDF}>
-              Descargar PDF
-            </button>
+            <>
+              <button className="btn-descargar" onClick={handleDescargarPDF}>
+                Descargar PDF
+              </button>
+              <button className="btn-cancelar" onClick={handleCancelar}>
+                Cancelar
+              </button>
+            </>
+
           )}
 
           <button onClick={handleSalir} disabled={!salirActivo}>
@@ -247,6 +260,5 @@ const OrdenPago = () => {
 };
 
 export default OrdenPago;
-
 
 

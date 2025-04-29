@@ -16,7 +16,9 @@ class Categoria extends Model
         'descCategoria',
         'habilitada', // AÑADIDO (si no existe, agregar a la tabla)
         'idArea',
-        'maxPost'
+        'maxPost',
+        'montoCate', 
+        'idConvocatoria', 
     ];
 
     public function area()
@@ -28,4 +30,10 @@ class Categoria extends Model
     {
         return $this->belongsToMany(Curso::class, 'categoria_curso', 'idCategoria', 'idCurso');
     }
+
+    public function convocatoria()
+    {
+        return $this->belongsTo(Convocatoria::class, 'idConvocatoria');
+    }
+    
 }

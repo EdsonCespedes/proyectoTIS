@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
 use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
-use App\Http\Controllers\Api\ConvocatoriaController;
+//use App\Http\Controllers\Api\ConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\OrdenPagoController;
 
 
@@ -31,6 +33,7 @@ Route::get('/verprovincias/departamento/{nombre}', [ProvinciaController::class, 
 
 
 
+Route::get('/getcolegio', [ColegioController::class, 'index']); //obtiene todo los datos del colegio
 
 //Route::post('/colegio', [ColegioController::class, 'store']);     //guarda colegios
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
@@ -51,13 +54,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Registrar un postulante
 Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
+Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::class, 'updatePostulante']);
 
 // Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
 Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 Route::put('/colegio/{id}', [ColegioController::class, 'update']);
 
-
+//Crear ordenPago
+   // "montoTotal": ,
+  //  "cancelado": ,
+ //   "vigencia": ,
+//    "recibido": ,
+//    "idTutor":
+Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
 
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
@@ -65,11 +75,19 @@ Route::post('/cursos', [CursoController::class, 'store']);
 //Crear Convocatoria
 //Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
+
+//crear orden de pago
+Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
+
+
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
 
+//crear solo en tabla convocatoria
+Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
+
 //Crear Categoría
-Route::post('/categorias', [CategoriaController::class, 'store']);
+//Route::post('/categorias', [CategoriaController::class, 'store']);
 
 //crear solo en tabla convocatoria
 Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
@@ -89,23 +107,54 @@ Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegiocon
 
 
 // obtener areas y categorias de los cursos habilitados mediante el nombre del curso
-
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
-
-//guarda Convocatoria junto con todos su datos asociados
-Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
 //obtiene todas las convocatorias
 Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 
+//obtiene los datos de una convocatoria activa mediante su id 
+Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
 
-//buscador por nombre e id al tutor
+
+//obtiene todas las convocatorias activas 
+Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
+
+
+//buscador por nombre e id al tutor o nombre
 Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
 
 //guarda areas y todo lo demas d convocatoria
 
 Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
 
+//guarda Convocatoria junto con todos su datos
+//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
-//obtiene  convocatoria mediante id convocatoria
-Route::get('/editaconvocatoria/{idConvocatoria}', [ConvocatoriaController::class, 'editarConvocatoria']); //edita convocatoria
+//obtiene todas las convocatorias activas 
+Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
+
+//eliminar convocatoria mediante id convocatoria
+Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
+
+//actualiza los datos de orden pago mediante id convocatoria
+Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
+
+//edita solo convocatorias 
+// Para editar solo la convocatoria
+Route::put('/editconvocatorias/{id}', [ConvocatoriaController::class, 'updateConvocatoria']);
+
+// Para editar las áreas y categorías de una convocatoria
+Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaController::class, 'updateAreasCategorias']);
+
+// RUTAS PARA TUTOR
+Route::get('/tutor/{id}', [TutorController::class, 'show']);
+Route::get('/tutor', [TutorController::class, 'index']);
+
+// login y registro
+Route::post('/register', [AuthController::class, 'registrarTutor']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});

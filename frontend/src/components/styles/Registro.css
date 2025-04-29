@@ -1,6 +1,7 @@
 /* Fondo general */
 body {
-    background-color: #d8eef2; /* Mismo fondo que .formulario-pago-container */
+    background-color: #d8eef2;
+
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
@@ -15,7 +16,6 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     overflow: hidden;
-    /* box-sizing: border-box; */
 }
 
 /* Encabezado principal */
@@ -32,7 +32,7 @@ body {
 .seccion-container {
     margin: 30px 20px;
     padding: 20px;
-    background-color: #B0C4D8; /* Similar al fondo del input del formulario-search */
+    background-color: #B0C4D8;
     border-radius: 10px;
 }
 
@@ -43,6 +43,9 @@ body {
     border-radius: 8px;
     border: 1px solid #ddd;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 5);
+    position: relative;
+    overflow: visible;
+
 }
 
 /* Subtítulos */
@@ -106,7 +109,6 @@ input, select {
     background-color: #9eb3c9;
 }
 
-/* Botones anteriores (si decides usarlos también) */
 .btn-competencia {
     margin: 0 20px;
     background: #1e40af;
@@ -159,5 +161,111 @@ input, select {
     margin-top: 20px;
 }
 
+/* ============================= */
+/* ESTILOS PERSONALIZADOS CALENDARIOS */
+/* ============================= */
 
+/* CALENDARIO POSTULANTE */
+.calendario-postulante .react-datepicker__day-name {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #444;
+    background-color: #fff3e6;
+    border-radius: 4px;
+    margin: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.calendario-postulante .react-datepicker__day {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    border-radius: 4px;
+    margin: 2px;
+    font-size: 14px;
+    color: #444;
+    background-color: white;
+    transition: background-color 0.2s ease;
+}
+
+.calendario-postulante .react-datepicker__day--selected {
+    background-color: #ff8c42;
+    color: white;
+}
+
+.calendario-postulante .react-datepicker__day:hover {
+    background-color: #ffd2aa;
+    cursor: pointer;
+}
+
+.calendario-postulante .react-datepicker__day--outside-month {
+    color: #ccc;
+}
+
+/* CALENDARIO TUTOR */
+.calendario-tutor .react-datepicker__day-name {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    background-color: #f0f4f8;
+    border-radius: 4px;
+    margin: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.calendario-tutor .react-datepicker__day {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    border-radius: 4px;
+    margin: 2px;
+    font-size: 14px;
+    color: #333;
+    background-color: white;
+    transition: background-color 0.2s ease;
+}
+
+.calendario-tutor .react-datepicker__day--selected {
+    background-color: #007d99;
+    color: white;
+}
+
+.calendario-tutor .react-datepicker__day:hover {
+    background-color: #b0c4d8;
+    cursor: pointer;
+}
+
+.calendario-tutor .react-datepicker__day--outside-month {
+    color: #ccc;
+}
+
+/* Posicionamiento del calendario */
+.react-datepicker-popper {
+    z-index: 9999 !important;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .react-datepicker__day-name,
+    .react-datepicker__day {
+        width: 2rem;
+        height: 2rem;
+        font-size: 12px;
+        line-height: 2rem;
+    }
+}
+
+  
 
