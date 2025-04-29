@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\Area;
+
+use App\Models\Categoria;
 
 class CategoriaSeeder extends Seeder
 {
@@ -14,119 +18,182 @@ class CategoriaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('categoria')->insert([
+        $areaMatematicas = Area::firstOrCreate(
+            ['tituloArea' => 'Matematicas'],
+            ['descArea' => 'Area de Matemáticas', 'habilitada' => true]
+        );
+
+        $areaQuimica = Area::firstOrCreate(
+            ['tituloArea' => 'Quimica'],
+            ['descArea' => 'Area de Química', 'habilitada' => true]
+        );
+
+        $areaFisica = Area::firstOrCreate(
+            ['tituloArea' => 'Fisica'],
+            ['descArea' => 'Area de Fisica', 'habilitada' => true]
+        );
+
+        $areaInformatica = Area::firstOrCreate(
+            ['tituloArea' => 'Informatica'],
+            ['descArea' => 'Area de Informatica', 'habilitada' => true]
+        );
+        $areaRobotica = Area::firstOrCreate(
+            ['tituloArea' => 'Robotica'],
+            ['descArea' => 'Area de Robotica', 'habilitada' => true]
+        );
+        $areaBiologia = Area::firstOrCreate(
+            ['tituloArea' => 'Biologia'],
+            ['descArea' => 'Area de Biologia', 'habilitada' => true]
+        );
+           
+
+
+
+        // Categorías para Matemáticas
+        $categoriasMatematicas = [
             [
-                'nombreCategoria' => '1 primaria',
-                'descCategoria'   => 'Categoría de primero de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'nombreCategoria' => 'Primaria 1° a 3°',
+                'descCategoria' => '1° Primaria, 2° Primaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 5,
+                'montoCate' => 25,
+                'idArea' => $areaMatematicas->idArea,
+                //
+                'idConvocatoria' => 1,
             ],
             [
-                'nombreCategoria' => '2 primaria',
-                'descCategoria'   => 'Categoría de segundo de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'nombreCategoria' => 'Secundaria 1° a 3°',
+                'descCategoria' => '1° Secundaria, 2° Secundaria, 3° Secundaria',
+                'habilitada' => true,
+                'maxPost' => 10,
+                'montoCate' => 25,
+                'idArea' => $areaMatematicas->idArea,
+                //
+                'idConvocatoria' => 1,
+            ]
+        ];
+
+        // Categoría para Química
+        $categoriasQuimica = [
+            [
+                'nombreCategoria' => 'Laboratorio Básico',
+                'descCategoria' => '1° Secundaria, 2° Primaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 3,
+                'montoCate' => 25,
+                'idArea' => $areaQuimica->idArea,
+                //
+                'idConvocatoria' => 1,
             ],
             [
-                'nombreCategoria' => '3 primaria',
-                'descCategoria'   => 'Categoría de tercero de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
+                'nombreCategoria' => 'Laboratorio Básico',
+                'descCategoria' => '1° Secundaria, 2° Primaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 3,
+                'montoCate' => 25,
+                'idArea' => $areaQuimica->idArea,
+                //
+                'idConvocatoria' => 5,
+            ]
+        ];
+
+        $categoriasFisica = [
             [
-                'nombreCategoria' => '4 primaria',
-                'descCategoria'   => 'Categoría de cuarto de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
+                'nombreCategoria' => 'Laboratorio Fisico',
+                'descCategoria' => '1° Secundaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 2,
+            ],[
+                'nombreCategoria' => 'Laboratorio Fisico Sec',
+                'descCategoria' => '3° Secundaria, 6° Primaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 3,
+            ],[
+                'nombreCategoria' => 'Laboratorio Fisico Final',
+                'descCategoria' => '6° Secundaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 5,
+            ]
+        ];
+
+        $categoriasInformatica = [
             [
-                'nombreCategoria' => '5 primaria',
-                'descCategoria'   => 'Categoría de quinto de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
+                'nombreCategoria' => 'Laboratorio Informatico',
+                'descCategoria' => '1° Primaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 2,
+                'montoCate' => 25,
+                'idArea' => $areaInformatica->idArea,
+                //
+                'idConvocatoria' => 3,
+            ]
+        ];
+
+        $categoriasRobotica = [
             [
-                'nombreCategoria' => '6 primaria',
-                'descCategoria'   => 'Categoría de sexto de pri',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
+                'nombreCategoria' => 'Laboratorio Robotica',
+                'descCategoria' => '1° Secundaria, 2° Primaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaRobotica->idArea,
+                //
+                'idConvocatoria' => 4,
+            ]
+        ];
+    
+       
+        $categoriasBiologia = [
             [
-                'nombreCategoria' => '1 secundaria',
-                'descCategoria'   => 'Categoría de primero de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => '2 secundaria',
-                'descCategoria'   => 'Categoría de segundo de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => '3 secundaria',
-                'descCategoria'   => 'Categoría de tercero de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => '4 secundaria',
-                'descCategoria'   => 'Categoría de cuarto de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => '5 secundaria',
-                'descCategoria'   => 'Categoría de quinto de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => '6 secundaria',
-                'descCategoria'   => 'Categoría de sexto de sec',
-                'idArea'          => 1,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => 'Lego',
-                'descCategoria'   => 'Categoría 1 de robotica',
-                'idArea'          => 2,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => 'Lego 2',
-                'descCategoria'   => 'Categoría 2 de robotica',
-                'idArea'          => 2,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => 'Progra 1',
-                'descCategoria'   => 'Categoría 1 de informática',
-                'idArea'          => 2,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-            [
-                'nombreCategoria' => 'Progra 2',
-                'descCategoria'   => 'Categoría 2 de informática',
-                'idArea'          => 2,
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ],
-        ]);
+                'nombreCategoria' => 'Laboratorio Biología',
+                'descCategoria' => '1° Secundaria, 1° Primaria',
+                'habilitada' => true,
+                'maxPost' => 3,
+                'montoCate' => 25,
+                'idArea' => $areaBiologia->idArea,
+                //
+                'idConvocatoria' => 4,
+            ]
+        ];
+
+
+
+        // Insertar categorías de Matemáticas
+        foreach ($categoriasMatematicas as $categoria) {
+            Categoria::create($categoria);
+        }
+
+        // Insertar categorías de Química
+        foreach ($categoriasQuimica as $categoria) {
+            Categoria::create($categoria);
+        }
+
+        foreach ($categoriasFisica as $categoria) {
+            Categoria::create($categoria);
+        }
+
+        foreach ($categoriasInformatica as $categoria) {
+            Categoria::create($categoria);
+        }
+
+        foreach ($categoriasRobotica as $categoria) {
+            Categoria::create($categoria);
+        }
+
+        foreach ($categoriasBiologia as $categoria) {
+            Categoria::create($categoria);
+        }
     }
 }

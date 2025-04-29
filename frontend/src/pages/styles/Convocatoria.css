@@ -1,0 +1,110 @@
+.container-formconv {
+  width: 750px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+.title-add-convocatoria{
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 0;
+  background-color: #007290;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin: auto;
+}
+
+.convocatoria-form{
+  background-color: white;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 10px;
+
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  padding: 0px 20px 5px 10px;
+}
+
+.input-field {
+  width: 90%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  padding: 0px 15px 20px 10px;
+}
+
+.textarea {
+  width: 90%;
+  height: 80px;
+
+}
+
+.fecha-group {
+  display: flex;
+  gap: 10px;
+}
+
+.area-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.add-button {
+  background: green;
+  color: white;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.area-list {
+  list-style: none;
+  padding: 0;
+}
+
+.area-list li {
+  background: #f1f1f1;
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.button-group {
+  display: flex;
+  margin: 20px;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
+
+.siguiente {
+  background: #0093B3;
+  color: white;
+  padding: 10px 0px;
+  border: none;
+
+  display: inline-blockf;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  margin: 5px
+}
+
+.cancelar {
+  background: #B0C4D8;
+  color: white;
+  padding: 10px;
+  border: none;
+}
