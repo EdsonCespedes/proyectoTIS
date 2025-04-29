@@ -26,6 +26,8 @@ import Area from "./pages/Area";
 import InscripcionExcel from "./pages/InscripcionExcel";
 
 import Historial from "./components/Historial";
+import GeneratePDF from "./components/GeneratePDF";
+import PDFTutor from "./components/PDFTutor";
 
 function App() {
 
@@ -52,6 +54,8 @@ function App() {
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
         <Route path="/area" element={<Area />} />
+        <Route path="/pdf" element={<GeneratePDF/>} />
+        <Route path="/pdftutor" element={<PDFTutor/>} />
 
         {/* Excel */}
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
