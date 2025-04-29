@@ -1,4 +1,6 @@
+
 /* Contenedor principal */
+
 .inicio-container {
   background-color: #DBEDEF;
   font-family: sans-serif;
@@ -12,14 +14,16 @@
   background: url("https://drea.mep.go.cr/sites/default/files/styles/publicacion_portada_1155x595/public/articles/DREA3%20Publicacion-Principal%201155x595_2.png?itok=jU7ZwRmU") no-repeat center center;
   background-size: cover;
   color: white;
+
   padding: 100px 90px;
 }
 
 /* Títulos en el banner */
 .banner h1 {
   font-size: 70px;
-  font-weight: bold;
+  padding: 180px 90px;
 }
+
 
 .banner h2 {
   font-size: 50px;
@@ -28,6 +32,7 @@
 }
 
 /* Subtítulo con efecto al pasar el cursor */
+
 .subtitulo {
   background-color: #027791;
   color: #027791;
@@ -44,16 +49,19 @@
 }
 
 /* Carrusel de áreas de competencia */
+
 .carrusel {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
   gap: 10px;
+
   position: relative;
 }
 
 /* Flechas de navegación */
+
 .flecha {
   background-color: #000;
   color: #027791;
@@ -62,10 +70,14 @@
   padding: 5px 15px;
   cursor: pointer;
   border-radius: 50%;
+
   z-index: 1;
 }
 
 /* Contenedor de las áreas */
+
+
+
 .areas {
   display: flex;
   gap: 20px;
@@ -77,6 +89,11 @@
 /* Estilo de cada tarjeta de área */
 .area-card {
   background: #027791;
+
+}
+
+.area-card {
+  background:  #027791;
   border-radius: 10px;
   padding: 15px;
   text-align: center;
@@ -85,13 +102,16 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+
 /* Imagen dentro de cada tarjeta */
 .area-card img {
   width: 180px;
   height: 150px;
+
   object-fit: contain;
   margin-bottom: 10px;
 }
+
 
 /* Nombre de cada área dentro de la tarjeta */
 .area-card p {

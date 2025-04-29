@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import DetalleInscripcion from '../components/DetalleInscripcion';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Registro from '../components/Registro';
 
 const InscripcionManual = () => {
@@ -12,7 +12,10 @@ const InscripcionManual = () => {
 
     const navigate = useNavigate();
 
-    const [estudiantes, setEstudiantes] = useState([]);
+
+    const location = useLocation();
+    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+
 
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
@@ -26,12 +29,41 @@ const InscripcionManual = () => {
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
 
-        const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-            idCategoria: categoria.id,
-            nombreCategoria: categoria.nombre,
-            descripcionCategoria: categoria.descripcion || "", // si se requiere
-            idArea: areasFormateadas[index].idArea,
-        }));
+
+        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
+        //     idCategoria: categoria.id,
+        //     nombreCategoria: categoria.nombre,
+        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+        //     idArea: areasFormateadas[index].idArea,
+        //     monto: categoria.monto || 50,
+        // }));
+
+        // Ahora, para cada categoría, asignamos correctamente el idArea
+        const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
+            // Buscar el área que contiene esta categoría por el idCategoria
+            let idAreaEncontrado = null;
+
+            // Recorremos las áreas seleccionadas
+            areasSeleccionadas.forEach((area) => {
+                // Verificar si esta categoría pertenece a este área comparando el idCategoria
+                const categoriaEncontrada = area.categorias.find(
+                    (cat) => cat.id === categoria.id
+                );
+                if (categoriaEncontrada) {
+                    idAreaEncontrado = area.id; // Asignar el idArea de la categoría
+                }
+            });
+
+            // Si encontramos el área correspondiente, formateamos la categoría
+            return {
+                idCategoria: categoria.id,
+                nombreCategoria: categoria.nombre,
+                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                idArea: idAreaEncontrado, // Asignar el idArea encontrado
+                monto: categoria.monto || 50,
+            };
+        });
+
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -51,12 +83,39 @@ const InscripcionManual = () => {
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
 
-        const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-            idCategoria: categoria.id,
-            nombreCategoria: categoria.nombre,
-            descripcionCategoria: categoria.descripcion || "", // si se requiere
-            idArea: areasFormateadas[index].idArea,
-        }));
+        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
+        //     idCategoria: categoria.id,
+        //     nombreCategoria: categoria.nombre,
+        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
+        //     idArea: areasFormateadas[index].idArea,
+        // }));
+
+        // Ahora, para cada categoría, asignamos correctamente el idArea
+        const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
+            // Buscar el área que contiene esta categoría por el idCategoria
+            let idAreaEncontrado = null;
+
+            // Recorremos las áreas seleccionadas
+            areasSeleccionadas.forEach((area) => {
+                // Verificar si esta categoría pertenece a este área comparando el idCategoria
+                const categoriaEncontrada = area.categorias.find(
+                    (cat) => cat.id === categoria.id
+                );
+                if (categoriaEncontrada) {
+                    idAreaEncontrado = area.id; // Asignar el idArea de la categoría
+                }
+            });
+
+            // Si encontramos el área correspondiente, formateamos la categoría
+            return {
+                idCategoria: categoria.id,
+                nombreCategoria: categoria.nombre,
+                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                idArea: idAreaEncontrado, // Asignar el idArea encontrado
+                monto: categoria.monto || 50,
+            };
+        });
+
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -67,10 +126,10 @@ const InscripcionManual = () => {
             setEstudiantes(estudiantesActualizados);
         }
 
-             
+
         setAreasSeleccionadas([]);
         setCategoriasSeleccionadas([]);
-        setIndexEdit(-1); 
+        setIndexEdit(-1);
         setEstudianteEdit({});
         setRegistro(false);  // Cambiar el estado de registro a false
     }
@@ -80,74 +139,14 @@ const InscripcionManual = () => {
         setEstudiantes(nuevoEstudiantes);
     }
 
-    const handleSubmit = async () => {
-        if (!estudiantes || estudiantes.length === 0) {
-            alert("No hay estudiantes para registrar.");
-            return;
-        }
-
-        let hayErrores = false;
-
-        for (let i = 0; i < estudiantes.length; i++) {
-            const estudianteOriginal = estudiantes[i];
-
-            const camposRequeridos = [
-                "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
-                "idCurso", "departamento", "provincia",
-                "tutor.nombreTutor", "tutor.apellidoTutor", "tutor.telefonoTutor",
-                "tutor.correoTutor", "tutor.fechaNaciTutor"
-            ];
-
-            const camposVacios = camposRequeridos.filter((campo) => {
-                if (campo.includes(".")) {
-                    const [parent, child] = campo.split(".");
-                    return !estudianteOriginal[parent]?.[child];
-                } else {
-                    return !estudianteOriginal[campo];
-                }
-            });
-
-            if (camposVacios.length > 0 || estudianteOriginal.areas.length === 0 || estudianteOriginal.categorias.length === 0) {
-                console.warn(`Estudiante ${i + 1} tiene campos vacíos:`, camposVacios);
-                hayErrores = true;
-                continue;
-            }
-
-            // Excluir campos innecesarios
-            const { departamentoColegio, provinciaColegio, ...estudiante } = estudianteOriginal;
-
-            try {
-                const response = await fetch('http://localhost:8000/api/registrar-postulante', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(estudiante)
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error(`Error al registrar estudiante ${i + 1}:`, errorText);
-                    hayErrores = true;
-                } else {
-                    console.log(`Estudiante ${i + 1} registrado con éxito.`);
-                }
-
-            } catch (error) {
-                console.error(`Error de red al registrar estudiante ${i + 1}:`, error);
-                hayErrores = true;
-            }
-        }
-
-        if (hayErrores) {
-            alert("Algunos estudiantes no se pudieron registrar. Revisa la consola para más detalles.");
-        } else {
-            alert("Todos los estudiantes fueron registrados correctamente.");
-        }
-
-        navigate("/convocatorias");
-    };
-
+    const handleSiguiente = () => {
+        navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
+            state: { 
+                estudiantes, 
+                from: "Manual",
+            },
+        });
+    }
 
     return (
         <div>
@@ -168,7 +167,10 @@ const InscripcionManual = () => {
                         </button>
                         <button
                             className="boton-style btn-aceptacion"
-                            onClick={handleSubmit}
+
+                            // onClick={handleSubmit}
+                            onClick={handleSiguiente}
+
                         >
                             {/* Guardar */}
                             Siguiente

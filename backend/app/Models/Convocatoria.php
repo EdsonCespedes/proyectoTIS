@@ -12,7 +12,7 @@ class Convocatoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'titulo',
+        'tituloConvocatoria',
         'descripcion',
         'fechaPublicacion',
         'fechaInicioInsc',
@@ -21,8 +21,25 @@ class Convocatoria extends Model
         'habilitada',
         'fechaInicioOlimp',
         'fechaFinOlimp',
-        'maximoPostPorArea'
+        'maximoPostPorArea',
+        'eliminado'
     ];
+
+
+
+    public function eliminarConvocatoria()
+    {
+        $this->eliminado = true;
+        $this->save();
+    }
+
+    public function scopeNoEliminado($query)
+    {
+        return $query->where('eliminado', true);
+    }
+
+
+
 
     // Relación CORREGIDA (usa belongsToMany si es tabla pivote)
     public function areas()
@@ -34,5 +51,10 @@ class Convocatoria extends Model
 {
     return $this->hasMany(Curso::class, 'idConvocatoria');
 }
+
+public function categorias()
+    {
+        return $this->hasMany(Categoria::class, 'idConvocatoria'); //relacion d uno a muchos //muchos
+    }
 
 }

@@ -62,7 +62,11 @@ const DetalleConv = () => {
           ))} */}
           {convocatorias.map((convocatoria) => (
             <tr key={convocatoria.idConvocatoria}>
+<<<<<<< HEAD
               <td>{convocatoria.titulo}</td>
+=======
+              <td>{convocatoria.tituloConvocatoria}</td>
+>>>>>>> origin/develop
               <td>{convocatoria.fechaInicioInsc} - {convocatoria.fechaFinInsc}</td>
               <td>{convocatoria.fechaInicioOlimp} - {convocatoria.fechaFinOlimp}</td>
               <td>
