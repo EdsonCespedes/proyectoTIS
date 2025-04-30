@@ -31,6 +31,13 @@ import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
 import RegistrarColegio from './pages/RegistrarColegio';
 
+//katy
+import AddRoles from './pages/AddRoles';
+import AddUser from './pages/AddUser';
+import AsignarRoles from './pages/AsignarRoles';
+import ListaRoles from './pages/ListaRoles';
+
+
 function App() {
 
   return (
@@ -70,6 +77,13 @@ function App() {
 
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
+
+       {/* Katy */}
+       <Route path="/addRoles" element={<AddRoles />} />
+       <Route path="/addUser" element={<AddUser />} /> 
+       <Route path="/asignarRoles" element={<AsignarRoles />} /> 
+       <Route path="/listaRoles" element={<ListaRoles />} /> 
+
 
 
       </Routes>
