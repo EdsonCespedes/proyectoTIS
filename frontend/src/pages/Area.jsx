@@ -1,393 +1,193 @@
 import React, { useEffect, useState } from "react";
 import "./styles/Area.css";
-import { useNavigate, useLocation } from "react-router-dom";
 
-import { useContext } from "react";
-import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
-
-const Area = () => {
-  const location = useLocation();
-  const idConvocatoria = location.state?.idConvocatoria;
-  console.log(idConvocatoria);
-  
-
-  const [areas, setAreas] = useState([
-    // "Matemáticas", "Física", "Química", "Biología", "Informática", "Robótica"
-  ]);
-  const [areaDescriptions, setAreaDescriptions] = useState({});
-  const [selectedArea, setSelectedArea] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [newArea, setNewArea] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [areaCategories, setAreaCategories] = useState({});
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [editedCardNames, setEditedCardNames] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [editInput, setEditInput] = useState("");
-  const [activeCards, setActiveCards] = useState([]);
-  const [customCategoryName, setCustomCategoryName] = useState("");
-  const [customCategoryDescription, setCustomCategoryDescription] = useState("");
-  const navigate = useNavigate();
-
-  const { convocatoria } = useContext(ConvocatoriaContext);
-
-  // const categoryOptions = [
-  //   "1° Primaria", "1° Secundaria", "2° Primaria", "2° Secundaria",
-  //   "3° Primaria", "3° Secundaria", "4° Primaria", "4° Secundaria",
-  //   "5° Primaria", "5° Secundaria", "6° Primaria", "6° Secundaria"
-  // ];
-
-  const [categoryOptions, setCategoryOptions] = useState([]);
+function Area() {
+  const [areasAPI, setAreasAPI] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [nombreArea, setNombreArea] = useState("");
+  const [lemaArea, setLemaArea] = useState("");
+  const [cursosSeleccionados, setCursosSeleccionados] = useState([]);
+  const [indiceAreaSeleccionada, setIndiceAreaSeleccionada] = useState(null);
+  const [mostrarFormularioArea, setMostrarFormularioArea] = useState(false);
 
   useEffect(() => {
-    // fetch("http://localhost:8000/api/areas")
-    fetch("http://localhost:8000/api/todasAreas")
-      .then(response => response.json())
-      // .then(data => setAreas(data))
-      .then((data) => {
-        const nombres = data.map(area => area.tituloArea);
-        setAreas(nombres);
-        const descripciones = data.reduce((acc, area) => {
-          acc[area.tituloArea] = area.descArea;
-          return acc;
-        }, {});        
-        setAreaDescriptions(descripciones);
-      })
-      .catch(error => console.error("Error al obtener colegios:", error));
-
     fetch("http://localhost:8000/api/vercursos")
-      .then(response => response.json())
-      // .then(data => setAreas(data))
+      .then((res) => res.json())
+      .then(setCursos)
+      .catch((err) => console.error("Error al obtener cursos:", err));
+
+    fetch("http://localhost:8000/api/todasAreas")
+      .then((res) => res.json())
       .then((data) => {
-        const nombres = data.map(curso => curso.Curso);
-        setCategoryOptions(nombres); // ← aquí solo guardamos los títulos
+        const areasFormateadas = data.map((area) => ({
+          nombre: area.tituloArea,
+          lema: area.descArea,
+          categorias: [], // Aquí puedes adaptar si tienes categorías reales
+        }));
+        setAreasAPI(areasFormateadas);
       })
-      .catch(error => console.error("Error al obtener colegios:", error));
+      .catch((err) => console.error("Error al obtener áreas:", err));
   }, []);
 
-  const handleAddArea = () => {
-    if (newArea && !areas.includes(newArea)) {
-      setAreas([...areas, newArea]);
-      setAreaDescriptions({
-        ...areaDescriptions,
-        [newArea]: newDescription,
-      });
-      setNewArea("");
-      setNewDescription("");
-      setShowModal(false);
-    }
-  };
+  const guardarAreaYCategoria = () => {
+    if (!nombreArea || !lemaArea || cursosSeleccionados.length === 0) return;
 
-  const handleSelectArea = (area) => {
-    setSelectedArea("");
-    if (area && !activeCards.includes(area)) {
-      setActiveCards([...activeCards, area]);
-    }
-  };
+    const cursosElegidos = cursos
+      .filter((c) => cursosSeleccionados.includes(c.idCurso))
+      .map((c) => c.Curso);
 
-  const handleDeleteCard = (area) => {
-    setActiveCards(activeCards.filter(a => a !== area));
-  };
+    const nuevaCategoria = { grados: cursosElegidos };
 
-  const handleEditCard = (area) => {
-    setSelectedArea(area);
-    setEditInput(editedCardNames[area] || area);
-    setIsEditing(true);
-  };
+    const nuevasAreas = [...areasAPI];
 
-  const handleSaveEdit = () => {
-    setEditedCardNames({
-      ...editedCardNames,
-      [selectedArea]: editInput,
-    });
-    setIsEditing(false);
-    setSelectedArea("");
-  };
-
-  const handleSaveCategories = () => {
-    const allCategories = [...(areaCategories[selectedArea] || [])];
-    // const allCategories = [...selectedCategories];
-    if (customCategoryName) {
-      //allCategories.push(`${customCategoryName} - ${customCategoryDescription}`);
-      allCategories.push({
-        name: customCategoryName,
-        description: customCategoryDescription,
-        levels: [...selectedCategories]
-      });
-    }
-
-    setAreaCategories({
-      ...areaCategories,
-      [selectedArea]: allCategories,
-    });
-
-    setCustomCategoryName("");
-    setCustomCategoryDescription("");
-    setSelectedCategories([]);
-    setShowCategoryModal(false);
-    setSelectedArea("");
-  };
-
-  const handleCheckboxChange = (category) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(c => c !== category));
+    if (indiceAreaSeleccionada !== null) {
+      // Reemplazar las categorías de la área seleccionada
+      nuevasAreas[indiceAreaSeleccionada].categorias = [nuevaCategoria];
     } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
-  const openCategoryModal = (area) => {
-    //const current = areaCategories[area] || [];
-    setSelectedArea(area);
-    //setSelectedCategories(current);
-    setSelectedCategories([]);
-    setCustomCategoryName("");
-    setCustomCategoryDescription("");
-    setShowCategoryModal(true);
-  };
-
-  const generarJSONFinal = () => {
-    const jsonFinal = {
-      convocatoria,
-      areas: activeCards.map(area => ({
-        tituloArea: editedCardNames[area] || area,
-        descArea: areaDescriptions[area] || "",
-        habilitada: true,
-        categorias: (areaCategories[area] || []).map(cat => ({
-          nombreCategoria: cat.name,
-          descCategoria: (cat.levels || []).join(", ") // niveles como texto en descCategoria
-        }))
-      }))
-    };
-
-    console.log("JSON Final:", JSON.stringify(jsonFinal, null, 2));
-    return jsonFinal;
-  };
-
-  const handleMostrarJSON = () => {
-    generarJSONFinal();
-    alert('Revisa la consola (F12) para ver el JSON generado.');
-  };
-
-  const handlePublicar = async (e) => {
-    e.preventDefault();
-
-    if (!idConvocatoria) {
-      alert("ID de convocatoria no disponible");
-      return;
-    }
-
-    const areasData = activeCards.map(area => ({
-      tituloArea: editedCardNames[area] || area,
-      descArea: areaDescriptions[area] || "",
-      habilitada: true,
-      idConvocatoria: idConvocatoria,
-      categorias: (areaCategories[area] || []).map(cat => ({
-        nombreCategoria: cat.name,
-        descCategoria: (cat.levels || []).join(", "),
-        habilitada: true,
-        maxPost: 50 // ← Podés reemplazar este valor si querés que sea editable
-      }))
-    }));
-
-    try {
-      const response = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ areas: areasData }),
+      // Agregar una nueva área si no estamos editando una
+      nuevasAreas.push({
+        nombre: nombreArea,
+        lema: lemaArea,
+        categorias: [nuevaCategoria],
       });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        alert("Estructura publicada con éxito ✅");
-        console.log("Respuesta del servidor:", data);
-        //navigate("/detalle-convocatoria"); // o donde quieras redirigir
-      } else {
-        alert(`Error al guardar estructura: ${data.error || data.message}`);
-        console.error("Error del backend:", data);
-      }
-  
-    } catch (error) {
-      alert("Error de red al guardar la estructura");
-      console.error("Error de red:", error);
     }
 
-    // const jsonFinal = generarJSONFinal();
-
-    // try {
-    //   const response = await fetch('http://localhost:8000/api/convocatorias', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(jsonFinal)
-    //   });
-
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     alert('Convocatoria publicada con éxito');
-    //     console.log('Respuesta del servidor:', data);
-    //   } else {
-    //     const errorData = await response.json();
-    //     alert('Error al publicar: ' + errorData.message);
-    //     console.error('Error al publicar:', errorData);
-    //   }
-    // } catch (error) {
-    //   alert('Error de conexión con el servidor');
-    //   console.error('Error de red:', error);
-    // }
+    setAreasAPI(nuevasAreas);
+    setNombreArea("");
+    setLemaArea("");
+    setCursosSeleccionados([]);
+    setMostrarFormularioArea(false);
   };
 
-  const handleSiguiente = (e) => {
-    handlePublicar(e);
-    navigate("/detalle-convocatoria"); // Asegúrate de que esta ruta coincida con tu configuración
+  const eliminarArea = (index) => {
+    const nuevasAreas = areasAPI.filter((_, i) => i !== index);
+    setAreasAPI(nuevasAreas);
+    setIndiceAreaSeleccionada(null);
   };
 
-  const handleCancelar = () => {
-    navigate("/detalle-convocatoria");
+
+  const editarArea = () => {
+    const area = areasAPI[indiceAreaSeleccionada];
+    setNombreArea(area.nombre);
+    setLemaArea(area.lema);
+    setCursosSeleccionados(
+      area.categorias?.flatMap((cat) => cat.grados).map((g) => cursos.find((c) => c.Curso === g)?.idCurso) || []
+    );
+    setMostrarFormularioArea(true);
   };
 
+  const publicar = () => {
+    const jsonFinal = {
+      convocatoria: {},
+      areas: areasAPI,
+    };
+    console.log("JSON final:", JSON.stringify(jsonFinal, null, 2));
+    alert("JSON generado, revisa la consola.");
+  };
+
+  const cerrarAreaSeleccionada = () => {
+    setIndiceAreaSeleccionada(null);
+  };
 
   return (
-    <div className="container-Area">
-      <h2 className="title-Area">Área de competencia</h2>
+    <div className="contenedor">
+      <h2>Áreas de competencia</h2>
 
-      <div className="select-group">
+      {/* Selector de áreas */}
+      <div>
         <label>Selecciona un área:</label>
-        <select onChange={(e) => handleSelectArea(e.target.value)} value={selectedArea}>
-          <option value="">-- Selecciona --</option>
-          {areas.map((area) => (
-            <option key={area} value={area}>{area}</option>
+        <select
+          value={indiceAreaSeleccionada ?? ""}
+          onChange={(e) => setIndiceAreaSeleccionada(parseInt(e.target.value))}
+        >
+          <option value="">-- Selecciona un área --</option>
+          {areasAPI.map((a, i) => (
+            <option key={i} value={i}>
+              {a.nombre}
+            </option>
           ))}
         </select>
       </div>
 
-      <button className="add-button" onClick={() => setShowModal(true)}>Agregar Área</button>
-
-      <div className="card-grid">
-        {activeCards.map((area) => (
-          <div className="area-card" key={area}>
-            {isEditing && selectedArea === area ? (
-              <div>
-                <input
-                  value={editInput}
-                  onChange={(e) => setEditInput(e.target.value)}
-                  placeholder="Nuevo nombre del área"
-                />
-                <input
-                  value={areaDescriptions[area]}
-                  onChange={(e) =>
-                    setAreaDescriptions({
-                      ...areaDescriptions,
-                      [area]: e.target.value
-                    })
-                  }
-                  placeholder="Editar descripción"
-                />
-                <button onClick={handleSaveEdit}>Guardar</button>
-              </div>
-            ) : (
-              <>
-                <h3>{editedCardNames[area] || area}</h3>
-                <p><strong>Descripción:</strong> {areaDescriptions[area] || "Sin descripción"}</p>
-                <div className="button-group">
-                  <button className="edit-button" onClick={() => handleEditCard(area)}>Editar</button>
-                  <button className="delete-button" onClick={() => handleDeleteCard(area)}>Eliminar</button>
-                  <button className="category-button" onClick={() => openCategoryModal(area)}>Agregar Categoría</button>
-                </div>
-              </>
-            )}
-
-            {areaCategories[area]?.length > 0 && (
-              <div className="category-list">
-                <h4>Categorías:</h4>
-                {areaCategories[area].map((cat, i) => (
-                  <div key={i} className="category-item">
-                    <strong>{cat.name}</strong> - {cat.description}
-                    <ul>
-                      {cat.levels.map((lvl, idx) => (
-                        <li key={idx}>{lvl}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Mostrar área seleccionada */}
+      {indiceAreaSeleccionada !== null && (
+        <div className="area-box">
+          <div className="area-header">
+            <strong>
+              Área: {areasAPI[indiceAreaSeleccionada].nombre}
+            </strong>
+            <button onClick={editarArea}>✏️</button>
+            <button onClick={() => eliminarArea(indiceAreaSeleccionada)}>🗑️</button>
+            <button onClick={cerrarAreaSeleccionada}>❌</button> {/* Botón de Cerrar */}
           </div>
-        ))}
-      </div>
+          <p>{areasAPI[indiceAreaSeleccionada].lema}</p>
 
-      {/* Modal para nueva área */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="close-button" onClick={() => setShowModal(false)}>✖</button>
-            <h3>Agregar Nueva Área</h3>
-            <input
-              type="text"
-              placeholder="Nombre del Área"
-              value={newArea}
-              onChange={(e) => setNewArea(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Descripción del Área"
-              value={newDescription}
-              onChange={(e) => setNewDescription(e.target.value)}
-            />
-            <button className="save-button" onClick={handleAddArea}>Guardar</button>
-          </div>
+          {areasAPI[indiceAreaSeleccionada].categorias?.map((cat, j) => (
+            <div key={j} className="categoria-box">
+              <strong>Categoría {j + 1}</strong>
+              <p>{cat.grados.join(", ")}</p>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Modal para categorías */}
-      {showCategoryModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="close-button" onClick={() => setShowCategoryModal(false)}>✖</button>
-            <h3>Agregar Categorías</h3>
+      {/* Formulario para agregar nueva área o categoría */}
+      <div style={{ marginTop: "10px" }}>
+        {!mostrarFormularioArea ? (
+          <button onClick={() => setMostrarFormularioArea(true)}>+ Área y Categoría</button>
+        ) : (
+          <div>
             <input
               type="text"
-              placeholder="Nombre de categoría"
-              value={customCategoryName}
-              onChange={(e) => setCustomCategoryName(e.target.value)}
+              placeholder="Nombre del área"
+              value={nombreArea}
+              onChange={(e) => setNombreArea(e.target.value)}
             />
-            <label>Descripción</label>
-            <div className="checkbox-grid">
-              {categoryOptions.map((category) => (
-                <label key={category} className="checkbox-item">
+            <input
+              type="text"
+              placeholder="Descripción del área"
+              value={lemaArea}
+              onChange={(e) => setLemaArea(e.target.value)}
+            />
+
+            <p><strong>Categorías:</strong></p>
+            {cursos.map((curso) => (
+              <div key={curso.idCurso}>
+                <label>
                   <input
                     type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCheckboxChange(category)}
+                    value={curso.idCurso}
+                    checked={cursosSeleccionados.includes(curso.idCurso)}
+                    onChange={(e) => {
+                      const seleccionado = e.target.checked;
+                      if (seleccionado) {
+                        setCursosSeleccionados([...cursosSeleccionados, curso.idCurso]);
+                      } else {
+                        setCursosSeleccionados(
+                          cursosSeleccionados.filter((c) => c !== curso.idCurso)
+                        );
+                      }
+                    }}
                   />
-                  {category}
+                  {curso.Curso}
                 </label>
-              ))}
-            </div>
-            <button className="save-button" onClick={handleSaveCategories}>Guardar Categorías</button>
+              </div>
+            ))}
+
+            <button onClick={guardarAreaYCategoria}>Guardar</button>
+            <button onClick={() => setMostrarFormularioArea(false)}>Cancelar</button>
           </div>
-        </div>
-      )}
-      <div className="button-group">
-        <button type="submit" className="siguiente" onClick={handleSiguiente}>
-          Publicar
-        </button>
-        <button type="button" className="cancelar" onClick={handleCancelar}>
-          Cancelar
-        </button>
-        <button
-          onClick={handleMostrarJSON}
-          className="boton"
-        >Mostrar JSON</button>
+        )}
+      </div>
+
+      {/* Botones de acción */}
+      <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+        <button onClick={publicar}>Publicar</button>
+        <button onClick={() => setAreasAPI([])}>Cancelar</button>
       </div>
     </div>
-
   );
-};
+}
 
 export default Area;
+
