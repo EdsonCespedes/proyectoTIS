@@ -149,6 +149,8 @@ Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaControlle
 // RUTAS PARA TUTOR
 Route::get('/tutor/{id}', [TutorController::class, 'show']);
 Route::get('/tutor', [TutorController::class, 'index']);
+////
+Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
 Route::post('/register', [AuthController::class, 'registrarTutor']);

@@ -177,8 +177,12 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       return;
     }
 
-    const colegioSeleccionado = colegiosDisponibles[form.idColegio];
-    form.delegacion = colegioSeleccionado;
+    const colegioSeleccionadoId = Object.keys(colegiosDisponibles).find(
+      key => colegiosDisponibles[key] === form.idColegio
+    );    
+    const nombreColegio = colegiosDisponibles[colegioSeleccionadoId];
+
+    form.delegacion = nombreColegio;
 
     console.log(estudiante);
 
@@ -192,7 +196,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   };
 
   const showModal = () => {
-    const cursoSeleccionado = cursos.find((curso) => curso.idCurso == form.idCurso);
+    const cursoSeleccionado = cursos.find((curso) => curso.Curso == form.idCurso);
 
     if (!idConvocatoria) {
       console.error("El parámetro 'id' es undefined.");
@@ -284,7 +288,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
             <select name="idCurso" onChange={handleChange} value={form.idCurso}>
               <option value="">Selecciona un curso</option>
               {cursos.map((curso) => (
-                <option key={curso.idCurso} value={curso.idCurso}>{curso.Curso}</option>
+                <option key={curso.idCurso} value={curso.Curso}>{curso.Curso}</option>
               ))}
             </select>
 
@@ -323,7 +327,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
           <select name="idColegio" onChange={handleChange} value={form.idColegio} disabled={!form.provinciaColegio}>
             <option value="">Selecciona un colegio</option>
             {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
-              <option key={id} value={id}>
+              <option key={id} value={nombre}>
                 {nombre}
               </option>
             ))}
