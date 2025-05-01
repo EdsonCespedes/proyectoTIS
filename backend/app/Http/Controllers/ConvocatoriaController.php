@@ -288,13 +288,16 @@ public function getConvocatoriaById($idConvocatoria)
         // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
         $convocatoria = Convocatoria::with('areas.categorias.cursos')
             ->where('idConvocatoria', $idConvocatoria)
-            ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+            ->where('eliminado', false)  // Solo convocatorias que no han sido eliminadas
             ->first();
 
         // Si no se encuentra la convocatoria
         if (!$convocatoria) {
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
+
+        // ✅ Falta este return si todo va bien
+        return response()->json($convocatoria, 200);
     } catch (\Exception $e) {
         return response()->json([
             'error' => 'Error al recuperar la convocatoria',
