@@ -300,6 +300,20 @@ const InscripcionExcel = () => {
     };
 
     const handleSiguiente = () => {
+        if (
+            !departamentoColegio || !provinciaColegio || !idColegio || !delegacion ||
+            !tutor.nombreTutor || !tutor.apellidoTutor || !tutor.correoTutor ||
+            !tutor.telefonoTutor || !tutor.fechaNaciTutor
+        ) {
+            alert("Por favor, complete todos los campos del tutor y colegio antes de continuar.");
+            return;
+        }
+    
+        if (estudiantes.length === 0) {
+            alert("Debe subir un archivo válido con al menos un estudiante.");
+            return;
+        }
+
         console.log(tutor);
         navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
             state: {

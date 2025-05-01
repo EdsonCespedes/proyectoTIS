@@ -155,8 +155,6 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     const camposRequeridos = [
       "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
       "idCurso", "departamento", "provincia",
-      "tutor.nombreTutor", "tutor.apellidoTutor",
-      "tutor.telefonoTutor", "tutor.correoTutor", "tutor.fechaNaciTutor"
     ];
 
     const getValorCampo = (obj, path) => {
@@ -179,7 +177,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
     const colegioSeleccionadoId = Object.keys(colegiosDisponibles).find(
       key => colegiosDisponibles[key] === form.idColegio
-    );    
+    );
     const nombreColegio = colegiosDisponibles[colegioSeleccionadoId];
 
     form.delegacion = nombreColegio;
@@ -232,17 +230,14 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     const yaSeleccionada = areasSeleccionadas.some((a) => a.id === area.id);
 
     if (yaSeleccionada) {
-      // ✅ Si se deselecciona, quitamos el área...
       setAreasSeleccionadas((prev) => prev.filter((a) => a.id !== area.id));
 
-      // 🧹 ...y también sus categorías asociadas
       setCategoriasSeleccionadas((prev) =>
         prev.filter(
           (categoria) => !area.categorias.some((c) => c.id === categoria.id)
         )
       );
     } else {
-      // ✅ Si se selecciona, la agregamos normalmente
       setAreasSeleccionadas((prev) => [...prev, { ...area }]);
     }
   };
@@ -354,12 +349,10 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
         )}
       </div>
 
-      {/* Botón para mostrar/ocultar área de competencia */}
       <button className="boton btn-competencia" onClick={showModal}>
         {mostrarArea ? "Ocultar Áreas de Competencia" : "Seleccionar Áreas de Competencia"}
       </button>
 
-      {/* Mostrar Área de Competencia si está activado */}
       {mostrarArea && (
         <div className="seccion-container">
           <div className="competencias">
@@ -401,33 +394,13 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
         </div>
       )}
 
-      <div className="seccion-container">
-        <div className="seccion">
-          <h2 className="subtitulo">Tutor</h2>
-          <div className="grid-container">
-            <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={form.tutor?.nombreTutor} />
-            <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={form.tutor?.apellidoTutor} />
-            <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={form.tutor?.telefonoTutor} />
-            <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={form.tutor?.correoTutor} />
-            <input
-              type="date"
-              name="tutor.fechaNaciTutor"
-              onChange={handleChange}
-              min="1990-01-01"
-              max="2019-12-31"
-              value={form.tutor?.fechaNaciTutor}
-            />
-          </div>
-        </div>
-
-        {/* Botones de acción */}
-        <div className="botones">
-          {Object.keys(estudiante).length > 0
-            ? <button className="boton btn-blue" onClick={handleAceptar}>Modificar</button>
-            : <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>}
-          <button className="boton btn-red" onClick={handleCancelar}>Cancelar</button>
-        </div>
+      <div className="botones">
+        {Object.keys(estudiante).length > 0
+          ? <button className="boton btn-blue" onClick={handleAceptar}>Modificar</button>
+          : <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>}
+        <button className="boton btn-red" onClick={handleCancelar}>Cancelar</button>
       </div>
+
     </div>
   );
 }
