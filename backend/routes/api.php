@@ -12,6 +12,9 @@ use App\Http\Controllers\OrdenPagoController;
 
 
 
+use App\Http\Controllers\UserController;
+
+
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
@@ -129,4 +132,19 @@ Route::put('/editconvocatorias/{id}', [ConvocatoriaController::class, 'updateCon
 Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaController::class, 'updateAreasCategorias']);
 
 
+// guarda los datos de un usuario
+Route::post('/guardausers', [UserController::class, 'store']);
+
+//actualiza los datos de un usuario mediante su id
+Route::put('/editausers/{id}', [UserController::class, 'update']);
+
+//elimina un usuario mediante su id
+Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
+
+
+// muestra todos los usuarios
+Route::get('/todosusers', [UserController::class, 'index']);
+
+// muestra los datos de un usuario mediante su id
+Route::get('/especificousers/{id}', [UserController::class, 'show']);
 
