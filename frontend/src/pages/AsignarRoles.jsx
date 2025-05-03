@@ -2,30 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/AsignarRoles.css";
 
-const convocatorias = [
-  { id: 1, nombre: "Convocatoria 1" },
-  { id: 2, nombre: "Convocatoria 2" }
-];
-
-const roles = [
-  { id: "aux", nombre: "Auxiliar" },
-  { id: "op", nombre: "Operador" },
-  { id: "admin", nombre: "Administrador" },
-  { id: "eval", nombre: "Evaluador" }
-];
-
-const personas = [
-  { id: 1, nombre: "Carlos Pérez" },
-  { id: 2, nombre: "Ana García" },
-  { id: 3, nombre: "José López" },
-  { id: 4, nombre: "Maria González" }
-];
-
 const AsignarRoles = () => {
   const [filas, setFilas] = useState([{ nombre: "", convocatoria: "", rol: "" }]);
   const [searchTerm, setSearchTerm] = useState("");
   const [nombreNoEncontrado, setNombreNoEncontrado] = useState(false);
   const navigate = useNavigate();
+
+  const convocatorias = [
+    { id: 1, nombre: "Convocatoria 1" },
+    { id: 2, nombre: "Convocatoria 2" }
+  ];
+
+  const roles = [
+    { id: "aux", nombre: "Auxiliar" },
+    { id: "op", nombre: "Operador" },
+    { id: "admin", nombre: "Administrador" },
+    { id: "eval", nombre: "Evaluador" }
+  ];
+
+  const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
     const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
@@ -34,11 +29,22 @@ const AsignarRoles = () => {
       setSearchTerm(rolEditar.nombre);
       localStorage.removeItem("rolEditar");
     }
-  }, []);
 
-  const personasFiltradas = personas.filter((persona) =>
-    persona.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuariosFormateados = usuariosGuardados.map((u) => ({
+      id: u.id,
+      nombre: u.nombre
+    }));
+
+    const personasFijas = [
+      { id: 1, nombre: "Carlos Pérez" },
+      { id: 2, nombre: "Ana García" },
+      { id: 3, nombre: "José López" },
+      { id: 4, nombre: "Maria González" }
+    ];
+
+    setPersonas([...personasFijas, ...usuariosFormateados]);
+  }, []);
 
   const handleNombre = (e) => {
     const nombre = e.target.value;
@@ -59,20 +65,6 @@ const AsignarRoles = () => {
     setFilas(nuevasFilas);
   };
 
-  const agregarFila = () => {
-    setFilas([...filas, { nombre: "", convocatoria: "", rol: "" }]);
-  };
-
-  const limpiarTodo = () => {
-    setFilas([{ nombre: "", convocatoria: "", rol: "" }]);
-    setSearchTerm("");
-    setNombreNoEncontrado(false);
-  };
-
-  const handleRegistrar = () => {
-    navigate("/addUser");
-  };
-
   const guardarDatos = () => {
     const datosGuardados = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
 
@@ -90,18 +82,15 @@ const AsignarRoles = () => {
 
   return (
     <div className="roles-container">
-      <div className="roles-title">ASIGNAR ROLES</div>
+      <div className="roles-title">Asignar Roles</div>
 
       <div className="roles-search">
         <input
           type="text"
-          placeholder="🔍 Buscar operador o auxiliar por nombre"
+          placeholder="🔍 Buscar persona por nombre"
           value={searchTerm}
           onChange={handleNombre}
-          className="search-input"
         />
-        <button className="add-button" onClick={agregarFila}>➕</button>
-        <button className="btn-cancelar" onClick={limpiarTodo}>❌</button>
       </div>
 
       {!nombreNoEncontrado && (
@@ -122,7 +111,7 @@ const AsignarRoles = () => {
                     onChange={(e) => handleChange(index, "nombre", e.target.value)}
                   >
                     <option value="">Seleccione</option>
-                    {personasFiltradas.map((persona) => (
+                    {personas.map((persona) => (
                       <option key={persona.id} value={persona.nombre}>
                         {persona.nombre}
                       </option>
@@ -162,11 +151,11 @@ const AsignarRoles = () => {
       )}
 
       <div className="roles-buttons">
-      {!nombreNoEncontrado && (
-    <button className="btn-guardar" onClick={guardarDatos}>💾 Guardar</button>
-  )}
+        {!nombreNoEncontrado && (
+          <button className="btn-guardar" onClick={guardarDatos}>💾</button>
+        )}
         {nombreNoEncontrado && (
-          <button className="btn-registrar" onClick={handleRegistrar}>REGISTRAR</button>
+          <button className="btn-registrar">Registrar</button>
         )}
       </div>
     </div>
@@ -174,4 +163,3 @@ const AsignarRoles = () => {
 };
 
 export default AsignarRoles;
-

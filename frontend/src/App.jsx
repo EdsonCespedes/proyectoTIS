@@ -36,7 +36,7 @@ import AddRoles from './pages/AddRoles';
 import AddUser from './pages/AddUser';
 import AsignarRoles from './pages/AsignarRoles';
 import ListaRoles from './pages/ListaRoles';
-
+import TablaUsuarios from './pages/TablaUsuarios';
 
 function App() {
 
@@ -83,8 +83,8 @@ function App() {
        <Route path="/addUser" element={<AddUser />} /> 
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
-
-
+       <Route path="/tablaUsuarios" element={<TablaUsuarios />} /> 
+       <Route path="/addUser/:id" element={<AddUser />} />
 
       </Routes>
     </div>

@@ -58,7 +58,7 @@ const AddRoles = () => {
         </div>
 
         <div className="form-buttons">
-          <button type="submit" className="btn btn-registrar">REGISTRAR</button>
+          <button type="submit" className="btn btn-registrar">REGISTRA</button>
         </div>
       </form>
     </div>

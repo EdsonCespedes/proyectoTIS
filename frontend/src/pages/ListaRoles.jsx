@@ -23,9 +23,20 @@ const ListaRoles = () => {
     navigate("/asignarRoles");
   };
 
+  // Navegar a /asignarRoles para agregar un nuevo rol
+  const irASignarRoles = () => {
+    navigate("/asignarRoles");
+  };
+
   return (
     <div className="lista-container">
       <h2>Lista de Roles Asignados</h2>
+      
+      {/* Botón para agregar un nuevo rol */}
+      <button className="btn-agregar" onClick={irASignarRoles}>
+        Agregar +
+      </button>
+
       {datos.length === 0 ? (
         <p>No hay datos guardados.</p>
       ) : (
@@ -45,8 +56,8 @@ const ListaRoles = () => {
                 <td>{item.convocatoria}</td>
                 <td>{item.rol}</td>
                 <td>
-                  <button onClick={() => iniciarEdicion(index)}>Editar</button>
-                  <button onClick={() => eliminarFila(index)}>Eliminar</button>
+                  <button onClick={() => iniciarEdicion(index)}>✏️</button>
+                  <button onClick={() => eliminarFila(index)}>❌</button>
                 </td>
               </tr>
             ))}
@@ -58,4 +69,5 @@ const ListaRoles = () => {
 };
 
 export default ListaRoles;
+
 
