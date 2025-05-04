@@ -4,6 +4,9 @@ import axios from 'axios';
 const PruebaRegister = () => {
     const [formData, setFormData] = useState({
         name: '',
+        //
+        lastName: '',
+        //
         email: '',
         password: '',
         password_confirmation: '',
@@ -32,6 +35,9 @@ const PruebaRegister = () => {
             console.log('Usuario registrado:', response.data.user);
             setFormData({
                 name: '',
+                //
+                lastName: '',
+                //
                 email: '',
                 password: '',
                 password_confirmation: '',
@@ -55,9 +61,15 @@ const PruebaRegister = () => {
 
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Nombre completo</label>
+                    <label>Nombre</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} />
                     {errors.name && <small style={{ color: 'red' }}>{errors.name[0]}</small>}
+                </div>
+
+                <div>
+                    <label>Apellidos</label>
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+                    {errors.name && <small style={{ color: 'red' }}>{errors.lastName[0]}</small>}
                 </div>
 
                 <div>
