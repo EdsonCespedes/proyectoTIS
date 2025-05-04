@@ -10,6 +10,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tutor;
 
+use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function registrarTutor(Request $request)
@@ -97,4 +99,19 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    //Recuperar al tutor una vez logeado
+    public function obtenerDatosTutor()
+    {
+        $user = Auth::user();
+
+        if ($user->rol !== 'tutor') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        return response()->json([
+            'tutor' => $user->tutor
+        ]);
+    }
+
 }

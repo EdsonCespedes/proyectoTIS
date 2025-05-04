@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const PruebaLogin = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -34,6 +37,16 @@ const PruebaLogin = () => {
             setSuccessMessage('Inicio de sesión exitoso.');
             console.log('Usuario logueado:', user);
 
+            //Verifica si es tutor
+            if (user.rol == 'tutor') {
+                const resTutor = await axios.get('http://localhost:8000/api/tutor', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
+                console.log('Tutor asociado:', resTutor.data.tutor);
+            }
+
+            navigate("/");
 
         } catch (error) {
             console.error(error);

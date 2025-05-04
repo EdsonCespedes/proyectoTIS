@@ -5,6 +5,9 @@ import Registro from '../components/Registro';
 
 const InscripcionManual = () => {
     const { idConvocatoria } = useParams();
+
+    const tutor = JSON.parse(localStorage.getItem('tutor'));
+
     const [registro, setRegistro] = useState(false);
 
     const [indexEdit, setIndexEdit] = useState(-1);
@@ -18,14 +21,6 @@ const InscripcionManual = () => {
 
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
-
-    const [tutor, setTutor] = useState({
-        nombreTutor: estudiantes[0]?.tutor.nombreTutor || "",
-        apellidoTutor: estudiantes[0]?.tutor.apellidoTutor || "",
-        correoTutor: estudiantes[0]?.tutor.correoTutor || "",
-        telefonoTutor: estudiantes[0]?.tutor.telefonoTutor || "",
-        fechaNaciTutor: estudiantes[0]?.tutor.fechaNaciTutor || ""
-    });
 
     const handleRegistrar = (nuevoEstudiante) => {
         const areasFormateadas = areasSeleccionadas.map((area) => ({
@@ -115,13 +110,6 @@ const InscripcionManual = () => {
     }
 
     const handleSiguiente = () => {
-        const camposTutorCompletos = tutor.nombreTutor && tutor.apellidoTutor && tutor.correoTutor && tutor.telefonoTutor && tutor.fechaNaciTutor;
-
-        if (!camposTutorCompletos) {
-            alert("Por favor completa todos los campos del tutor antes de continuar.");
-            return;
-        }
-
         if (estudiantes.length === 0) {
             alert("Debes registrar al menos un estudiante antes de continuar.");
             return;
@@ -131,6 +119,7 @@ const InscripcionManual = () => {
             state: {
                 estudiantes: estudiantes.map(est => ({
                     ...est,
+                    idTutor: tutor.idTutor,
                     tutor: { ...tutor },  // Datos del tutor actualizados
                 })),
                 from: "Manual",
@@ -150,8 +139,6 @@ const InscripcionManual = () => {
                         setAreasSeleccionadas={setAreasSeleccionadas}
                         setCategoriasSeleccionadas={setCategoriasSeleccionadas}
                         setIndexEdit={setIndexEdit}
-                        tutor = {tutor}
-                        setTutor = {setTutor}
                     />
                     <div className="control">
                         <button className="boton-style btn-aceptacion" type="button" onClick={() => setRegistro(true)}>
