@@ -14,6 +14,9 @@ use App\Http\Controllers\OrdenPagoController;
 
 
 
+use App\Http\Controllers\UserController;
+
+
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
@@ -149,6 +152,22 @@ Route::get('/tutor', [TutorController::class, 'index']);
 // login y registro
 Route::post('/register', [AuthController::class, 'registrarTutor']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// guarda los datos de un usuario
+Route::post('/guardausers', [UserController::class, 'store']);
+
+//actualiza los datos de un usuario mediante su id
+Route::put('/editausers/{id}', [UserController::class, 'update']);
+
+//elimina un usuario mediante su id
+Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
+
+
+// muestra todos los usuarios
+Route::get('/todosusers', [UserController::class, 'index']);
+
+// muestra los datos de un usuario mediante su id
+Route::get('/especificousers/{id}', [UserController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
