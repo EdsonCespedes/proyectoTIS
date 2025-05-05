@@ -1,0 +1,95 @@
+/* Navbar.css */
+
+.dashboard-adm {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar-adm {
+  width: 240px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+}
+
+.title-adm {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.menu-adm {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-adm li {
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-adm li:hover {
+  background-color: #34495e;
+}
+
+.main-adm {
+  flex-grow: 1;
+  background-color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-adm {
+  background-color: #2980b9;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-icon-adm {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.header-title-adm {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header-right-adm {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.labels-adm {
+  display: flex;
+  gap: 10px;
+}
+
+.label-adm {
+  background-color: white;
+  color: #2980b9;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.label-adm:hover {
+  background-color: #d6eaf8;
+}
+
+.user-icon-adm {
+  font-size: 20px;
+}
+
+.content-adm {
+  flex-grow: 1;
+  padding: 20px;
+}

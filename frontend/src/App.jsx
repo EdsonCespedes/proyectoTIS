@@ -1,6 +1,7 @@
 import GestionColegios from "./pages/GestionColegio";
 import AddColegios from "./pages/AddColegios";
 import Header from "./layout/Header";
+import Navbar from "./layout/Navbar";
 import { Routes, Route } from 'react-router-dom';
 import EditColegios from "./pages/EditColegio";
 // import DetalleInscripcion from "./components/DetalleInscripcion";
@@ -19,8 +20,6 @@ import Registro from "./components/Recibo";
 import OrdenPago from "./components/OrdenPago";
 import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
-import Area from "./pages/Area";
-
 
 //Excel
 import InscripcionExcel from "./pages/InscripcionExcel";
@@ -28,6 +27,7 @@ import InscripcionExcel from "./pages/InscripcionExcel";
 import Historial from "./components/Historial";
 import GeneratePDF from "./components/GeneratePDF";
 import PDFTutor from "./components/PDFTutor";
+import Categoria from "./pages/Categoria";
 
 import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
@@ -57,10 +57,9 @@ function App() {
         <Route path="/convocatoria/:idConvocatoria/ordenPago" element={<OrdenPago />} />
         <Route path="/Recibo" element={<Recibo />} />
         <Route path="/RegistroPago" element={<RegistroPago />} />
-        <Route path="/area" element={<Area />} />
         <Route path="/pdf" element={<GeneratePDF/>} />
         <Route path="/pdftutor" element={<PDFTutor/>} />
-
+        <Route path="/categorias" element={<Categoria />} />
         {/* Excel */}
         <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
 
@@ -69,13 +68,12 @@ function App() {
         {/*pruebas */}
         <Route path="/registro-tutor" element={<PruebaRegister />} />
         <Route path="/login" element={<PruebaLogin />} />
-        
-        {/*<Route path="/nivel" element={<Niveles />} />*/}
+        <Route path="/Navbaradmin" element={<Navbar />} />
 
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
 
-
+        
       </Routes>
     </div>
     

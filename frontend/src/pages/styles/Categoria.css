@@ -1,0 +1,125 @@
+/* Contenedor principal centrado */
+.container-area {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 40px auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Título con fondo esmeralda */
+.title-area {
+  background-color: #2E8B57;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Tarjeta de área */
+.area-card-area {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #0097a7;
+  color: #fff;
+  border-radius: 8px;
+}
+
+/* Tarjeta de categoría */
+.category-card-area {
+  background-color: #eee;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #000;
+}
+
+/* Iconos ✏️ 🗑️ */
+.icon-area {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-area {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex; justify-content: center; align-items: center;
+}
+
+.modal-content-area {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 500px;
+}
+
+.modal-content input,
+.modal-content textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.modal-content button {
+  background-color: #2E8B57; /* color esmeralda */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-content button:hover {
+  background-color: #256d46;
+}
+
+.close-modal-area {
+  position: absolute;
+  top: 10px; right: 15px;
+  cursor: pointer;
+}
+
+.button-group-area {
+  display: flex;
+  margin: 20px;
+  justify-content: center;
+  gap: 40px;
+  align-items: center;
+}
+
+.siguiente {
+  background: #0093B3;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+
+  display: inline-blockf;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  margin: 5px
+}
+
+.cancelar {
+  background: #B0C4D8;
+  color: white;
+  padding: 10px;
+  border: none;
+}
