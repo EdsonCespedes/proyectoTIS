@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tutor;
 
+use App\Models\OrdenPago;
+//use App\Models\Pago;
+use App\Models\PagoDetalle;
+use Illuminate\Support\Facades\DB;
+
+
 class OrdenPagoController extends Controller
 {
     
@@ -66,9 +72,9 @@ class OrdenPagoController extends Controller
             ]);
 
             //Crea el registro en pago
-            $pago = Pago::create([
-                'idOrdenPago' => $orden->idOrdenPago,
-            ]);
+            // $pago = Pago::create([
+            //     'idOrdenPago' => $orden->idOrdenPago,
+            // ]);
 
             //Crea cada línea en pagodetalle
             $detallesCreados = [];
@@ -86,7 +92,7 @@ class OrdenPagoController extends Controller
 
             return response()->json([
                 'idOrdenPago' => $orden->idOrdenPago,
-                'idPago'      => $pago->idPago,
+                //'idPago'      => $pago->idPago,
                 'detalles'    => $detallesCreados
             ], 201);
 

@@ -9,6 +9,10 @@ use App\Models\Categoria;
 use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+//
+use Illuminate\Support\Facades\Validator;
+
+
 class ConvocatoriaController extends Controller
 {
 // ConvocatoriaEstructuraController.php
@@ -284,13 +288,16 @@ public function getConvocatoriaById($idConvocatoria)
         // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
         $convocatoria = Convocatoria::with('areas.categorias.cursos')
             ->where('idConvocatoria', $idConvocatoria)
-            ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+            ->where('eliminado', false)  // Solo convocatorias que no han sido eliminadas
             ->first();
 
         // Si no se encuentra la convocatoria
         if (!$convocatoria) {
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
+
+        // ✅ Falta este return si todo va bien
+        return response()->json($convocatoria, 200);
     } catch (\Exception $e) {
         return response()->json([
             'error' => 'Error al recuperar la convocatoria',
@@ -325,7 +332,7 @@ public function storeConvocatoria(Request $request)
         }
 
         $convocatoria = Convocatoria::create([
-            'titulo'              => $request->input('titulo'),
+            'tituloConvocatoria'  => $request->input('titulo'),
             'descripcion'         => $request->input('descripcion'),
             'fechaPublicacion'    => $request->input('fechaPublicacion'),
             'fechaInicioInsc'     => $request->input('fechaInicioInsc'),
