@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./styles/GestionColegios.css";
-import { Link } from "react-router-dom";
 
-const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudianteEdit, setIndexEdit, setAreasSeleccionadas, setCategoriasSeleccionadas, tutor, setTutor }) => {
+const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudianteEdit, setIndexEdit, setAreasSeleccionadas, setCategoriasSeleccionadas }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 8;
 
@@ -33,20 +32,6 @@ const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudiant
         setCategoriasSeleccionadas(categoriasOriginales);
         setRegistro(true)
     }
-
-    //Tutor
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        
-        // Cambiar valores del tutor
-        if (name.includes("tutor.")) {
-            const [, child] = name.split(".");
-            setTutor((prevTutor) => ({
-                ...prevTutor,
-                [child]: value
-            }));
-        }
-    };
 
     return (
         <div className="contenedor">
@@ -107,25 +92,6 @@ const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudiant
                         </button>
                     </div>
                 )}
-            </div>
-
-            {/* Tutor */}
-            <div className="seccion">
-                <h2 className="subtitulo">Tutor</h2>
-                <div className="grid-container">
-                    <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={tutor.nombreTutor} />
-                    <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={tutor.apellidoTutor} />
-                    <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={tutor.telefonoTutor} />
-                    <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={tutor.correoTutor} />
-                    <input
-                        type="date"
-                        name="tutor.fechaNaciTutor"
-                        onChange={handleChange}
-                        min="1990-01-01"
-                        max="2019-12-31"
-                        value={tutor.fechaNaciTutor}
-                    />
-                </div>
             </div>
         </div>
     );

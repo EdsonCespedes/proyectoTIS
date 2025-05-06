@@ -3,27 +3,16 @@ import AddColegios from "./pages/AddColegios";
 import Header from "./layout/Header";
 import { Routes, Route } from 'react-router-dom';
 import EditColegios from "./pages/EditColegio";
-// import DetalleInscripcion from "./components/DetalleInscripcion";
 import CrearConvForm from "./pages/CrearConvForm";
 import DetalleConv from "./pages/DetalleConv";
 import Inicio from "./views/Inicio";
 import Disciplinas from "./views/Disciplinas";
-// import Registro from "./pages/Registro";
 
 import Convocatorias from "./views/Convocatorias";
-import TipoInscripcion from "./pages/TipoInscripcion";
-import InscripcionManual from "./pages/InscripcionManual";
-import Registro from "./components/Recibo";
-//import EditarDesdeRuta from './components/EditarDesdeRuta';
 
-import OrdenPago from "./components/OrdenPago";
 import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
 import Area from "./pages/Area";
-
-
-//Excel
-import InscripcionExcel from "./pages/InscripcionExcel";
 
 import Historial from "./components/Historial";
 
@@ -31,6 +20,7 @@ import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
 import RegistrarColegio from './pages/RegistrarColegio';
 
+<<<<<<< HEAD
 //katy
 import AddRoles from './pages/AddRoles';
 import AddUser from './pages/AddUser';
@@ -41,6 +31,12 @@ import RolesTable from './pages/RolesTable';
 
 
 
+=======
+import PrivateRoute from "./routes/PrivateRoute";
+import { RutasInscripcion } from "./routes/RutasInscripcion";
+
+import NoAutorizado from "./pages/NoAutorizado";
+>>>>>>> develop
 
 function App() {
 
@@ -49,39 +45,33 @@ function App() {
       <Header/>
       <Routes>
         <Route path="/" element={<Inicio/>} />
+
         <Route path="/colegios" element={<GestionColegios />} />
         <Route path="/registro-colegios" element={<AddColegios />} />
         <Route path="/edit-colegios" element={<EditColegios />} />
-        {/* <Route path="/detalle-inscripcion" element={<DetalleInscripcion/>} /> */}
+
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
-        <Route path="/disciplinas" element={<Disciplinas/>} />
-        {/* <Route path="/registro-postulante" element={<Registro />} /> */}
-
-        <Route path="/convocatorias" element={<Convocatorias />} />
-        <Route path="/convocatoria/:idConvocatoria/tipo-inscripcion" element={<TipoInscripcion />} />
-        <Route path="/convocatoria/:idConvocatoria/inscripcion-manual" element={<InscripcionManual />} />
-        {/* <Route path="/editar" element={<EditarDesdeRuta />} /> */}
-        <Route path="/ordenPago" element={<OrdenPago />} />
-        <Route path="/convocatoria/:idConvocatoria/ordenPago" element={<OrdenPago />} />
-        <Route path="/Recibo" element={<Recibo />} />
-        <Route path="/RegistroPago" element={<RegistroPago />} />
         <Route path="/area" element={<Area />} />
 
-        {/* Excel */}
-        <Route path="/convocatoria/:idConvocatoria/inscripcion-excel" element={<InscripcionExcel />} />
+        <Route path="/disciplinas" element={<Disciplinas/>} />
 
-        <Route path="/ordenes-pago" element={<Historial />} />
+        <Route path="/convocatorias" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Convocatorias /></PrivateRoute>} />
+        {RutasInscripcion()}
+
+        <Route path="/Recibo" element={<Recibo />} />
+        <Route path="/RegistroPago" element={<RegistroPago />} />      
+
+        <Route path="/ordenes-pago" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Historial /></PrivateRoute>} />
 
         {/*pruebas */}
         <Route path="/registro-tutor" element={<PruebaRegister />} />
         <Route path="/login" element={<PruebaLogin />} />
-        
-        {/*<Route path="/nivel" element={<Niveles />} />*/}
 
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
 
+<<<<<<< HEAD
        {/* Katy */}
        <Route path="/addRoles" element={<AddRoles />} />
        <Route path="/addUser" element={<AddUser />} /> 
@@ -92,6 +82,9 @@ function App() {
        <Route path="/tablaRoles" element={<RolesTable />} />
       
       
+=======
+        <Route path="/no-autorizado" element={<NoAutorizado />} />
+>>>>>>> develop
       </Routes>
     </div>
     
