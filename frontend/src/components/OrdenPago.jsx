@@ -13,13 +13,12 @@ const OrdenPago = () => {
 
   const { idConvocatoria } = useParams();
   const [convocatoria, setConvocatoria] = useState(null);
+  const tutor = JSON.parse(localStorage.getItem('tutor'));
 
   const location = useLocation();
   const estudiantes = location.state?.estudiantes;
   const from = location.state?.from || "default";
   console.log(estudiantes);
-
-  const [idTutor, setIdTutor] = useState(null);
 
   useEffect(() => {
     const obtenerConvocatoria = async () => {
@@ -63,9 +62,8 @@ const OrdenPago = () => {
     doc.text("Fecha: " + new Date().toLocaleDateString(), 20, 35);
     doc.text("Convocatoria: " + convocatoria?.tituloConvocatoria, 20, 45);
 
-    const tutor = estudiantes[0]?.tutor;
     if (tutor) {      
-      doc.text("Tutor: " + tutor.nombreTutor + " " + tutor.apellidoTutor + "  ID Tutor: " + idTutor, 20, 55);
+      doc.text("Tutor: " + tutor.nombreTutor + " " + tutor.apellidoTutor + "  ID Tutor: " + tutor.idTutor, 20, 55);
       doc.text("Email: " + tutor.correoTutor, 20, 63);
       doc.text("Teléfono: " + tutor.telefonoTutor, 20, 71);
     }
@@ -81,10 +79,7 @@ const OrdenPago = () => {
     let yPosition = 100;
     estudiantes.forEach((est) => {
       doc.text(est.nombrePost + " " + est.apellidoPost, 20, yPosition);
-      // doc.text(est.monto, 100, yPosition);
-      // doc.text(est.categorias.reduce((acc, cat) => acc + cat.monto, 0).toString(), 100, yPosition);
       doc.text(est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2).toString(), 100, yPosition);
-      // doc.text(est.disciplina, 150, yPosition);
       doc.text(est.areas.map(area => area.tituloArea).join(" - "), 150, yPosition);
       yPosition += 10;
     });
@@ -104,51 +99,13 @@ const OrdenPago = () => {
 
     let hayErrores = false;
     let listaDePostulantes = [];
-    let idTutorExistente = null;
-
-    try {
-      const response = await fetch('http://localhost:8000/api/tutor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(estudiantes[0].tutor)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 422) {
-          // Errores de validación reales (campos mal llenados)
-          console.error('Errores de validación del tutor:', errorData.errors);
-          alert('Error en los datos del tutor. Revisa los campos.');
-        } else {
-          console.error('Otro error al registrar tutor:', errorData);
-          alert('Error al registrar tutor.');
-        }
-        return null;
-      }
-
-      const data = await response.json();
-      console.log('Tutor registrado correctamente:', data);
-
-      // Aquí accedes al id del tutor
-      idTutorExistente = data.idTutor;
-      setIdTutor(idTutorExistente);
-      console.log(idTutorExistente);
-      
-    } catch (error) {
-      console.error('Error de red al registrar tutor:', error);
-      return null;
-    }
-
+    
     for (let i = 0; i < estudiantes.length; i++) {
       const estudianteOriginal = estudiantes[i];
 
       const camposRequeridos = [
         "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
-        "idCurso", "idColegio", "departamento", "provincia",
-        "tutor.nombreTutor", "tutor.apellidoTutor", "tutor.telefonoTutor",
-        "tutor.correoTutor", "tutor.fechaNaciTutor"
+        "idCurso", "idColegio", "departamento", "provincia"
       ];
 
       const camposVacios = camposRequeridos.filter((campo) => {
@@ -176,12 +133,8 @@ const OrdenPago = () => {
         idCurso: String(estudiante.idCurso ?? ""),
         idColegio: String(estudiante.idColegio ?? ""),
         fechaNaciPost: estudiante.fechaNaciPost,
-        idTutor: String(idTutorExistente),
-        tutor: {
-          ...estudiante.tutor,
-          telefonoTutor: String(estudiante.tutor?.telefonoTutor ?? ""),
-          //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
-        }
+        idTutor: tutor.idTutor,
+        tutor: tutor,
       };
 
       console.log(postulante);
@@ -232,9 +185,9 @@ const OrdenPago = () => {
 
 
     const orden = {
-      idTutor: idTutorExistente,
+      idTutor: tutor.idTutor,
       montoTotal: parseFloat(montoTotal.replace(',', '.')),
-      vigencia: "2025-12-03",
+      vigencia: convocatoria.fechaFinInsc,
       cancelado: false,
       recibido: false,
       detalles: listaDePostulantes
@@ -303,15 +256,12 @@ const OrdenPago = () => {
               {estudiantes.map((est, index) => (
                 <tr key={index}>
                   <td>
-                    {/* <input value={est.nombre} readOnly /> */}
                     <input value={est.nombrePost} readOnly />
                   </td>
                   <td className="monto">
-                    {/* <input value={est.monto} readOnly /> */}
                     <input value={est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2)} readOnly />
                   </td>
                   <td>
-                    {/* <input value={est.disciplina} readOnly /> */}
                     <input value={est.areas.map(area => area.tituloArea).join(" - ")} readOnly />
                   </td>
                 </tr>
@@ -341,11 +291,7 @@ const OrdenPago = () => {
               <button className="btn-descargar" onClick={handleDescargarPDF}>
                 Descargar PDF
               </button>
-              {/* <button className="btn-cancelar" onClick={handleCancelar}>
-                Cancelar
-              </button> */}
             </>
-
           )}
 
           <button onClick={handleSalir} disabled={!salirActivo}>
@@ -358,5 +304,3 @@ const OrdenPago = () => {
 };
 
 export default OrdenPago;
-
-

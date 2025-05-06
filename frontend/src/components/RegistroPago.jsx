@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import './styles/RegistroPago.css';
+import { useNavigate} from 'react-router-dom';
 
 const tutores = [
   { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
@@ -18,12 +19,42 @@ const ordenesPago = [
   { idOrdenPago: 'orden008', idIngresado: '6666', idOCR: '6666', idTutor: 3 },
 ];
 
+
+
 //  normalizar textos 
 const normalizeText = (text) => {
   return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 };
 
 const RegistroPago = () => {
+
+  // const navigate = useNavigate();
+
+  // const [tutores, setTutores] = useState([]);
+  // const [cargando, setCargando] = useState(true);
+
+  // useEffect(() => {
+  //   const obtenerOrdenesPago = async () => {
+  //     try {
+  //       const response = await fetch(`http://localhost:8000/api/buscar-ordenes`);
+  //       const data = await response.json();
+
+  //       if (data) {
+  //         setTutores(data);
+  //         console.log(data);
+  //       } else {
+  //         console.warn("No se encontraron órdenes");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error al obtener órdenes de pago:", error);
+  //     } finally {
+  //       setCargando(false);
+  //     }
+  //   };
+
+  //   obtenerOrdenesPago();
+  // }, []);
+
   const [searchText, setSearchText] = useState('');
   const [tutorEncontrado, setTutorEncontrado] = useState(null);
   const [mensaje, setMensaje] = useState('');
