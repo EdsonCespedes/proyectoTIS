@@ -33,6 +33,9 @@ import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
 import RegistrarColegio from './pages/RegistrarColegio';
 
+import Area from "./pages/Area";
+import Cat from "./pages/Cat";
+
 function App() {
 
   return (
@@ -73,6 +76,8 @@ function App() {
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
 
+        <Route path="/ayc" element={<Area />} />
+        <Route path="/categorias/:areaId" element={<Cat />} />
         
       </Routes>
     </div>
