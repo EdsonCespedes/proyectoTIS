@@ -16,6 +16,11 @@ class PostulanteController extends Controller
 {
     public function register(Request $request)
     {
+        ////
+        if ($request->filled('idTutor')) {
+            $request->request->remove('tutor');
+        }
+               
         $validator = Validator::make($request->all(), [
             // Campos postulante
             'nombrePost'         => 'required|string|max:45',
@@ -48,14 +53,14 @@ class PostulanteController extends Controller
         DB::beginTransaction();
 
         try {
-            // Tutor
-            if (empty($request->input('idTutor')) && $request->has('tutor')) {
+            if (!$request->filled('idTutor') && $request->has('tutor')) {
                 $tutorData = $request->input('tutor');
                 $tutor = Tutor::create($tutorData);
                 $idTutor = $tutor->idTutor;
             } else {
                 $idTutor = $request->input('idTutor');
             }
+            
 
             // Busca o crear Colegio y Curso
             $colegioId = $this->buscarOCrearColegio($request->input('idColegio'));
@@ -105,6 +110,11 @@ class PostulanteController extends Controller
                 }
             }
 
+            //// Guardar los ID de postulación
+            $postulacionIds = [];
+            ////
+
+
             // Categorías y sus relaciones intermedias
             foreach ($request->input('categorias') as $categoriaItem) {
                 // Busca o crea categoría
@@ -140,16 +150,20 @@ class PostulanteController extends Controller
                         'idCurso'     => $cursoId
                     ]);
                 }
-                // }Postulante a Categoría en postulacion
-                DB::table('postulacion')->insert([
+                
+                // Insertar en postulacion y obtener ID
+                $idPostulacion = DB::table('postulacion')->insertGetId([
                     'idCategoria'  => $categoriaItem['idCategoria'],
                     'idPostulante' => $postulante->idPostulante,
                 ]);
+
+                $postulacionIds[] = $idPostulacion;
             }
 
             DB::commit();
             return response()->json([
                 'message'   => 'Registro completado correctamente',
+                'idPostulacion' => $postulacionIds,
                 'postulante'=> $postulante
             ], 201);
 

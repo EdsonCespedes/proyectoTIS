@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrdenPago extends Model
 {
     protected $table = 'ordenpago';
-    protected $primaryKey = 'idordenPago';
+    protected $primaryKey = 'idOrdenPago';
     public $timestamps = false;
     protected $fillable = ['idTutor','montoTotal','cancelado','vigencia','recibido'];
 

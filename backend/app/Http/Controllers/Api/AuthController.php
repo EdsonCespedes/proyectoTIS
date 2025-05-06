@@ -10,12 +10,17 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tutor;
 
+use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function registrarTutor(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            //
+            'lastName' => 'required|string|max:255',
+            //
             'email' => 'required|email|string|max:255|unique:users',
             'password' => 'required|string|confirmed|min:6',
             'telefono' => 'required|string|max:20',
@@ -27,7 +32,7 @@ class AuthController extends Controller
         try {
             // Crea usuario
             $user = User::create([
-                'name' => $request->name,
+                'name' => $request->name . ' ' . $request->lastName,
                 'email' => $request->email,
                 'role' => 'tutor',
                 'password' => Hash::make($request->password),
@@ -37,7 +42,7 @@ class AuthController extends Controller
             Tutor::create([
                 'idUser' => $user->id,
                 'nombreTutor' => $request->name,
-                'apellidoTutor' => '', 
+                'apellidoTutor' => $request->lastName, 
                 'correoTutor' => $request->email,
                 'telefonoTutor' => $request->telefono,
                 'fechaNaciTutor' => $request->fechaNacimiento,
@@ -97,4 +102,19 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    //Recuperar al tutor una vez logeado
+    public function obtenerDatosTutor()
+    {
+        $user = Auth::user();
+
+        if ($user->rol !== 'tutor') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        return response()->json([
+            'tutor' => $user->tutor
+        ]);
+    }
+
 }

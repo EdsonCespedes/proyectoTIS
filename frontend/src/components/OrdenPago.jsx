@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { jsPDF } from "jspdf"; // Importa jsPDF
 import "./styles/OrdenPago.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -12,26 +12,30 @@ const OrdenPago = () => {
   const navigate = useNavigate();
 
   const { idConvocatoria } = useParams();
+  const [convocatoria, setConvocatoria] = useState(null);
+  const tutor = JSON.parse(localStorage.getItem('tutor'));
+
   const location = useLocation();
   const estudiantes = location.state?.estudiantes;
   const from = location.state?.from || "default";
   console.log(estudiantes);
 
+  useEffect(() => {
+    const obtenerConvocatoria = async () => {
+      try {
+        const respuesta = await fetch(`http://127.0.0.1:8000/api/veridconvocatorias/${idConvocatoria}`);
+        if (!respuesta.ok) {
+          throw new Error("Error al obtener la convocatoria");
+        }
+        const datos = await respuesta.json();
+        setConvocatoria(datos); // Guardamos en la variable de estado
+      } catch (error) {
+        console.error("Error:", error.message);
+      }
+    };
 
-  // [
-  //   { nombre: "Katerin Marza Caro", monto: "100,00", disciplina: "Fisica" },
-  //   { nombre: "Juan Pérez", monto: "150,00", disciplina: "Matematica" },
-  //   { nombre: "María González", monto: "120,00", disciplina: "Fisica" }
-  // ];
-
-  // const montoTotal = estudiantes
-  //   .reduce((total, est) => {
-  //     const monto = parseFloat(est.monto.replace(",", "."));
-  //     return total + (isNaN(monto) ? 0 : monto);
-  //   }, 0)
-  //   .toFixed(2)
-  //   .replace(".", ",");
-
+    obtenerConvocatoria();
+  }, [idConvocatoria]);
 
   const montoTotal = estudiantes
     .reduce((total, est) => {
@@ -55,26 +59,27 @@ const OrdenPago = () => {
     doc.text("Orden de Pago", 105, 20, null, null, "center");
 
     doc.setFontSize(12);
-    doc.text("Fecha: " + new Date().toLocaleDateString(), 20, 40);
-    doc.text("Órden de Pago", 20, 50);
+    doc.text("Fecha: " + new Date().toLocaleDateString(), 20, 35);
+    doc.text("Convocatoria: " + convocatoria?.tituloConvocatoria, 20, 45);
+
+    if (tutor) {      
+      doc.text("Tutor: " + tutor.nombreTutor + " " + tutor.apellidoTutor + "  ID Tutor: " + tutor.idTutor, 20, 55);
+      doc.text("Email: " + tutor.correoTutor, 20, 63);
+      doc.text("Teléfono: " + tutor.telefonoTutor, 20, 71);
+    }
 
     doc.setDrawColor(0, 0, 0);
-    doc.line(10, 60, 200, 60);
+    doc.line(10, 80, 200, 80);
 
-    doc.text("Estudiante", 20, 70);
-    doc.text("Monto", 100, 70);
+    doc.text("Estudiante", 20, 90);
+    doc.text("Monto", 100, 90);
+    doc.text("Area", 150, 90);
+    doc.line(10, 95, 200, 95);
 
-    doc.text("Area", 150, 70);
-
-
-    doc.line(10, 75, 200, 75);
-
-    let yPosition = 80;
+    let yPosition = 100;
     estudiantes.forEach((est) => {
       doc.text(est.nombrePost + " " + est.apellidoPost, 20, yPosition);
-      // doc.text(est.monto, 100, yPosition);
-      doc.text(est.categorias.reduce((acc, cat) => acc + cat.monto, 0).toString(), 100, yPosition);
-      // doc.text(est.disciplina, 150, yPosition);
+      doc.text(est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2).toString(), 100, yPosition);
       doc.text(est.areas.map(area => area.tituloArea).join(" - "), 150, yPosition);
       yPosition += 10;
     });
@@ -93,15 +98,14 @@ const OrdenPago = () => {
     }
 
     let hayErrores = false;
-
+    let listaDePostulantes = [];
+    
     for (let i = 0; i < estudiantes.length; i++) {
       const estudianteOriginal = estudiantes[i];
 
       const camposRequeridos = [
         "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
-        "idCurso", "idColegio", "departamento", "provincia",
-        "tutor.nombreTutor", "tutor.apellidoTutor", "tutor.telefonoTutor",
-        "tutor.correoTutor", "tutor.fechaNaciTutor"
+        "idCurso", "idColegio", "departamento", "provincia"
       ];
 
       const camposVacios = camposRequeridos.filter((campo) => {
@@ -129,15 +133,12 @@ const OrdenPago = () => {
         idCurso: String(estudiante.idCurso ?? ""),
         idColegio: String(estudiante.idColegio ?? ""),
         fechaNaciPost: estudiante.fechaNaciPost,
-        tutor: {
-          ...estudiante.tutor,
-          telefonoTutor: String(estudiante.tutor?.telefonoTutor ?? ""),
-          //fechaNaciTutor: parseFecha(estudiante.tutor?.fechaNaciTutor),
-        }
+        idTutor: tutor.idTutor,
+        tutor: tutor,
       };
-      
+
       console.log(postulante);
-      
+
 
       try {
         const response = await fetch('http://localhost:8000/api/registrar-postulante', {
@@ -153,7 +154,20 @@ const OrdenPago = () => {
           console.error(`Error al registrar estudiante ${i + 1}:`, errorText);
           hayErrores = true;
         } else {
+          const data = await response.json();
+          const idsPostulacion = data.idPostulacion; // Puede ser un array
+          const postulanteRegistrado = data.postulante;
           console.log(`Estudiante ${i + 1} registrado con éxito.`);
+          console.log('IDs de postulación:', idsPostulacion);
+          console.log('Postulante:', postulanteRegistrado);
+
+          const detalles = postulante.categorias.map((categoria, index) => ({
+            idPostulacion: idsPostulacion[index],
+            descripcion: `Inscripción (${categoria.nombreCategoria})`,
+            monto: categoria.monto
+          }));
+
+          listaDePostulantes.push(...detalles);
         }
 
       } catch (error) {
@@ -166,6 +180,43 @@ const OrdenPago = () => {
       alert("Algunos estudiantes no se pudieron registrar. Revisa la consola para más detalles.");
     } else {
       alert("Todos los estudiantes fueron registrados correctamente.");
+    }
+
+
+
+    const orden = {
+      idTutor: tutor.idTutor,
+      montoTotal: parseFloat(montoTotal.replace(',', '.')),
+      vigencia: convocatoria.fechaFinInsc,
+      cancelado: false,
+      recibido: false,
+      detalles: listaDePostulantes
+    };
+
+    console.log(orden);
+
+
+    try {
+      const response = await fetch('http://localhost:8000/api/ordenpago', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(orden)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error al registrar la orden de pago:`, errorText);
+        hayErrores = true;
+      }
+
+      setMostrarBotones(false);
+      setMostrarDescargar(true);
+    } catch (error) {
+      console.error(`Error al registrar la orden de pago:`, error);
+      hayErrores = true;
     }
   };
 
@@ -205,15 +256,12 @@ const OrdenPago = () => {
               {estudiantes.map((est, index) => (
                 <tr key={index}>
                   <td>
-                    {/* <input value={est.nombre} readOnly /> */}
                     <input value={est.nombrePost} readOnly />
                   </td>
                   <td className="monto">
-                    {/* <input value={est.monto} readOnly /> */}
                     <input value={est.categorias.reduce((acc, cat) => acc + parseFloat(cat.monto), 0).toFixed(2)} readOnly />
                   </td>
                   <td>
-                    {/* <input value={est.disciplina} readOnly /> */}
                     <input value={est.areas.map(area => area.tituloArea).join(" - ")} readOnly />
                   </td>
                 </tr>
@@ -243,11 +291,7 @@ const OrdenPago = () => {
               <button className="btn-descargar" onClick={handleDescargarPDF}>
                 Descargar PDF
               </button>
-              <button className="btn-cancelar" onClick={handleCancelar}>
-                Cancelar
-              </button>
             </>
-
           )}
 
           <button onClick={handleSalir} disabled={!salirActivo}>
@@ -260,5 +304,3 @@ const OrdenPago = () => {
 };
 
 export default OrdenPago;
-
-

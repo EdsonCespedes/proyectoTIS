@@ -14,13 +14,7 @@ const InscripcionExcel = () => {
     const [provinciaColegio, setProvinciaColegio] = useState(estudiantes[0]?.provinciaColegio || "");
     const [idColegio, setIdColegio] = useState(estudiantes[0]?.idColegio || "");
     const [delegacion, setDelegacion] = useState(estudiantes[0]?.delegacion || ""); // o podés calcularlo
-    const [tutor, setTutor] = useState({
-        nombreTutor: estudiantes[0]?.tutor.nombreTutor || "",
-        apellidoTutor: estudiantes[0]?.tutor.apellidoTutor || "",
-        correoTutor: estudiantes[0]?.tutor.correoTutor || "",
-        telefonoTutor: estudiantes[0]?.tutor.telefonoTutor || "",
-        fechaNaciTutor: estudiantes[0]?.tutor.fechaNaciTutor || ""
-    });
+    const tutor = JSON.parse(localStorage.getItem('tutor'));
 
     const [provinciasColegio, setProvinciasColegio] = useState([]);
     const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
@@ -141,8 +135,6 @@ const InscripcionExcel = () => {
                     continue;
                 }
 
-                //const idCurso = cursoEncontrado.idCurso;
-
                 try {
                     const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/curso/${encodeURIComponent(nombreCurso)}`);
 
@@ -235,14 +227,8 @@ const InscripcionExcel = () => {
                         idCurso: cursoEncontrado.Curso,
                         idColegio: "",
                         delegacion: "",
-                        idTutor: null,
-                        tutor: {
-                            nombreTutor: "",
-                            apellidoTutor: "",
-                            correoTutor: "",
-                            telefonoTutor: "",
-                            fechaNaciTutor: ""
-                        },
+                        idTutor: tutor.idTutor,
+                        tutor: tutor,
                         areas: areasFormateadas,
                         categorias: categoriasFormateadas,
                         departamentoColegio: "",
@@ -300,6 +286,18 @@ const InscripcionExcel = () => {
     };
 
     const handleSiguiente = () => {
+        if (
+            !departamentoColegio || !provinciaColegio || !idColegio || !delegacion
+        ) {
+            alert("Por favor, complete todos los campos del colegio antes de continuar.");
+            return;
+        }
+    
+        if (estudiantes.length === 0) {
+            alert("Debe subir un archivo válido con al menos un estudiante.");
+            return;
+        }
+
         console.log(tutor);
         navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
             state: {
@@ -309,7 +307,6 @@ const InscripcionExcel = () => {
                     provinciaColegio,
                     idColegio,
                     delegacion,
-                    tutor: { ...tutor },  // Datos del tutor actualizados
                 })),
                 from: "Excel",
             },
@@ -342,15 +339,6 @@ const InscripcionExcel = () => {
 
             setIdColegio(value); // actualiza el colegio
             setDelegacion(value);
-        }
-
-        // Cambiar valores del tutor
-        if (name.includes("tutor.")) {
-            const [, child] = name.split(".");
-            setTutor((prevTutor) => ({
-                ...prevTutor,
-                [child]: value
-            }));
         }
     };
 
@@ -452,24 +440,6 @@ const InscripcionExcel = () => {
                         </option>
                     ))}
                 </select>
-            </div>
-
-            <div className="seccion">
-                <h2 className="subtitulo">Tutor</h2>
-                <div className="grid-container">
-                    <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={tutor.nombreTutor} />
-                    <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={tutor.apellidoTutor} />
-                    <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={tutor.telefonoTutor} />
-                    <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={tutor.correoTutor} />
-                    <input
-                        type="date"
-                        name="tutor.fechaNaciTutor"
-                        onChange={handleChange}
-                        min="1990-01-01"
-                        max="2019-12-31"
-                        value={tutor.fechaNaciTutor}
-                    />
-                </div>
             </div>
 
             <div className="control">
