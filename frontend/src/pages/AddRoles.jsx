@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import './styles/AddRoles.css';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AddRoles = () => {
   const [nombreRol, setNombreRol] = useState('');
   const [funciones, setFunciones] = useState([]);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [indexEditar, setIndexEditar] = useState(null);
+  const navigate = useNavigate();
 
   const opcionesFunciones = [
     "Gestion de Convocatoria",
@@ -12,6 +15,16 @@ const AddRoles = () => {
     "Orden Pago (OCR)",
     "Orden Pago (Vereficar)"
   ];
+
+  useEffect(() => {
+    const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
+    if (rolEditar) {
+      setNombreRol(rolEditar.nombreRol);
+      setFunciones(rolEditar.funciones);
+      setModoEdicion(true);
+      setIndexEditar(rolEditar.index);
+    }
+  }, []);
 
   const handleCheckboxChange = (funcion) => {
     setFunciones(prev =>
@@ -23,29 +36,45 @@ const AddRoles = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Rol:', nombreRol);
-    console.log('Funciones seleccionadas:', funciones);
+
+    const rolesExistentes = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
+    const nuevoRol = { nombreRol, funciones };
+
+    let actualizados;
+
+    if (modoEdicion && indexEditar !== null) {
+      rolesExistentes[indexEditar] = nuevoRol;
+      actualizados = [...rolesExistentes];
+      localStorage.removeItem("rolEditar");
+    } else {
+      actualizados = [...rolesExistentes, nuevoRol];
+    }
+
+    localStorage.setItem("rolesAsignados", JSON.stringify(actualizados));
+    navigate("/tablaRoles");
+  };
+
+  const handleCancel = () => {
+    localStorage.removeItem("rolEditar");
+    navigate("/tablaRoles");
   };
 
   return (
     <div className="form-container">
-      <h2 className="form-title">Add ROLES</h2>
+      <h2 className="form-title">{modoEdicion ? "Editar Rol" : "Añadir Rol"}</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="nombreRol">Nombre Rol :</label>
-          <input
-            type="text"
-            id="nombreRol"
-            value={nombreRol}
-            onChange={(e) => setNombreRol(e.target.value)}
-            className="input-rol"
-          />
-        </div>
+        <label htmlFor="nombreRol">Nombre Rol:</label>
+        <input
+          type="text"
+          id="nombreRol"
+          value={nombreRol}
+          onChange={(e) => setNombreRol(e.target.value)}
+        />
 
-        <div className="form-group funciones">
-          <label>Funciones :</label>
+        <label>Funciones:</label>
+        <div className="funciones">
           {opcionesFunciones.map((funcion, index) => (
-            <div key={index} className="checkbox-item">
+            <div key={index}>
               <input
                 type="checkbox"
                 id={`funcion-${index}`}
@@ -57,12 +86,14 @@ const AddRoles = () => {
           ))}
         </div>
 
-        <div className="form-buttons">
-          <button type="submit" className="btn btn-registrar">REGISTRA</button>
-        </div>
+        <button type="submit">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
+        <button type="button" onClick={handleCancel}>Cancelar</button>
       </form>
     </div>
   );
 };
 
 export default AddRoles;
+
+
+
