@@ -4,9 +4,10 @@ use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
-use App\Http\Controllers\ColegioController;
+use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
-use App\Http\Controllers\Api\ConvocatoriaController;
+//use App\Http\Controllers\Api\ConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaController;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\AuthController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
+use App\Http\Controllers\ConvocatoriaEstructuraController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -35,12 +37,13 @@ Route::get('/verprovincias/departamento/{nombre}', [ProvinciaController::class, 
 
 
 Route::get('/getcolegio', [ColegioController::class, 'index']); //obtiene todo los datos del colegio
+
 //Route::post('/colegio', [ColegioController::class, 'store']);     //guarda colegios
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
 Route::get('/areas', [AreaController::class, 'index']);
-Route::get('/categorias', [AreaController::class, 'index']);
+Route::get('/categorias', [CategoriaController::class, 'index']);
 
 
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR
@@ -55,7 +58,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Registrar un postulante
 Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
 Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::class, 'updatePostulante']);
-
 
 // Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
@@ -76,8 +78,10 @@ Route::post('/cursos', [CursoController::class, 'store']);
 //Crear Convocatoria
 //Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
+
 //crear orden de pago
 Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
+
 
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
@@ -148,6 +152,8 @@ Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaControlle
 // RUTAS PARA TUTOR
 Route::get('/tutor/{id}', [TutorController::class, 'show']);
 Route::get('/tutor', [TutorController::class, 'index']);
+////
+Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
 Route::post('/register', [AuthController::class, 'registrarTutor']);
@@ -172,4 +178,6 @@ Route::get('/especificousers/{id}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    //recuperar al tutor
+    Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
 });

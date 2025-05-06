@@ -1,20 +1,59 @@
 // Recibo.jsx
 import React, { useState, useRef } from 'react';
-import './styles/Recibo.css'; // Importa el archivo de estilos CSS
+import Tesseract from 'tesseract.js';
+import './styles/Recibo.css';
+
 
 const Recibo = () => {
   const [idRecibo, setIdRecibo] = useState('');
   const [imagen, setImagen] = useState(null);
-  const inputCamaraRef = useRef(null); // Ref para el input de cámara
-  const [imagenSubida, setImagenSubida] = useState(false); // Estado para saber si se ha subido una imagen
+  const [textoExtraido, setTextoExtraido] = useState('');
+  const [procesandoOCR, setProcesandoOCR] = useState(false);
+  const [mensajeCoincidencia, setMensajeCoincidencia] = useState('');
+  const inputCamaraRef = useRef(null);
+  const [imagenSubida, setImagenSubida] = useState(false);
+
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImagen(file);
-      setImagenSubida(true); // Marcamos que la imagen fue subida
+      setImagenSubida(true);
+      extraerTextoOCR(file);
     }
   };
+
+  const extraerTextoOCR = (file) => {
+    setProcesandoOCR(true);
+    setTextoExtraido('');
+    setMensajeCoincidencia('');
+
+    Tesseract.recognize(
+      file,
+      'spa',
+      { logger: (m) => console.log(m) }
+    ).then(({ data: { text } }) => {
+      console.log('Texto detectado:', text);
+      setTextoExtraido(text);
+      setProcesandoOCR(false);
+
+      if (idRecibo.trim() !== '') {
+        if (text.includes(idRecibo)) {
+          setMensajeCoincidencia('✅ El ID fue encontrado en la imagen.');
+        } else {
+          setMensajeCoincidencia('❌ El ID no se encontró en la imagen por favor suba la imagen correcta .');
+          
+        }
+      } else {
+        setMensajeCoincidencia('⚠️ Por favor, escribe un ID antes de subir la imagen.');
+      }
+    }).catch((err) => {
+      console.error('Error al procesar OCR:', err);
+      setProcesandoOCR(false);
+      setMensajeCoincidencia('❌ Error al procesar la imagen.');
+    });
+  };
+
 
   const handleImportar = () => {
     if (!idRecibo || !imagen) {
@@ -26,14 +65,18 @@ const Recibo = () => {
 
   const handleEliminarImagen = () => {
     setImagen(null);
-    setImagenSubida(false); // Restablecemos el estado de imagen subida
+    setImagenSubida(false);
+    setTextoExtraido('');
+    setMensajeCoincidencia('');
+
   };
 
   return (
     <div className="recibo-container">
       <h2 className="recibo-titulo">RECIBO</h2>
 
-      <label className="recibo-label">ID del Recibo :</label>
+      <label className="recibo-label">ID del Recibo:</label>
+
       <input
         type="text"
         value={idRecibo}
@@ -41,8 +84,22 @@ const Recibo = () => {
         className="recibo-input"
       />
 
+      {mensajeCoincidencia && (
+        <p style={{
+          marginTop: '5px',
+          fontWeight: 'bold',
+          color: mensajeCoincidencia.includes('✅')
+            ? 'green'
+            : mensajeCoincidencia.includes('❌')
+              ? 'red'
+              : 'orange'
+        }}>
+          {mensajeCoincidencia}
+        </p>
+      )}
+
       <div className="recibo-upload-area">
-        {/* Si no hay imagen subida, mostramos el recuadro de subir foto */}
+
         {!imagenSubida && (
           <div className="recibo-icono">
             <img
@@ -54,20 +111,18 @@ const Recibo = () => {
         )}
 
         <div className="recibo-botones">
-          {/* Si no hay imagen subida, mostramos los botones de subir foto y tomar foto */}
           {!imagenSubida && (
-            <>
-              <label className="btn-subir">
-                <input type="file" onChange={handleImagenChange} hidden />
-                📤 Subir foto
-              </label>
+            <label className="btn-subir">
+              <input type="file" onChange={handleImagenChange} hidden />
+              📤 Subir foto
+            </label>
 
-            </>
           )}
         </div>
       </div>
 
       {/* Vista previa de imagen */}
+
       {imagen && (
         <div style={{ marginBottom: '20px' }}>
           <p>Vista previa:</p>
@@ -89,6 +144,16 @@ const Recibo = () => {
         </div>
       )}
 
+      {procesandoOCR && <p>🔄 Procesando imagen con OCR...</p>}
+
+      {textoExtraido && (
+        <div className="texto-extraido">
+          <p><strong>Texto extraído de la imagen:</strong></p>
+          <pre>{textoExtraido}</pre>
+        </div>
+      )}
+
+
       <button className="btn-importar" onClick={handleImportar}>
         Importar
       </button>
@@ -97,3 +162,4 @@ const Recibo = () => {
 };
 
 export default Recibo;
+

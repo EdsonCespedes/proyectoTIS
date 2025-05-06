@@ -1,79 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import './styles/RegistroPago.css';
-import Recibo from './Recibo';
 import { useNavigate } from 'react-router-dom';
-
-const tutores = [
-  { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
-  { nombre: 'Maria Lopez', ordenes: ['orden001', 'orden004', 'orden005', 'orden006'] },
-  { nombre: 'Luis Sanchez', ordenes: ['orden004', 'orden005', 'orden006'] },
-];
-
-const ordenesPago = [
-  { idOrdenPago: 1, montoTotal: 150, cancelado: false, recibido: false, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 2, montoTotal: 50, cancelado: false, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 3, montoTotal: 1050, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 4, montoTotal: 230, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 5, montoTotal: 190, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 6, montoTotal: 560, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 7, montoTotal: 720, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-  { idOrdenPago: 8, montoTotal: 1230, cancelado: true, recibido: true, vigencia: "28-04-2025", idTutor: 2, },
-];
 
 const Historial = () => {
   const navigate = useNavigate();
 
-  const [searchText, setSearchText] = useState('');
-  const [tutorEncontrado, setTutorEncontrado] = useState(null);
-  const [mostrarRecibo, setMostrarRecibo] = useState(false);
-  const [mensaje, setMensaje] = useState('');
-  const [reciboData, setReciboData] = useState(null);
+  const [ordenesPago, setOrdenesPago] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
-  const buscarTutor = () => {
-    const resultado = tutores.find(tutor =>
-      tutor.nombre.toLowerCase().includes(searchText.toLowerCase())
-    );
+  useEffect(() => {
+    const tutorGuardado = JSON.parse(localStorage.getItem('tutor'));
+    const idTutor = tutorGuardado?.idTutor;
 
-    if (resultado) {
-      setTutorEncontrado(resultado);
-      setMensaje('');
-    } else {
-      setTutorEncontrado(null);
-      setMensaje('Tutor no encontrado.');
+    if (!idTutor) {
+      console.warn("No se encontró idTutor en localStorage");
+      setCargando(false);
+      return;
     }
-  };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      buscarTutor();
-    }
-  };
+    const obtenerOrdenesPago = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/buscar-ordenes?query=${idTutor}`);
+        const data = await response.json();
 
-  const handleGuardar = () => {
-    if (tutorEncontrado) {
-      const nuevoRecibo = {
-        idRecibo: `R-${Math.floor(Math.random() * 10000)}`,
-        nombreTutor: tutorEncontrado.nombre,
-        ciTutor: '12345678',
-        monto: tutorEncontrado.ordenes.length * 50 + ',00',
-        fecha: new Date().toLocaleDateString(),
-        detalle: `Pago de ${tutorEncontrado.ordenes.length} orden(es) de matrícula.`,
-      };
-      setReciboData(nuevoRecibo);
-      setMostrarRecibo(true);
-    }
-  };
+        if (data.length > 0 && data[0].ordenes_pago) {
+          setOrdenesPago(data[0].ordenes_pago);
+        } else {
+          console.warn("No se encontraron órdenes para el tutor.");
+        }
+      } catch (error) {
+        console.error("Error al obtener órdenes de pago:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
 
-  const handleVolver = () => {
-    setMostrarRecibo(false);
-    setSearchText('');
-    setTutorEncontrado(null);
-    setReciboData(null);
-  };
+    obtenerOrdenesPago();
+  }, []);
 
-  if (mostrarRecibo && reciboData) {
-    return <Recibo reciboData={reciboData} onVolver={handleVolver} />;
-  }
 
   const handleSalir = () => {
     navigate("/");
@@ -92,30 +56,42 @@ const Historial = () => {
           Ordenes de Pago
         </div>
 
-
-        {/* <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
-          Usted tiene {ordenesPago.length} orden(es) de pago.
-        </p> */}
-
-        <div className="formulario-inputs">
-          {ordenesPago.map((orden, index) => (
-            <div className="formulario-row" key={orden.idOrdenPago}>
-              <input type="text" disabled defaultValue={`Orden de Pago ${orden.idOrdenPago} Bs.- ${orden.montoTotal}`} className={orden.cancelado ? 'input-valid' : 'input-invalid'}/>
-              {!orden.cancelado ? (
-                <button onClick={() => handlePagar(orden)}>Subir Recibo</button>
-              ) : (
-                <button disabled>Pagado</button>
-              )}
-            </div>
-          ))}
-        </div>
-
-
+        {cargando ? (
+          <p>Cargando...</p>
+        ) : ordenesPago.length > 0 ? (
+          <div className="formulario-inputs">
+            {ordenesPago.map((orden) => (
+              <div className="formulario-row" key={orden.idOrdenPago}>
+                <input 
+                  type="text" 
+                  disabled 
+                  defaultValue={`Orden de Pago ${orden.idOrdenPago} Bs.- ${orden.montoTotal}`} 
+                  className={
+                    orden.cancelado 
+                      ? 'input-valid' 
+                      : new Date(orden.vigencia) < new Date()
+                      ? 'input expired'
+                      :'input-invalid'
+                  } 
+                />
+                {!orden.cancelado && new Date(orden.vigencia) >= new Date() ? (
+                  <button onClick={() => handlePagar(orden)}>Subir Recibo</button>
+                ) : orden.cancelado ? (
+                  <button disabled>Pagado</button>
+                ) : (
+                  <button disabled>Expirada</button>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No hay órdenes de pago registradas.</p>
+        )}
 
         <div className="formulario-botones">
           <button
             className="cancelar-btn"
-            onClick={() => {handleSalir()}}
+            onClick={() => { handleSalir() }}
           >
             Salir
           </button>
@@ -126,4 +102,3 @@ const Historial = () => {
 };
 
 export default Historial;
-

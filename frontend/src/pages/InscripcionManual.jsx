@@ -5,6 +5,9 @@ import Registro from '../components/Registro';
 
 const InscripcionManual = () => {
     const { idConvocatoria } = useParams();
+
+    const tutor = JSON.parse(localStorage.getItem('tutor'));
+
     const [registro, setRegistro] = useState(false);
 
     const [indexEdit, setIndexEdit] = useState(-1);
@@ -13,7 +16,8 @@ const InscripcionManual = () => {
     const navigate = useNavigate();
 
     const location = useLocation();
-    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes||[]);
+    const [estudiantes, setEstudiantes] = useState(location.state?.estudiantes || []);
+
 
     const [areasSeleccionadas, setAreasSeleccionadas] = useState([]);
     const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
@@ -26,23 +30,10 @@ const InscripcionManual = () => {
             habilitada: area.habilitada ?? true, // por defecto true si no existe
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
-
-        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-        //     idCategoria: categoria.id,
-        //     nombreCategoria: categoria.nombre,
-        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
-        //     idArea: areasFormateadas[index].idArea,
-        //     monto: categoria.monto || 50,
-        // }));
-
-        // Ahora, para cada categoría, asignamos correctamente el idArea
+        
         const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
-            // Buscar el área que contiene esta categoría por el idCategoria
             let idAreaEncontrado = null;
-
-            // Recorremos las áreas seleccionadas
             areasSeleccionadas.forEach((area) => {
-                // Verificar si esta categoría pertenece a este área comparando el idCategoria
                 const categoriaEncontrada = area.categorias.find(
                     (cat) => cat.id === categoria.id
                 );
@@ -50,8 +41,6 @@ const InscripcionManual = () => {
                     idAreaEncontrado = area.id; // Asignar el idArea de la categoría
                 }
             });
-
-            // Si encontramos el área correspondiente, formateamos la categoría
             return {
                 idCategoria: categoria.id,
                 nombreCategoria: categoria.nombre,
@@ -60,6 +49,7 @@ const InscripcionManual = () => {
                 monto: categoria.monto || 50,
             };
         });
+
 
         nuevoEstudiante.areas = areasFormateadas;
         nuevoEstudiante.categorias = categoriasFormateadas;
@@ -70,7 +60,7 @@ const InscripcionManual = () => {
         setRegistro(false);  // Cambiar el estado de registro a false
     };
 
-    const handleActualizar = (nuevoEstudiante, estudiante) => {
+    const handleActualizar = (nuevoEstudiante) => {
         const areasFormateadas = areasSeleccionadas.map((area) => ({
             idArea: area.id,
             tituloArea: area.nombre,
@@ -78,22 +68,9 @@ const InscripcionManual = () => {
             habilitada: area.habilitada ?? true, // por defecto true si no existe
             idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
         }));
-
-        // const categoriasFormateadas = categoriasSeleccionadas.map((categoria, index) => ({
-        //     idCategoria: categoria.id,
-        //     nombreCategoria: categoria.nombre,
-        //     descripcionCategoria: categoria.descripcion || "", // si se requiere
-        //     idArea: areasFormateadas[index].idArea,
-        // }));
-
-        // Ahora, para cada categoría, asignamos correctamente el idArea
         const categoriasFormateadas = categoriasSeleccionadas.map((categoria) => {
-            // Buscar el área que contiene esta categoría por el idCategoria
             let idAreaEncontrado = null;
-
-            // Recorremos las áreas seleccionadas
             areasSeleccionadas.forEach((area) => {
-                // Verificar si esta categoría pertenece a este área comparando el idCategoria
                 const categoriaEncontrada = area.categorias.find(
                     (cat) => cat.id === categoria.id
                 );
@@ -101,8 +78,6 @@ const InscripcionManual = () => {
                     idAreaEncontrado = area.id; // Asignar el idArea de la categoría
                 }
             });
-
-            // Si encontramos el área correspondiente, formateamos la categoría
             return {
                 idCategoria: categoria.id,
                 nombreCategoria: categoria.nombre,
@@ -135,14 +110,22 @@ const InscripcionManual = () => {
     }
 
     const handleSiguiente = () => {
+        if (estudiantes.length === 0) {
+            alert("Debes registrar al menos un estudiante antes de continuar.");
+            return;
+        }
+
         navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
-            state: { 
-                estudiantes, 
+            state: {
+                estudiantes: estudiantes.map(est => ({
+                    ...est,
+                    idTutor: tutor.idTutor,
+                    tutor: { ...tutor },  // Datos del tutor actualizados
+                })),
                 from: "Manual",
             },
         });
     }
-
 
     return (
         <div>
@@ -163,10 +146,8 @@ const InscripcionManual = () => {
                         </button>
                         <button
                             className="boton-style btn-aceptacion"
-                            // onClick={handleSubmit}
                             onClick={handleSiguiente}
                         >
-                            {/* Guardar */}
                             Siguiente
                         </button>
                         <Link to="/convocatorias" className="boton-style btn-rechazo">Cancelar</Link>

@@ -24,12 +24,14 @@ class AreaSeeder extends Seeder
 
         foreach ($areas as $area) {
             DB::table('area')->insert([
-                'tituloArea'     => $area,
-                'descArea'       => 'Area de ' . strtolower($area),
+                //'tituloArea'     => $area,
+                //'descArea'       => 'Area de ' . strtolower($area),
+                'tituloArea' => $area['tituloArea'],
+                'descArea'   => $area['descArea'],
                 'habilitada'     => true,
                 //'idConvocatoria' => $idConvocatoria,
             ]);
-            Area::create(array_merge($area, ['habilitada' => true]));
+            //Area::create(array_merge($area, ['habilitada' => true]));
         }
     }
 }

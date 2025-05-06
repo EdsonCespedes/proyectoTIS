@@ -80,6 +80,7 @@ class ConvocatoriaSeeder extends Seeder
             'fechaInicioOlimp' => '2024-06-01 00:00:00',
             'fechaFinOlimp' => '2024-06-10 23:59:59',
             'maximoPostPorArea' => 2,
+
         ]);
     }
 }

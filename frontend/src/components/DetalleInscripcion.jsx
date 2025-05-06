@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./styles/GestionColegios.css";
-import { Link } from "react-router-dom";
 
 const DetalleInscripcion = ({ estudiantes, onEliminar, setRegistro, setEstudianteEdit, setIndexEdit, setAreasSeleccionadas, setCategoriasSeleccionadas }) => {
     const [currentPage, setCurrentPage] = useState(0);

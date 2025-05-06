@@ -1,8 +1,11 @@
 import React from "react";
-import "./header.css";
-import { Link } from "react-router-dom";
+import "./Header.css";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
+
     return (
         <div className="header">
             <div className="logo">
@@ -14,14 +17,37 @@ const Header = () => {
             </div>
             <div className="buttons">
                 <Link to="/" className="boton-header">Inicio</Link>
-                {/* <button className="boton-header">INICIO</button> */}
                 <button className="boton-header">Nosotros</button>
                 <button className="boton-header">Eventos</button>
                 <Link to="/disciplinas" className="boton-header">Areas</Link>
-                {/* <button className="boton-header">DISCIPLINAS</button> */}
-                <Link to="/convocatorias" className="boton-header">Inscripcion</Link>
-                {/* <button className="boton-header">INSCRIBIRSE</button> */}
-                <button className="boton-header">Iniciar Sesion</button>
+                
+                {user && (
+                    <>
+                        <Link to="/convocatorias" className="boton-header">Inscripciones</Link>
+                        <Link to="/ordenes-pago" className="boton-header">Mis Pagos</Link>
+                    </>                  
+                )}
+
+                {/* <button className="boton-header">Iniciar Sesion</button> */}
+                {user ? (
+                    <>
+                        <span className="boton-header">Hola, {user.name}</span>
+                        <button
+                            className="boton-header"
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('user');
+                                localStorage.removeItem('tutor');
+                                navigate('/login');
+                            }}
+                        >
+                            Cerrar sesión
+                        </button>
+                    </>
+
+                ) : (
+                    <Link to="/login" className="boton-header">Iniciar Sesión</Link>
+                )}
             </div>
         </div>
     );

@@ -13,6 +13,8 @@ class Tutor extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'idUser',
+
         'nombreTutor',
         'apellidoTutor',
         'correoTutor',

@@ -32,7 +32,9 @@ const Convocatorias = () => {
                 {convocatorias.map((convocatoria, index) => (
                     <div key={index} className="card">
                         <img src={convocatoria.portada} alt={convocatoria.titulo} className="imagen" />
-                        <h3>{convocatoria.titulo}</h3>
+
+                        <h3>{convocatoria.tituloConvocatoria}</h3>
+
                         <button onClick={()=>handleInscripcion(convocatoria.idConvocatoria)}>Inscribirse</button>
                     </div>
                 ))}

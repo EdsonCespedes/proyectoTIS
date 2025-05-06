@@ -58,6 +58,8 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 5,
                 'montoCate' => 25,
                 'idArea' => $areaMatematicas->idArea,
+                //
+                'idConvocatoria' => 1,
             ],
             [
                 'nombreCategoria' => 'Secundaria 1° a 3°',
@@ -66,6 +68,8 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 10,
                 'montoCate' => 25,
                 'idArea' => $areaMatematicas->idArea,
+                //
+                'idConvocatoria' => 1,
             ]
         ];
 
@@ -78,6 +82,18 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 3,
                 'montoCate' => 25,
                 'idArea' => $areaQuimica->idArea,
+                //
+                'idConvocatoria' => 1,
+            ],
+            [
+                'nombreCategoria' => 'Laboratorio Básico',
+                'descCategoria' => '1° Secundaria, 2° Primaria, 3° Primaria',
+                'habilitada' => true,
+                'maxPost' => 3,
+                'montoCate' => 25,
+                'idArea' => $areaQuimica->idArea,
+                //
+                'idConvocatoria' => 5,
             ]
         ];
 
@@ -89,6 +105,26 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 4,
                 'montoCate' => 25,
                 'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 2,
+            ],[
+                'nombreCategoria' => 'Laboratorio Fisico Sec',
+                'descCategoria' => '3° Secundaria, 6° Primaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 3,
+            ],[
+                'nombreCategoria' => 'Laboratorio Fisico Final',
+                'descCategoria' => '6° Secundaria',
+                'habilitada' => true,
+                'maxPost' => 4,
+                'montoCate' => 25,
+                'idArea' => $areaFisica->idArea,
+                //
+                'idConvocatoria' => 5,
             ]
         ];
 
@@ -100,10 +136,12 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 2,
                 'montoCate' => 25,
                 'idArea' => $areaInformatica->idArea,
+                //
+                'idConvocatoria' => 3,
             ]
         ];
 
-        $categoriaRobotica = [
+        $categoriasRobotica = [
             [
                 'nombreCategoria' => 'Laboratorio Robotica',
                 'descCategoria' => '1° Secundaria, 2° Primaria',
@@ -111,6 +149,8 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 4,
                 'montoCate' => 25,
                 'idArea' => $areaRobotica->idArea,
+                //
+                'idConvocatoria' => 4,
             ]
         ];
     
@@ -123,6 +163,8 @@ class CategoriaSeeder extends Seeder
                 'maxPost' => 3,
                 'montoCate' => 25,
                 'idArea' => $areaBiologia->idArea,
+                //
+                'idConvocatoria' => 4,
             ]
         ];
 

@@ -9,6 +9,10 @@ use App\Models\Categoria;
 use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+//
+use Illuminate\Support\Facades\Validator;
+
+
 class ConvocatoriaController extends Controller
 {
 // ConvocatoriaEstructuraController.php
@@ -284,13 +288,21 @@ public function getConvocatoriaById($idConvocatoria)
         // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
         $convocatoria = Convocatoria::with('areas.categorias.cursos')
             ->where('idConvocatoria', $idConvocatoria)
-            ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+            ->where('eliminado', false)  // Solo convocatorias que no han sido eliminadas
             ->first();
 
         // Si no se encuentra la convocatoria
         if (!$convocatoria) {
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
+
+        // ✅ Falta este return si todo va bien
+        return response()->json($convocatoria, 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Error al recuperar la convocatoria',
+            'message' => $e->getMessage()
+        ], 500);
     }
 }
 
@@ -320,7 +332,7 @@ public function storeConvocatoria(Request $request)
         }
 
         $convocatoria = Convocatoria::create([
-            'titulo'              => $request->input('titulo'),
+            'tituloConvocatoria'  => $request->input('titulo'),
             'descripcion'         => $request->input('descripcion'),
             'fechaPublicacion'    => $request->input('fechaPublicacion'),
             'fechaInicioInsc'     => $request->input('fechaInicioInsc'),
@@ -341,28 +353,28 @@ public function storeConvocatoria(Request $request)
 
 
 // obtiene convocatoria que no estan eliminadas mediante id convocatoria
-public function getConvocatoriaById($idConvocatoria)
-{
-    try {
-        // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
-        $convocatoria = Convocatoria::with('areas.categorias.cursos')
-            ->where('idConvocatoria', $idConvocatoria)
-            ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
-            ->first();
+// public function getConvocatoriaById($idConvocatoria)
+// {
+//     try {
+//         // Recuperar la convocatoria con todas las relaciones: áreas, categorías, cursos
+//         $convocatoria = Convocatoria::with('areas.categorias.cursos')
+//             ->where('idConvocatoria', $idConvocatoria)
+//             ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+//             ->first();
 
-        // Si no se encuentra la convocatoria
-        if (!$convocatoria) {
-            return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
-        }
+//         // Si no se encuentra la convocatoria
+//         if (!$convocatoria) {
+//             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
+//         }
 
-        // Retornar la convocatoria con todas sus relaciones
-        return response()->json($convocatoria, 200);
+//         // Retornar la convocatoria con todas sus relaciones
+//         return response()->json($convocatoria, 200);
 
-    } catch (\Exception $e) {
-        // Manejo de errores
-        return response()->json(['error' => 'Error al obtener la convocatoria: ' . $e->getMessage()], 500);
-    }
-}
+//     } catch (\Exception $e) {
+//         // Manejo de errores
+//         return response()->json(['error' => 'Error al obtener la convocatoria: ' . $e->getMessage()], 500);
+//     }
+// }
 
 
 public function getConvocatoriasActivas()
@@ -385,6 +397,11 @@ public function getConvocatoriasActivas()
             // Manejo de errores
             return response()->json(['error' => 'Error al obtener las convocatorias activas: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function index(){
+        $convocatorias = Convocatoria::all();
+        return response()->json($convocatorias);
     }
 
 }

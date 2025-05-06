@@ -14,19 +14,12 @@ const InscripcionExcel = () => {
     const [provinciaColegio, setProvinciaColegio] = useState(estudiantes[0]?.provinciaColegio || "");
     const [idColegio, setIdColegio] = useState(estudiantes[0]?.idColegio || "");
     const [delegacion, setDelegacion] = useState(estudiantes[0]?.delegacion || ""); // o podés calcularlo
-    const [tutor, setTutor] = useState({
-        nombreTutor: estudiantes[0]?.tutor.nombreTutor || "",
-        apellidoTutor: estudiantes[0]?.tutor.apellidoTutor || "",
-        correoTutor: estudiantes[0]?.tutor.correoTutor || "",
-        telefonoTutor: estudiantes[0]?.tutor.telefonoTutor || "",
-        fechaNaciTutor: estudiantes[0]?.tutor.fechaNaciTutor || ""
-    });
+    const tutor = JSON.parse(localStorage.getItem('tutor'));
 
     const [provinciasColegio, setProvinciasColegio] = useState([]);
     const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
 
-    //const [estudiantes, setEstudiantes] = useState([]);
     const [archivoNombre, setArchivoNombre] = useState("");
 
     const navigate = useNavigate();
@@ -142,8 +135,6 @@ const InscripcionExcel = () => {
                     continue;
                 }
 
-                const idCurso = cursoEncontrado.idCurso;
-
                 try {
                     const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/curso/${encodeURIComponent(nombreCurso)}`);
 
@@ -194,24 +185,7 @@ const InscripcionExcel = () => {
                         habilitada: area.habilitada ?? true, // por defecto true si no existe
                         idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
                     }));
-
-                    // const categoriasFormateadas = categoriasConfirmadas.map((categoria, index) => ({
-                    //     idCategoria: categoria.id,
-                    //     nombreCategoria: categoria.nombre,
-                    //     descripcionCategoria: categoria.descripcion || "", // si se requiere
-                    //     idArea: areasConfirmadas[index].idArea,
-                    //     monto: categoria.monto || 50,
-                    // }));
-
-                    // // Aplanamos el array de categorías confirmadas para obtener un solo array de categorías
-                    // const categoriasFormateadas = categoriasConfirmadas.flat().map((categoria, index) => ({
-                    //     idCategoria: categoria.id,
-                    //     nombreCategoria: categoria.nombre,
-                    //     descripcionCategoria: categoria.descripcion || "", // si se requiere
-                    //     idArea: categoria.idArea || areasFormateadas[index].idArea,  // Aquí usamos el id del área que corresponde
-                    //     monto: categoria.monto || 50, // Si el monto no está definido, asignamos un valor por defecto
-                    // }));
-
+                    
                     // Ahora, para cada categoría, asignamos correctamente el idArea
                     const categoriasFormateadas = categoriasConfirmadas.flat().map((categoria) => {
                         // Buscar el área que contiene esta categoría por el idCategoria
@@ -250,17 +224,11 @@ const InscripcionExcel = () => {
                         telefonoPost: fila["telefonoPost"] || "",
                         departamento: fila["departamento"] || "",
                         provincia: fila["provincia"] || "",
-                        idCurso,
+                        idCurso: cursoEncontrado.Curso,
                         idColegio: "",
                         delegacion: "",
-                        idTutor: null,
-                        tutor: {
-                            nombreTutor: "",
-                            apellidoTutor: "",
-                            correoTutor: "",
-                            telefonoTutor: "",
-                            fechaNaciTutor: ""
-                        },
+                        idTutor: tutor.idTutor,
+                        tutor: tutor,
                         areas: areasFormateadas,
                         categorias: categoriasFormateadas,
                         departamentoColegio: "",
@@ -318,31 +286,19 @@ const InscripcionExcel = () => {
     };
 
     const handleSiguiente = () => {
-        // const estudiantes = estudiantes.map(est => ({
-        //     ...est,
-        //     departamentoColegio,
-        //     provinciaColegio,
-        //     idColegio,
-        //     delegacion,
-        //     tutor: { ...tutor }
-        // }));
+        if (
+            !departamentoColegio || !provinciaColegio || !idColegio || !delegacion
+        ) {
+            alert("Por favor, complete todos los campos del colegio antes de continuar.");
+            return;
+        }
+    
+        if (estudiantes.length === 0) {
+            alert("Debe subir un archivo válido con al menos un estudiante.");
+            return;
+        }
+
         console.log(tutor);
-
-        // setEstudiantes(estudiantes.map(est => ({
-        //     ...est,
-        //     departamentoColegio,  // Asignar el valor de departamentoColegio a cada estudiante
-        //     provinciaColegio,     // Asignar el valor de provinciaColegio a cada estudiante
-        //     idColegio,            // Asignar el valor de idColegio a cada estudiante
-        //     delegacion,           // Asignar el valor de delegacion a cada estudiante
-        //     tutor: { ...tutor }   // Asignar los datos del tutor (copia del objeto tutor)
-        // })));
-
-        // navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
-        //     state: {
-        //         estudiantes,
-        //         from: "Excel",
-        //     },
-        // });
         navigate(`/convocatoria/${idConvocatoria}/ordenPago`, {
             state: {
                 estudiantes: estudiantes.map(est => ({
@@ -351,7 +307,6 @@ const InscripcionExcel = () => {
                     provinciaColegio,
                     idColegio,
                     delegacion,
-                    tutor: { ...tutor },  // Datos del tutor actualizados
                 })),
                 from: "Excel",
             },
@@ -383,16 +338,7 @@ const InscripcionExcel = () => {
             console.log(colegiosDisponibles);
 
             setIdColegio(value); // actualiza el colegio
-            setDelegacion(Object.entries(colegiosDisponibles).find(([id, nombre]) => id == value)?.[1] || "")
-        }
-
-        // Cambiar valores del tutor
-        if (name.includes("tutor.")) {
-            const [, child] = name.split(".");
-            setTutor((prevTutor) => ({
-                ...prevTutor,
-                [child]: value
-            }));
+            setDelegacion(value);
         }
     };
 
@@ -489,29 +435,11 @@ const InscripcionExcel = () => {
                 <select name="idColegio" onChange={handleChange} value={idColegio} disabled={!provinciaColegio}>
                     <option value="">Selecciona un colegio</option>
                     {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
-                        <option key={id} value={id}>
+                        <option key={id} value={nombre}>
                             {nombre}
                         </option>
                     ))}
                 </select>
-            </div>
-
-            <div className="seccion">
-                <h2 className="subtitulo">Tutor</h2>
-                <div className="grid-container">
-                    <input type="text" placeholder="Nombre(s)" name="tutor.nombreTutor" onChange={handleChange} value={tutor.nombreTutor} />
-                    <input type="text" placeholder="Apellido(s)" name="tutor.apellidoTutor" onChange={handleChange} value={tutor.apellidoTutor} />
-                    <input type="text" placeholder="Teléfono" name="tutor.telefonoTutor" onChange={handleChange} value={tutor.telefonoTutor} />
-                    <input type="email" placeholder="Correo Electrónico" name="tutor.correoTutor" onChange={handleChange} value={tutor.correoTutor} />
-                    <input
-                        type="date"
-                        name="tutor.fechaNaciTutor"
-                        onChange={handleChange}
-                        min="1990-01-01"
-                        max="2019-12-31"
-                        value={tutor.fechaNaciTutor}
-                    />
-                </div>
             </div>
 
             <div className="control">
