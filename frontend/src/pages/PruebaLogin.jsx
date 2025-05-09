@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import "./styles/PruebaLogin.css";
 
 const PruebaLogin = () => {
     const navigate = useNavigate();
@@ -27,18 +28,15 @@ const PruebaLogin = () => {
 
         try {
             const response = await axios.post('http://localhost:8000/api/login', formData);
-
             const { token, user } = response.data;
 
-            // guarda el token en el localstorage
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 
             setSuccessMessage('Inicio de sesión exitoso.');
             console.log('Usuario logueado:', user);
 
-            //Verifica si es tutor
-            if (user.rol == 'tutor') {
+            if (user.rol === 'tutor') {
                 const resTutor = await axios.get('http://localhost:8000/api/tutor', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -58,16 +56,20 @@ const PruebaLogin = () => {
         }
     };
 
+    const goToRegister = () => {
+        navigate("/registro-tutor");
+    };
+
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto' }}>
-            <h2>Login de Tutor</h2>
+        <div className="login-page">
+            <div className="login-box">
+                <h2>LOGIN</h2>
 
-            {successMessage && <div style={{ color: 'green', marginBottom: '10px' }}>{successMessage}</div>}
-            {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+                {successMessage && <div className="success-message">{successMessage}</div>}
+                {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email</label>
+                <form onSubmit={handleSubmit}>
+                    <label>Email:</label>
                     <input
                         type="email"
                         name="email"
@@ -75,10 +77,8 @@ const PruebaLogin = () => {
                         onChange={handleChange}
                         required
                     />
-                </div>
 
-                <div>
-                    <label>Contraseña</label>
+                    <label>Contraseña:</label>
                     <input
                         type="password"
                         name="password"
@@ -86,10 +86,13 @@ const PruebaLogin = () => {
                         onChange={handleChange}
                         required
                     />
-                </div>
 
-                <button type="submit" style={{ marginTop: '10px' }}>Iniciar sesión</button>
-            </form>
+                    <div className="button-container">
+                        <button type="submit" className="btn-iniciar">INICIAR</button>
+                        <button type="button" className="btn-registro" onClick={goToRegister}>REGISTRO</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };
