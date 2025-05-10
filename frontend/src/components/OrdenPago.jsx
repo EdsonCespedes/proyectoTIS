@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf"; // Importa jsPDF
-import "./styles/ordenPago.css";
+import "./styles/OrdenPago.css";
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
