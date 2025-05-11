@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
             TutorSeeder::class,
             //DelegacionSeeder::class,
             PostulanteSeeder::class,
-            PostulacionSeeder::class
+            PostulacionSeeder::class,
+            RoleSeeder::class
         ]);
     }
 }

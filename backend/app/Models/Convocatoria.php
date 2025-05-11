@@ -48,13 +48,45 @@ class Convocatoria extends Model
                     ->where('habilitada', true);
     }
     public function cursos()
-{
-    return $this->hasMany(Curso::class, 'idConvocatoria');
-}
+    {
+        return $this->hasMany(Curso::class, 'idConvocatoria');
+    }
 
-public function categorias()
+    public function categorias()
     {
         return $this->hasMany(Categoria::class, 'idConvocatoria'); //relacion d uno a muchos //muchos
+    }
+
+    public function usersRoles()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'convocatoria_user_role',
+            'convocatoria_id',
+            'user_id'
+        )->withPivot('role_id')->withTimestamps();
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(
+            Role::class,
+            'convocatoria_role',
+            'convocatoria_id',
+            'role_id'
+        )->withTimestamps();
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(
+            \App\Models\User::class,
+            'convocatoria_user_role',
+            'convocatoria_id',
+            'user_id'
+        )
+        ->withPivot('role_id')
+        ->withTimestamps();
     }
 
 }
