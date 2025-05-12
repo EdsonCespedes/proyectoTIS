@@ -13,11 +13,11 @@ export default function ac() {
   const [editingArea, setEditingArea] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [formArea, setFormArea] = useState({ name: "", description: "" });
-  const [formCategory, setFormCategory] = useState({ name: "", options: [], areaId: null });
   const [newDescription, setNewDescription] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
-  const [idConvocatoria, setIdConvocatoria] = useState("123");
+  //const [idConvocatoria, setIdConvocatoria] = useState("123");
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [formCategory, setFormCategory] = useState({ name: "", options: [], monto: 0, areaId: null });
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -84,7 +84,7 @@ export default function ac() {
   };
 
   const handleAddCategory = (areaId) => {
-    setFormCategory({ name: "", options: [], areaId });
+    setFormCategory({ name: "", options: [], monto: 0, areaId });
     setEditingCategory(null);
     setSelectedCategories([]);
     setNewDescription("");
@@ -92,7 +92,7 @@ export default function ac() {
   };
 
   const handleEditCategory = (category, areaId) => {
-    setFormCategory({ name: category.name, options: category.options, areaId });
+    setFormCategory({ name: category.name, options: category.options, monto: category.monto || 0, areaId });
     setEditingCategory(category);
     setSelectedCategories(category.options);
     setNewDescription(category.options.join(", "));
@@ -114,6 +114,7 @@ export default function ac() {
       id: editingCategory ? editingCategory.id : Date.now(),
       name: formCategory.name,
       options: newOptions,
+      monto: formCategory.monto,
     };
 
     const updatedAreas = areas.map((area) => {
@@ -150,9 +151,11 @@ export default function ac() {
   };
 
   const generarJSONFinal = () => {
-    const json = {
-      convocatoria,
-      areas: areas.map((a) => ({
+  const json = {
+    convocatoria,
+    areas: areas
+      .filter((a) => selectedAreas.includes(a.id))  // Solo áreas seleccionadas
+      .map((a) => ({
         tituloArea: a.name,
         descArea: a.description,
         habilitada: true,
@@ -161,11 +164,12 @@ export default function ac() {
           descCategoria: cat.options.join(", "),
         })),
       })),
-    };
-
-    console.log("JSON Final:", JSON.stringify(json, null, 2));
-    return json;
   };
+
+  console.log("JSON Final:", JSON.stringify(json, null, 2));
+  return json;
+};
+
 
   const handleMostrarJSON = () => {
     generarJSONFinal();
@@ -179,18 +183,21 @@ export default function ac() {
       return;
     }
 
-    const payload = areas.map((a) => ({
-      tituloArea: a.name,
-      descArea: a.description,
-      habilitada: true,
-      idConvocatoria,
-      categorias: a.categories.map((cat) => ({
-        nombreCategoria: cat.name,
-        descCategoria: cat.options.join(", "),
+    const payload = areas
+      .filter((a) => selectedAreas.includes(a.id))
+      .map((a) => ({
+        tituloArea: a.name,
+        descArea: a.description,
         habilitada: true,
-        maxPost: 50,
-      })),
-    }));
+        idConvocatoria,
+        categorias: a.categories.map((cat) => ({
+          nombreCategoria: cat.name,
+          descCategoria: cat.options.join(", "),
+          habilitada: true,
+          maxPost: 50,
+        })),
+      }));
+
 
     try {
       const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
@@ -242,7 +249,7 @@ export default function ac() {
               <button onClick={() => handleAddCategory(area.id)}>+ Categorías</button>
               {area.categories.map((cat) => (
                 <div key={cat.id} style={{ marginLeft: "10px", marginTop: "5px" }}>
-                  <b>{cat.name}</b>
+                  <b>{cat.name}    Bs. {cat.monto}</b>
                   <span onClick={() => handleEditCategory(cat, area.id)} style={iconStyle}>✏️</span>
                   <span onClick={() => handleDeleteCategory(cat.id, area.id)} style={iconStyle}>🗑️</span>
                   <p>{cat.options.join(", ")}</p>
@@ -266,7 +273,7 @@ export default function ac() {
       )}
 
       {showCategoryModal && (
-        <div className="modal-content-area">
+        < div className="modal-area">
           <div className="modal-content-area">
             <span className="close-modal-area" onClick={() => setShowCategoryModal(false)}>❌</span>
             <h3>{editingCategory ? "Editar Categoría" : "Agregar Categoría"}</h3>
@@ -275,6 +282,13 @@ export default function ac() {
               type="text"
               value={formCategory.name}
               onChange={(e) => setFormCategory({ ...formCategory, name: e.target.value })}
+            />
+            <label>Monto:</label>
+            <input
+              type="number"
+              min="0"
+              value={formCategory.monto}
+              onChange={(e) => setFormCategory({ ...formCategory, monto: Number(e.target.value) })}
             />
 
             <label>Descripción de la categoría:</label>

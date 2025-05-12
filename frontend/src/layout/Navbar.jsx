@@ -9,15 +9,10 @@ const Navbar = () => {
     alert(`Redirigiendo a ${section}`);
   };
 
-  const handleLabelClick = (label) => {
-    alert(`Funcionalidad de ${label}`);
-  };
-
   return (
     <div className="dashboard-adm">
       {sidebarOpen && (
         <aside className="sidebar-adm">
-          <h2 className="title-adm">Admin Dashboard</h2>
           <ul className="menu-adm">
             <li onClick={() => handleRedirect('Home')}><i className="icon">🏠</i> Home</li>
             <li onClick={() => handleRedirect('Settings')}><i className="icon">👤</i> Crear Rol</li>
@@ -29,23 +24,12 @@ const Navbar = () => {
           </ul>
         </aside>
       )}
-
-      <main className="main-adm">
         <header className="header-adm">
           <span className="menu-icon-adm" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</span>
-          <span className="header-title-adm">Administrador</span>
-          <div className="header-right-adm">
-            <div className="labels-adm">
-              <span className="label-adm" onClick={() => handleLabelClick('Label 1')}>Label 1</span>
-              <span className="label-adm" onClick={() => handleLabelClick('Label 2')}>Label 2</span>
-            </div>
-            <span className="user-icon-adm">👤</span>
-          </div>
+          <h2 className="title-adm">Administrador</h2>
         </header>
-        <div className="content-adm">
-          {/* Aquí iría el contenido principal */}
-        </div>
-      </main>
+      <div className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      </div>
     </div>
   );
 };

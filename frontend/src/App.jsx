@@ -55,6 +55,7 @@ function App() {
         <Route path="/edit-colegios" element={<EditColegios />} />
 
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
+        <Route path="/area" element={<Categoria/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
 
         <Route path="/convocatorias" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Convocatorias /></PrivateRoute>} />
@@ -81,12 +82,9 @@ function App() {
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
        
-       
-      
-      
         <Route path="/no-autorizado" element={<NoAutorizado />} />
       </Routes>
-    </div>
+      </div>
     
   )
 }
