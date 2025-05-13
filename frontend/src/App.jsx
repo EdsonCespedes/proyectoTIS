@@ -1,6 +1,7 @@
 import GestionColegios from "./pages/GestionColegio";
 import AddColegios from "./pages/AddColegios";
 import Header from "./layout/Header";
+import Navbar from "./layout/Navbar";
 import { Routes, Route } from 'react-router-dom';
 import EditColegios from "./pages/EditColegio";
 import CrearConvForm from "./pages/CrearConvForm";
@@ -12,9 +13,14 @@ import Convocatorias from "./views/Convocatorias";
 
 import Recibo from "./components/Recibo";
 import RegistroPago from "./components/RegistroPago";
-import Area from "./pages/Area";
+
+//Excel
+import InscripcionExcel from "./pages/InscripcionExcel";
 
 import Historial from "./components/Historial";
+import GeneratePDF from "./components/GeneratePDF";
+import PDFTutor from "./components/PDFTutor";
+import Categoria from "./pages/Categoria";
 
 import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
@@ -41,6 +47,7 @@ function App() {
   return (
     <div>
       <Header/>
+      <Navbar/>
       <Routes>
         <Route path="/" element={<Inicio/>} />
 
@@ -49,10 +56,8 @@ function App() {
         <Route path="/edit-colegios" element={<EditColegios />} />
 
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
+        <Route path="/area" element={<Categoria/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
-        <Route path="/area" element={<Area />} />
-
-        <Route path="/disciplinas" element={<Disciplinas/>} />
 
         <Route path="/convocatorias" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Convocatorias /></PrivateRoute>} />
         {RutasInscripcion()}
@@ -78,13 +83,9 @@ function App() {
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
        
-       
-      
-      
         <Route path="/no-autorizado" element={<NoAutorizado />} />
-
       </Routes>
-    </div>
+      </div>
     
   )
 }
