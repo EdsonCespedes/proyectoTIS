@@ -71,7 +71,7 @@ input:focus {
 
 .button-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
 }
 
@@ -79,7 +79,7 @@ input:focus {
 .btn-cancelar {
   padding: 10px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 6spx;
   font-weight: bold;
   cursor: pointer;
 }
@@ -94,10 +94,4 @@ input:focus {
   color: #333;
 }
 
-.btn-registrarse:hover {
-  background-color: #005f7f;
-}
 
-.btn-cancelar:hover {
-  background-color: #999;
-}
