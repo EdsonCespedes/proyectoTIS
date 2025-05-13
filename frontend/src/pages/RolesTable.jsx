@@ -8,11 +8,17 @@ const RolesTable = () => {
 
   useEffect(() => {
     const datosGuardados = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
-    
-    const datosValidados = datosGuardados.map((rol) => ({
-      nombreRol: rol.nombreRol || 'Sin nombre',
-      funciones: Array.isArray(rol.funciones) ? rol.funciones : [],
-    }));
+
+    // Verifica el contenido de los datos guardados
+    console.log("Datos guardados en localStorage:", datosGuardados);  // Esto es solo para depurar
+
+    // Asegúrate de que todos los roles tienen valores válidos
+    const datosValidados = datosGuardados.map((rol) => {
+      return {
+        nombreRol: rol.nombreRol && rol.nombreRol.trim() !== "" ? rol.nombreRol : 'Sin nombre',
+        funciones: Array.isArray(rol.funciones) && rol.funciones.length > 0 ? rol.funciones : ['Sin funciones'],
+      };
+    });
 
     setRoles(datosValidados);
   }, []);
@@ -47,10 +53,10 @@ const RolesTable = () => {
             roles.map((rol, index) => (
               <tr key={index}>
                 <td>{rol.nombreRol}</td>
-                <td>{Array.isArray(rol.funciones) ? rol.funciones.join(', ') : ''}</td>
+                <td>{rol.funciones.join(', ')}</td>
                 <td>
-                  <button onClick={() => handleEdit(index)}>Editar</button>
-                  <button onClick={() => handleDelete(index)}>Eliminar</button>
+                  <button onClick={() => handleEdit(index)}>✏️</button>
+                  <button onClick={() => handleDelete(index)}>❌</button>
                 </td>
               </tr>
             ))
@@ -62,12 +68,10 @@ const RolesTable = () => {
         </tbody>
       </table>
 
-      <Link to="/addRoles">
-        <button className="btn">Añadir nuevo rol</button>
-      </Link>
+      <Link to="/addRoles"><button className="btn">Nuevo rol</button></Link>
+      <Link to="/"><button className="btn">Cancelar</button></Link>
     </div>
   );
 };
 
 export default RolesTable;
-

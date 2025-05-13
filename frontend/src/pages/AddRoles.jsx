@@ -56,7 +56,7 @@ const AddRoles = () => {
 
   const handleCancel = () => {
     localStorage.removeItem("rolEditar");
-    navigate("/tablaRoles");
+    navigate("/");
   };
 
   return (

@@ -5,7 +5,8 @@ use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
-use App\Http\Controllers\ColegioController;
+// use App\Http\Controllers\ColegioController;
+use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 //use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\ConvocatoriaController;
@@ -44,7 +45,7 @@ Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rr
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
 Route::get('/areas', [AreaController::class, 'index']);
-Route::get('/categorias', [AreaController::class, 'index']);
+Route::get('/categorias', [CategoriaController::class, 'index']);
 
 
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR

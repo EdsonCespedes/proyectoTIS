@@ -23,21 +23,19 @@ const ListaRoles = () => {
     navigate("/asignarRoles");
   };
 
-  // Navegar a /asignarRoles para agregar un nuevo rol
   const irASignarRoles = () => {
     navigate("/asignarRoles");
+  };
+
+  const irACancelar = () => {
+    navigate("/");
   };
 
   return (
     <div className="lista-container">
       <h2>Lista de Roles Asignados</h2>
-      
-      {/* Botón para agregar un nuevo rol */}
-      <button className="btn-agregar" onClick={irASignarRoles}>
-        Agregar +
-      </button>
 
-      {datos.length === 0 ? (
+      {datos.filter(item => item.nombre && item.convocatoria && item.rol).length === 0 ? (
         <p>No hay datos guardados.</p>
       ) : (
         <table className="lista-table">
@@ -50,24 +48,30 @@ const ListaRoles = () => {
             </tr>
           </thead>
           <tbody>
-            {datos.map((item, index) => (
-              <tr key={index}>
-                <td>{item.nombre}</td>
-                <td>{item.convocatoria}</td>
-                <td>{item.rol}</td>
-                <td>
-                  <button onClick={() => iniciarEdicion(index)}>✏️</button>
-                  <button onClick={() => eliminarFila(index)}>❌</button>
-                </td>
-              </tr>
-            ))}
+            {datos
+              .filter(item => item.nombre && item.convocatoria && item.rol)
+              .map((item, index) => (
+                <tr key={index}>
+                  <td>{item.nombre}</td>
+                  <td>{item.convocatoria}</td>
+                  <td>{item.rol}</td>
+                  <td>
+                    <button onClick={() => iniciarEdicion(index)}>✏️</button>
+                    <button onClick={() => eliminarFila(index)}>❌</button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       )}
+
+      <div className="botones-container">
+        <button className="btn-agregar" onClick={irASignarRoles}>Agregar +</button>
+        <button className="btn-cancelar" onClick={irACancelar}>Cancelar</button>
+      </div>
     </div>
   );
 };
 
 export default ListaRoles;
-
 

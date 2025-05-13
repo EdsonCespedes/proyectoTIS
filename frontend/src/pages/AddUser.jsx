@@ -70,7 +70,7 @@ const AddUser = () => {
         </div>
         <div className="form-buttons">
           <button className="btn-agregar" onClick={handleGuardar}>
-            {id ? "✍️" : "💾"}
+            {id ? "✏️" : "💾"}
           </button>
           <button className="btn-cancelar" onClick={handleCancelar}>❌</button>
         </div>

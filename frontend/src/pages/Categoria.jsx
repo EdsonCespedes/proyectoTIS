@@ -1,11 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./styles/Categoria.css";
-import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
+import { useLocation, useNavigate } from "react-router-dom";
+//import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
 
 const iconStyle = { cursor: "pointer", marginLeft: "10px" };
 
 export default function ac() {
-  const { convocatoria } = useContext(ConvocatoriaContext);
+  //const { convocatoria } = useContext(ConvocatoriaContext);
+  const location = useLocation();
+  const idConvocatoria = location.state.idConvocatoria;
+  console.log(idConvocatoria);
+
+  const navigate = useNavigate();
+  
+
   const [areas, setAreas] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]); // Ahora es un array
   const [showAreaModal, setShowAreaModal] = useState(false);
@@ -151,24 +159,24 @@ export default function ac() {
   };
 
   const generarJSONFinal = () => {
-  const json = {
-    convocatoria,
-    areas: areas
-      .filter((a) => selectedAreas.includes(a.id))  // Solo áreas seleccionadas
-      .map((a) => ({
-        tituloArea: a.name,
-        descArea: a.description,
-        habilitada: true,
-        categorias: a.categories.map((cat) => ({
-          nombreCategoria: cat.name,
-          descCategoria: cat.options.join(", "),
+    const json = {
+      //convocatoria,
+      areas: areas
+        .filter((a) => selectedAreas.includes(a.id))  // Solo áreas seleccionadas
+        .map((a) => ({
+          tituloArea: a.name,
+          descArea: a.description,
+          habilitada: true,
+          categorias: a.categories.map((cat) => ({
+            nombreCategoria: cat.name,
+            descCategoria: cat.options.join(", "),
+          })),
         })),
-      })),
-  };
+    };
 
-  console.log("JSON Final:", JSON.stringify(json, null, 2));
-  return json;
-};
+    console.log("JSON Final:", JSON.stringify(json, null, 2));
+    return json;
+  };
 
 
   const handleMostrarJSON = () => {
@@ -176,36 +184,122 @@ export default function ac() {
     alert("Revisa la consola (F12) para ver el JSON generado.");
   };
 
+  // const handlePublicar = async (e) => {
+  //   e.preventDefault();
+  //   if (!idConvocatoria) {
+  //     alert("ID de convocatoria no disponible");
+  //     return;
+  //   }
+
+  //   const payload = areas
+  //     .filter((a) => selectedAreas.includes(a.id))
+  //     .map((a) => ({
+  //       tituloArea: a.name,
+  //       descArea: a.description,
+  //       habilitada: true,
+  //       idConvocatoria,
+  //       categorias: a.categories.map((cat) => ({
+  //         nombreCategoria: cat.name,
+  //         descCategoria: cat.options.join(", "),
+  //         habilitada: true,
+  //         maxPost: 50,
+  //       })),
+  //     }));
+
+
+  //   try {
+  //     const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ areas: payload }),
+  //     });
+
+  //     const data = await res.json();
+  //     if (res.ok) {
+  //       alert("Estructura publicada con éxito ✅");
+  //       console.log("Respuesta del servidor:", data);
+  //     } else {
+  //       alert(`Error al guardar estructura: ${data.error || data.message}`);
+  //     }
+  //   } catch (error) {
+  //     alert("Error de red al guardar la estructura");
+  //     console.error(error);
+  //   }
+  // };
+
+  // const handlePublicar = async (e) => {
+  //   e.preventDefault();
+  //   if (!idConvocatoria) {
+  //     alert("ID de convocatoria no disponible");
+  //     return;
+  //   }
+  
+  //   const formData = new FormData();
+  //   formData.append('idConvocatoria', idConvocatoria);
+  
+  //   areas
+  //     .filter((a) => selectedAreas.includes(a.id))
+  //     .forEach((a, index) => {
+  //       formData.append(`areas[${index}][tituloArea]`, a.name);
+  //       formData.append(`areas[${index}][descArea]`, a.description);
+  //       formData.append(`areas[${index}][habilitada]`, true);  
+  //       a.categories.forEach((cat, catIndex) => {
+  //         formData.append(`areas[${index}][categorias][${catIndex}][nombreCategoria]`, cat.name);
+  //         formData.append(`areas[${index}][categorias][${catIndex}][descCategoria]`, cat.options.join(", "));
+  //         formData.append(`areas[${index}][categorias][${catIndex}][maxPost]`, 50);
+  //       });
+  //     });
+  
+  //   try {
+  //     const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+  
+  //     const data = await res.json();
+  //     if (res.ok) {
+  //       alert("Estructura publicada con éxito ✅");
+  //       console.log("Respuesta del servidor:", data);
+  //     } else {
+  //       alert(`Error al guardar estructura: ${data.error || data.message}`);
+  //     }
+  //   } catch (error) {
+  //     alert("Error de red al guardar la estructura");
+  //     console.error(error);
+  //   }
+  // };
+
   const handlePublicar = async (e) => {
     e.preventDefault();
+  
     if (!idConvocatoria) {
       alert("ID de convocatoria no disponible");
       return;
     }
-
-    const payload = areas
-      .filter((a) => selectedAreas.includes(a.id))
-      .map((a) => ({
-        tituloArea: a.name,
-        descArea: a.description,
-        habilitada: true,
-        idConvocatoria,
-        categorias: a.categories.map((cat) => ({
-          nombreCategoria: cat.name,
-          descCategoria: cat.options.join(", "),
-          habilitada: true,
-          maxPost: 50,
-        })),
-      }));
-
-
+  
+    // Estructura que enviarás en el cuerpo de la solicitud
+    const payload = {
+      areas: areas
+        .filter((a) => selectedAreas.includes(a.id)) // Filtramos las áreas seleccionadas
+        .map((a) => ({
+          tituloArea: a.name, // Título del área
+          descArea: a.description, // Descripción del área
+          habilitada: true, // Habilitación del área
+          categorias: a.categories.map((cat) => ({
+            nombreCategoria: cat.name, // Nombre de la categoría
+            descCategoria: cat.options.join(", "), // Descripción de la categoría (con los niveles)
+            montoCate: cat.monto // Monto de la categoría (que asumo existe en tus datos)
+          }))
+        }))
+    };
+  
     try {
       const res = await fetch(`http://localhost:8000/api/convocatoria/${idConvocatoria}/estructura`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ areas: payload }),
+        body: JSON.stringify(payload),
       });
-
+  
       const data = await res.json();
       if (res.ok) {
         alert("Estructura publicada con éxito ✅");
@@ -213,11 +307,15 @@ export default function ac() {
       } else {
         alert(`Error al guardar estructura: ${data.error || data.message}`);
       }
+
+      navigate('/detalle-convocatoria');
     } catch (error) {
       alert("Error de red al guardar la estructura");
       console.error(error);
     }
   };
+  
+  
 
   return (
     <div className="container-Area">
