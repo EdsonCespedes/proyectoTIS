@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import "./styles/PruebaLogin.css";
 
 const PruebaLogin = () => {
@@ -56,41 +58,27 @@ const PruebaLogin = () => {
         }
     };
 
-    const goToRegister = () => {
-        navigate("/registro-tutor");
-    };
-
     return (
         <div className="login-page">
             <div className="login-box">
-                <h2>LOGIN</h2>
+                <h2>INICIO DE SESION</h2>
 
                 {successMessage && <div className="success-message">{successMessage}</div>}
                 {error && <div className="error-message">{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
+                    <input  type="email" name="email" value={formData.email} onChange={handleChange} required/>
 
                     <label>Contraseña:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} required/>
 
                     <div className="button-container">
                         <button type="submit" className="btn-iniciar">INICIAR</button>
-                        <button type="button" className="btn-registro" onClick={goToRegister}>REGISTRO</button>
                     </div>
+                    <p>¿No tienes una cuenta? <Link to="/registro-tutor" className="btn-registro">Regístrate aquí</Link></p>
+
+                    
                 </form>
             </div>
         </div>

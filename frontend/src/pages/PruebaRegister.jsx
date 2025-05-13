@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Importa el hook para redirección
-import './styles/PruebaRegister.css'; // Asegúrate de tener este archivo de estilos
+import { useNavigate } from 'react-router-dom'; 
+import './styles/PruebaRegister.css';
 
 const PruebaRegister = () => {
-    const navigate = useNavigate(); // Inicializa el hook de navegación
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -65,7 +65,7 @@ const PruebaRegister = () => {
             fechaNacimiento: ''
         });
         setErrors({});
-        navigate('/'); // Redirige a la página de inicio
+        navigate('/');
     };
 
     return (
@@ -75,49 +75,43 @@ const PruebaRegister = () => {
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>Nombre :</label>
+                    
+                        <label htmlFor="name">Nombre</label>
                         <input type="text" name="name" value={formData.name} onChange={handleChange} />
                         {errors.name && <small className="error">{errors.name[0]}</small>}
-                    </div>
-
-                    <div>
-                        <label>Apellido :</label>
+                    
+                        <label htmlFor="lastName">Apellido</label>
                         <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
                         {errors.lastName && <small className="error">{errors.lastName[0]}</small>}
-                    </div>
 
-                    <div>
-                        <label>Email :</label>
+                        <label htmlFor="email">Correo electrónico</label>
                         <input type="email" name="email" value={formData.email} onChange={handleChange} />
                         {errors.email && <small className="error">{errors.email[0]}</small>}
-                    </div>
 
-                    <div>
-                        <label>Password :</label>
+                    
+                        <label htmlFor="password">Contraseña</label>
                         <input type="password" name="password" value={formData.password} onChange={handleChange} />
                         {errors.password && <small className="error">{errors.password[0]}</small>}
-                    </div>
+                   
 
-                    <div>
-                        <label>Confirma password :</label>
+                   
+                        <label htmlFor="password_confirmation">Confirmar contraseña</label>
                         <input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleChange} />
-                    </div>
+                    
 
-                    <div>
-                        <label>Teléfono :</label>
+                    
+                        <label htmlFor="telefono">Teléfono</label>
                         <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
                         {errors.telefono && <small className="error">{errors.telefono[0]}</small>}
-                    </div>
 
-                    <div>
-                        <label>Fecha de Nacimiento :</label>
+                    <div className="form-group">
+                        <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
                         <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} />
                         {errors.fechaNacimiento && <small className="error">{errors.fechaNacimiento[0]}</small>}
                     </div>
 
                     <div className="button-container">
-                        <button type="submit" className="btn-registrarse">REGISTRATE</button>
+                        <button type="submit" className="btn-registrarse">REGISTRARSE</button>
                         <button type="button" className="btn-cancelar" onClick={handleCancel}>CANCELAR</button>
                     </div>
                 </form>
@@ -127,4 +121,3 @@ const PruebaRegister = () => {
 };
 
 export default PruebaRegister;
-
