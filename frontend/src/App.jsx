@@ -20,10 +20,21 @@ import PruebaRegister from './pages/PruebaRegister';
 import PruebaLogin from './pages/PruebaLogin';
 import RegistrarColegio from './pages/RegistrarColegio';
 
+//katy
+import AddRoles from './pages/AddRoles';
+import AddUser from './pages/AddUser';
+import AsignarRoles from './pages/AsignarRoles';
+import ListaRoles from './pages/ListaRoles';
+import TablaUsuarios from './pages/TablaUsuarios';
+import RolesTable from './pages/RolesTable';
+
+
+
 import PrivateRoute from "./routes/PrivateRoute";
 import { RutasInscripcion } from "./routes/RutasInscripcion";
 
 import NoAutorizado from "./pages/NoAutorizado";
+
 
 function App() {
 
@@ -58,7 +69,20 @@ function App() {
         {/* Agregar la ruta para RegistrarColegio */}
         <Route path="/registro-colegio" element={<RegistrarColegio />} /> 
 
+       {/* Katy */}
+       <Route path="/addRoles" element={<AddRoles />} />
+       <Route path="/tablaRoles" element={<RolesTable />} />
+       <Route path="/addUser" element={<AddUser />} /> 
+       <Route path="/tablaUsuarios" element={<TablaUsuarios />} /> 
+       <Route path="/addUser/:id" element={<AddUser />} />
+       <Route path="/asignarRoles" element={<AsignarRoles />} /> 
+       <Route path="/listaRoles" element={<ListaRoles />} /> 
+       
+       
+      
+      
         <Route path="/no-autorizado" element={<NoAutorizado />} />
+
       </Routes>
     </div>
     
