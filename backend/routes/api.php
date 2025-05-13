@@ -13,7 +13,8 @@ use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\OrdenPagoController;
 
-
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 use App\Http\Controllers\UserController;
 
@@ -175,4 +176,45 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     //recuperar al tutor
     Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
+});
+
+Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
+Route::get('/convocatoria/{id}/roles', [ConvocatoriaRoleController::class,'index']);
+
+Route::get('/convocatorias/{convocatoria}/gestion-estudiantes', 
+    [GestionController::class, 'index']
+)->middleware('auth', 'role.in.convocatoria:Tutor');
+
+Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
+Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
+
+// Listar roles
+Route::get('/roles', function(){
+    return response()->json(Role::all());
+});
+
+// Crear rol
+Route::post('/roles', function(Request $req){
+    $req->validate(['name'=>'required|string|unique:roles,name']);
+    $r = Role::create(['name'=>$req->name,'guard_name'=>'sanctum']);
+    return response()->json($r,201);
+});
+
+// Listar permisos
+Route::get('/permissions', function(){
+    return response()->json(Permission::all());
+});
+
+// Crear permiso
+Route::post('/permissions', function(Request $req){
+    $req->validate(['name'=>'required|string|unique:permissions,name']);
+    $p = Permission::create(['name'=>$req->name,'guard_name'=>'sanctum']);
+    return response()->json($p,201);
+});
+
+// Asignar permiso a rol
+Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
+    $req->validate(['permission'=>'required|exists:permissions,name']);
+    $role->givePermissionTo($req->permission);
+    return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
 });

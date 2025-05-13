@@ -10,56 +10,64 @@ use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-<<<<<<<< HEAD:backend/app/Http/Controllers/ConvocatoriaEstructuraController.php
 // ConvocatoriaEstructuraController.php
 class ConvocatoriaEstructuraController extends Controller
 {
-public function areasEstructura(Request $request, $id)
-========
-class ConvocatoriaController extends Controller
->>>>>>>> origin/develop:backend/app/Http/Controllers/ConvocatoriaControllerJ.php
-{
-    //obtiene todas las convocatorias
-    public function index(){
+    public function areasEstructura(Request $request, $id)
+    {
+        // obtiene todas las convocatorias
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->input('areas') as $areaData) {
+                $area = Area::firstOrCreate(
+                    [
+                        'tituloArea' => $areaData['tituloArea'],
+                        'idConvocatoria' => $convocatoria->idConvocatoria
+                    ],
+                    [
+                        'descArea' => $areaData['descArea'] ?? null,
+                        'habilitada' => $areaData['habilitada'] ?? true
+                    ]
+                );
+
+                // Relacionar con convocatoria
+                DB::table('convocatoria_area')->updateOrInsert(
+                    [
+                        'idConvocatoria' => $convocatoria->idConvocatoria,
+                        'idArea' => $area->idArea
+                    ],
+                    []
+                );
+
+                // Procesar categorías
+                foreach ($areaData['categorias'] as $catData) {
+                    $categoria = Categoria::create([
+                        'nombreCategoria' => $catData['nombreCategoria'],
+                        'descCategoria' => $catData['descCategoria'],
+                        'habilitada' => $areaData['habilitada'] ?? true,
+                        'maxPost' => $catData['maxPost'] ?? 0,
+                        'idArea' => $area->idArea
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Convocatoria creada con éxito'], 201);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al guardar: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function index()
+    {
         $convocatorias = Convocatoria::all();
         return response()->json($convocatorias);
     }
 
-<<<<<<<< HEAD:backend/app/Http/Controllers/ConvocatoriaEstructuraController.php
-    DB::beginTransaction();
-
-    try {
-        foreach ($request->input('areas') as $areaData) {
-            $area = Area::firstOrCreate(
-                [
-                    'tituloArea' => $areaData['tituloArea'],
-                    'idConvocatoria' => $convocatoria->idConvocatoria
-                ],
-                [
-                    'descArea' => $areaData['descArea'] ?? null,
-                    'habilitada' => $areaData['habilitada'] ?? true
-                ]
-            );
-
-            // Relacionar con convocatoria
-            DB::table('convocatoria_area')->updateOrInsert(
-                [
-                    'idConvocatoria' => $convocatoria->idConvocatoria,
-                    'idArea' => $area->idArea
-                ],
-                []
-            );
-
-            // Procesar categorías
-            foreach ($areaData['categorias'] as $catData) {
-                $categoria = Categoria::create([
-                    'nombreCategoria' => $catData['nombreCategoria'],
-                    'descCategoria' => $catData['descCategoria'],
-                    'habilitada' => $areaData['habilitada'] ?? true,
-                    'maxPost' => $catData['maxPost'] ?? 0,
-                    'idArea' => $area->idArea
-========
-    //agregar post
     public function store(Request $request)
     {
         $request->validate([
@@ -73,9 +81,9 @@ class ConvocatoriaController extends Controller
             'convocatoria.fechaFinOlimp' => 'required|date',
             'convocatoria.maximoPostPorArea' => 'required|integer',
         ]);
-    
+
         DB::beginTransaction();
-    
+
         try {
             $convocatoriaData = $request->has('convocatoria')
                 ? $request->input('convocatoria')
@@ -90,11 +98,10 @@ class ConvocatoriaController extends Controller
                     'fechaInicioOlimp',
                     'fechaFinOlimp',
                     'maximoPostPorArea'
->>>>>>>> origin/develop:backend/app/Http/Controllers/ConvocatoriaControllerJ.php
                 ]);
-    
+
             $conv = Convocatoria::create($convocatoriaData);
-    
+
             foreach ($request->input('areas') as $areaData) {
                 // Verifica si existe o crea el área (sin necesidad de usar idConvocatoria en el área)
                 $area = Area::firstOrCreate(
@@ -112,7 +119,7 @@ class ConvocatoriaController extends Controller
                     ],
                     [] // Sin cambios extra, solo asegúrate de que exista
                 );
-    
+
                 // Procesar categorías
                 foreach ($areaData['categorias'] as $catData) {
                     $categoria = Categoria::create([
@@ -121,13 +128,13 @@ class ConvocatoriaController extends Controller
                         'maxPost' => $catData['maxPost'] ?? 0,
                         'idArea' => $area->idArea
                     ]);
-    
+
                     // Separar niveles de descCategoria (ej: "1° Primaria, 2° Primaria")
                     $niveles = array_map('trim', explode(',', $catData['descCategoria']));
-    
+
                     // Comparar con cursos existentes
                     $cursos = Curso::all();
-    
+
                     foreach ($cursos as $curso) {
                         foreach ($niveles as $nivel) {
                             if ($this->compararNombres($curso->Curso, $nivel)) {
@@ -141,19 +148,15 @@ class ConvocatoriaController extends Controller
                     }
                 }
             }
-    
+
             DB::commit();
             return response()->json(['message' => 'Convocatoria creada con éxito'], 201);
-    
+
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['error' => 'Error al guardar: ' . $e->getMessage()], 500);
         }
     }
-
-
-
-
 
     private function compararNombres($nombre1, $nombre2)
     {
@@ -174,26 +177,16 @@ class ConvocatoriaController extends Controller
         return $normalizar($nombre1) === $normalizar($nombre2);
     }
 
-
-
-
-
-
     public function editarConvocatoria($idConvocatoria)
     {
         $convocatoria = Convocatoria::with([
-            'areas.categorias.cursos' 
+            'areas.categorias.cursos'
         ])->find($idConvocatoria);
-    
+
         if (!$convocatoria) {
             return response()->json(['message' => 'Convocatoria no encontrada'], 404);
         }
-    
+
         return response()->json($convocatoria);
     }
-     
-    
-
-    
-
 }
