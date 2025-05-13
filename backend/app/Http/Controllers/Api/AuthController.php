@@ -32,10 +32,12 @@ class AuthController extends Controller
         try {
             // Crea usuario
             $user = User::create([
-                'name' => $request->name . ' ' . $request->lastName,
+                'name' => $request->name,
+                'apellido' => $request->lastName,
                 'email' => $request->email,
                 'role' => 'tutor',
                 'password' => Hash::make($request->password),
+                'eliminado' => true,
             ]);
 
             // Crear tutor vinculado

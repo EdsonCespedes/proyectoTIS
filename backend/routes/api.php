@@ -27,6 +27,8 @@ use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
 use App\Http\Controllers\ConvocatoriaEstructuraController;
 
+use App\Http\Controllers\ConvocatoriaRoleController;
+
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
 
