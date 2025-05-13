@@ -45,7 +45,7 @@ class CategoriaSeeder extends Seeder
             ['tituloArea' => 'Biologia'],
             ['descArea' => 'Area de Biologia', 'habilitada' => true]
         );
-           
+
 
 
 
@@ -153,11 +153,11 @@ class CategoriaSeeder extends Seeder
                 'idConvocatoria' => 4,
             ]
         ];
-    
-       
+
+
         $categoriasBiologia = [
             [
-                'nombreCategoria' => 'Laboratorio Biología',
+                'nombreCategoria' => 'Laboratorio Biologia',
                 'descCategoria' => '1° Secundaria, 1° Primaria',
                 'habilitada' => true,
                 'maxPost' => 3,

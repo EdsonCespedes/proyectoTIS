@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class OrdenPagoController extends Controller
 {
-    
-    
+
+
     public function buscar(Request $request)
     {
         $query = $request->input('query'); // Puede ser idTutor o "nombre apellido"
@@ -27,9 +27,6 @@ class OrdenPagoController extends Controller
         return response()->json($resultados);
     }
 
-    
-    
-    
     /**
      * Display a listing of the resource.
      *
@@ -152,7 +149,7 @@ class OrdenPagoController extends Controller
             'message' => 'Orden de pago actualizada con éxito',
             'orden' => $orden
         ], 200);
-    
+
     }
     /**
      * Remove the specified resource from storage.
