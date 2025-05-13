@@ -32,7 +32,7 @@ const PruebaRegister = () => {
         setSuccessMessage('');
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/register', formData);
+            const response = await axios.post('http://localhost:8000/api/register', formData);
             setSuccessMessage('Registro exitoso. Ahora puede iniciar sesión.');
             console.log('Usuario registrado:', response.data.user);
 
