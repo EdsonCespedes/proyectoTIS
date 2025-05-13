@@ -194,7 +194,9 @@ Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::cla
 
 // Listar roles
 Route::get('/roles', function(){
-    return response()->json(Role::all());
+    $roles = Role::with('permissions')->get(); // Carga los permisos de cada rol
+    // return response()->json(Role::all());
+    return response()->json($roles);
 });
 
 // Crear rol
