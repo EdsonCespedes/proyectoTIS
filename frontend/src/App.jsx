@@ -47,6 +47,7 @@ function App() {
   return (
     <div>
       <Header/>
+      <Navbar/>
       <Routes>
         <Route path="/" element={<Inicio/>} />
 

@@ -1,37 +1,42 @@
 import React, { useState } from 'react';
-import './Navbar.css';
-
+import { Link } from 'react-router-dom'; // Importamos Link para navegación
+import './Navbar.css'; // Importamos los estilos CSS
 
 const Navbar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Estado para manejar la visibilidad del menú desplegable
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleRedirect = (section) => {
-    alert(`Redirigiendo a ${section}`);
+  // Función para alternar el estado del menú
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
-    <div className="dashboard-adm">
-      {sidebarOpen && (
-        <aside className="sidebar-adm">
-          <ul className="menu-adm">
-            <li onClick={() => handleRedirect('Home')}><i className="icon">🏠</i> Home</li>
-            <li onClick={() => handleRedirect('Settings')}><i className="icon">👤</i> Crear Rol</li>
-            <li onClick={() => handleRedirect('Reports')}><i className="icon">📄</i> Registrar usuario</li>
-            <li onClick={() => handleRedirect('Reports')}><i className="icon">👤</i> Asignar Roles</li>
-            <li onClick={() => handleRedirect('Inbox')}><i className="icon">✉️</i> Gestionar Roles</li>
-            <li onClick={() => handleRedirect('Settings')}><i className="icon">📄</i> Crear convocatoria</li>
-            <li onClick={() => handleRedirect('Reports')}><i className="icon">📊</i> Reportes</li>
-          </ul>
-        </aside>
-      )}
-        <header className="header-adm">
-          <span className="menu-icon-adm" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</span>
-          <h2 className="title-adm">Administrador</h2>
-        </header>
-      <div className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+    <div className={`navbar ${menuOpen ? 'menu-open' : ''}`}>
+      {/* Menú */}
+      <div className={`menu ${menuOpen ? 'show' : ''}`}>
+        <ul>
+          <li><Link to="/">🏠 Home</Link></li>
+          <li><Link to="/addRoles">👤 Crear Rol</Link></li>
+          <li><Link to="/addUser">📄 Registrar Usuario</Link></li>
+          <li><Link to="/asignarRoles">👤 Asignar Roles</Link></li>
+          <li><Link to="/tablaRoles">✉️ Gestionar Roles</Link></li>
+          <li><Link to="/tablaUsuarios">✉️ Lista de Roles</Link></li>
+          <li><Link to="/listaRoles">✉️ Lista de Usuarios</Link></li>
+          <li><Link to="/crear-convocatoria">📄 Crear Convocatoria</Link></li>
+          <li><Link to="/reportes">📊 Reportes</Link></li>
+        </ul>
       </div>
+
+      {/* Botón para abrir o cerrar el menú */}
+      <button className="menu-toggle" onClick={toggleMenu}>
+        {menuOpen ? '☰' : '☰'} {/* El icono ☰ para abrir y ❌ para cerrar */}
+      </button>
     </div>
   );
 };
 
 export default Navbar;
+
+
+
