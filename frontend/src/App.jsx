@@ -33,6 +33,10 @@ import AsignarRoles from './pages/AsignarRoles';
 import ListaRoles from './pages/ListaRoles';
 import TablaUsuarios from './pages/TablaUsuarios';
 import RolesTable from './pages/RolesTable';
+import RecuperarContrasena from './pages/RecuperarContrasena';
+import TablaNotificaciones from './pages/TablaNotificaciones';
+
+
 
 
 
@@ -82,7 +86,9 @@ function App() {
        <Route path="/addUser/:id" element={<AddUser />} />
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
-       
+       <Route path="/recuperacionC" element={<RecuperarContrasena />} />
+      <Route path="/tablaNotif" element={<TablaNotificaciones />} />
+
         <Route path="/no-autorizado" element={<NoAutorizado />} />
       </Routes>
       </div>

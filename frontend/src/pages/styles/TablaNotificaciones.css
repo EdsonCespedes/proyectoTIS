@@ -1,0 +1,40 @@
+.tabla-container {
+  padding: 16px;
+  background-color: #e0f7fa;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-notificaciones {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.tabla-notificaciones th, .tabla-notificaciones td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.tabla-notificaciones th {
+  background-color: #00796b;
+  color: #fff;
+}
+
+.tabla-notificaciones .seleccionado {
+  background-color: #b2dfdb;
+}
+
+.btn-enviar {
+  padding: 10px 16px;
+  background-color: #00796b;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-enviar:hover {
+  background-color: #004d40;
+}
