@@ -193,11 +193,49 @@ Route::get('/roles', function(){
     return response()->json(Role::all());
 });
 
-// Crear rol
+// Crear rol + permisos
 Route::post('/roles', function(Request $req){
-    $req->validate(['name'=>'required|string|unique:roles,name']);
-    $r = Role::create(['name'=>$req->name,'guard_name'=>'sanctum']);
-    return response()->json($r,201);
+    // validamos nombre y un arreglo de permisos (opcionalmente vacío)
+    $data = $req->validate([
+      'name'        => 'required|string|unique:roles,name',
+      'permissions' => 'sometimes|array',
+      'permissions.*' => 'string|exists:permissions,name'
+    ]);
+
+     // 1) crear rol
+    $role = Role::create([
+      'name'       => $data['name'],
+      'guard_name' => 'sanctum',
+    ]);
+
+    // 2) asignar permisos (si vienen)
+    if (!empty($data['permissions'])) {
+      $role->syncPermissions($data['permissions']);
+    }
+
+    return response()->json($role->load('permissions'), 201);
+});
+
+// Actualizar rol (nombre y permisos)
+Route::put('/roles/{role}', function(Role $role, Request $req){
+    $data = $req->validate([
+      'name'        => 'required|string|unique:roles,name,'.$role->id,
+      'permissions' => 'sometimes|array',
+      'permissions.*' => 'string|exists:permissions,name'
+    ]);
+
+    $role->name = $data['name'];
+    $role->save();
+
+    // re-sincronizamos permisos
+    $role->syncPermissions($data['permissions'] ?? []);
+    
+    return response()->json($role->load('permissions'));
+});
+
+// Mostrar un rol con sus permisos
+Route::get('/roles/{role}', function(Role $role){
+    return response()->json($role->load('permissions'));
 });
 
 // Listar permisos
