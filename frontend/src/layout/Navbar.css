@@ -24,7 +24,7 @@
   top: 50px;
   left: 0;
   width: 200px;
-  background-color: #444;
+  background-color: #1a1f36;
   padding: 10px 0;
   border-radius: 5px;
 }
@@ -50,12 +50,12 @@
 }
 
 .menu ul li a:hover {
-  background-color: #555;
+  background-color: #2b2f3a;
 }
 
 /* Estilos para el botón de menú */
 .menu-toggle {
-  background-color: #444;
+  background-color: #09052C;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -65,7 +65,7 @@
 }
 
 .menu-toggle:hover {
-  background-color: #555;
+  background-color: #09052C;
 }
 
 /* Estilos para pantallas pequeñas (menú hamburguesa) */
