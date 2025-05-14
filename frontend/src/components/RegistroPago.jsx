@@ -1,23 +1,23 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/RegistroPago.css';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const tutores = [
-  { nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
-  { nombre: 'Maria Lopez', ordenes: ['orden003', 'orden004', 'orden005', 'orden006'] },
-  { nombre: 'Luis Sanchez', ordenes: ['orden007', 'orden008'] },
-];
+//const tutores = [
+//{ nombre: 'Juan Perez', ordenes: ['orden001', 'orden002'] },
+//{ nombre: 'Maria Lopez', ordenes: ['orden003', 'orden004', 'orden005', 'orden006'] },
+//{ nombre: 'Luis Sanchez', ordenes: ['orden007', 'orden008'] },
+//];
 
-const ordenesPago = [
-  { idOrdenPago: 'orden001', idIngresado: '1234', idOCR: '1234', idTutor: 1 },
-  { idOrdenPago: 'orden002', idIngresado: '5678', idOCR: '5678', idTutor: 1 },
-  { idOrdenPago: 'orden003', idIngresado: '9999', idOCR: '9999', idTutor: 2 },
-  { idOrdenPago: 'orden004', idIngresado: '1122', idOCR: '1122', idTutor: 2 },
-  { idOrdenPago: 'orden005', idIngresado: '3333', idOCR: '3333', idTutor: 2 },
-  { idOrdenPago: 'orden006', idIngresado: '4444', idOCR: '4444', idTutor: 2 },
-  { idOrdenPago: 'orden007', idIngresado: '5555', idOCR: '5551', idTutor: 3 },
-  { idOrdenPago: 'orden008', idIngresado: '6666', idOCR: '6666', idTutor: 3 },
-];
+//const ordenesPago = [
+//{ idOrdenPago: 'orden001', idIngresado: '1234', idOCR: '1234', idTutor: 1 },
+//{ idOrdenPago: 'orden002', idIngresado: '5678', idOCR: '5678', idTutor: 1 },
+//{ idOrdenPago: 'orden003', idIngresado: '9999', idOCR: '9999', idTutor: 2 },
+//{ idOrdenPago: 'orden004', idIngresado: '1122', idOCR: '1122', idTutor: 2 },
+//  { idOrdenPago: 'orden005', idIngresado: '3333', idOCR: '3333', idTutor: 2 },
+//  { idOrdenPago: 'orden006', idIngresado: '4444', idOCR: '4444', idTutor: 2 },
+//  { idOrdenPago: 'orden007', idIngresado: '5555', idOCR: '5551', idTutor: 3 },
+// { idOrdenPago: 'orden008', idIngresado: '6666', idOCR: '6666', idTutor: 3 },
+//];
 
 
 
@@ -27,13 +27,16 @@ const normalizeText = (text) => {
 };
 
 const RegistroPago = () => {
+  const navigate = useNavigate();
 
-  // const navigate = useNavigate();
-
-  // const [tutores, setTutores] = useState([]);
-  // const [cargando, setCargando] = useState(true);
+  const [tutores, setTutores] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   // useEffect(() => {
+  //   const obtenerRecibosAsociados = async () => {
+
+  //   }
+
   //   const obtenerOrdenesPago = async () => {
   //     try {
   //       const response = await fetch(`http://localhost:8000/api/buscar-ordenes`);
@@ -41,6 +44,7 @@ const RegistroPago = () => {
 
   //       if (data) {
   //         setTutores(data);
+
   //         console.log(data);
   //       } else {
   //         console.warn("No se encontraron órdenes");
@@ -54,6 +58,62 @@ const RegistroPago = () => {
 
   //   obtenerOrdenesPago();
   // }, []);
+  useEffect(() => {
+    const obtenerRecibosAsociados = async (ordenes) => {
+      // Clonar las órdenes para evitar mutaciones directas
+      const ordenesConRecibos = await Promise.all(
+        ordenes.map(async (orden) => {
+          try {
+            const response = await fetch(`http://localhost:8000/api/recibos/orden/${orden.idOrdenPago}`);
+            const data = await response.json();
+
+            // Agrega la propiedad "recibos" al objeto orden
+            return {
+              ...orden,
+              recibos: data
+            };
+          } catch (error) {
+            console.error(`Error obteniendo recibos para orden ${orden.idOrdenPago}:`, error);
+            return orden; // Devolver orden sin modificar si falla
+          }
+        })
+      );
+
+      return ordenesConRecibos;
+    };
+
+    const obtenerOrdenesPago = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/buscar-ordenes`);
+        const data = await response.json();
+
+        if (data) {
+          // En cada tutor, buscar los recibos para sus órdenes
+          const tutoresConRecibos = await Promise.all(
+            data.map(async (tutor) => {
+              const nuevasOrdenes = await obtenerRecibosAsociados(tutor.ordenes_pago || []);
+              return {
+                ...tutor,
+                ordenes_pago: nuevasOrdenes
+              };
+            })
+          );
+
+          setTutores(tutoresConRecibos);
+          console.log(tutoresConRecibos);
+        } else {
+          console.warn("No se encontraron órdenes");
+        }
+      } catch (error) {
+        console.error("Error al obtener órdenes de pago:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    obtenerOrdenesPago();
+  }, []);
+
 
   const [searchText, setSearchText] = useState('');
   const [tutorEncontrado, setTutorEncontrado] = useState(null);
@@ -135,9 +195,9 @@ const RegistroPago = () => {
             {/* Seleccionar todo */}
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', padding: '0 5px', marginBottom: '5px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '100px' }}>
-              <span></span>
-              <span></span>
-              <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
                 <span>Seleccionar todo</span>
                 <input
                   type="checkbox"
