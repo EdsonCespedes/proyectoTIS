@@ -232,3 +232,4 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
