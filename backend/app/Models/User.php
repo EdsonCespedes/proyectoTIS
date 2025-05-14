@@ -9,7 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
-use app\Models\Convocatoria;
+use App\Models\Convocatoria;
+use App\Models\Tutor;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class User extends Authenticatable
 {
@@ -47,12 +51,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function tutor()
+    public function tutor(): HasOne
     {
         return $this->hasOne(Tutor::class, 'idUser');
     }
 
-    public function convocatorias()
+    public function convocatorias(): BelongsToMany
     {
         return $this->belongsToMany(
             Convocatoria::class,
@@ -64,7 +68,7 @@ class User extends Authenticatable
         ->withTimestamps();
     }
 
-    public function convocatoriaRoles()
+    public function convocatoriaRoles(): BelongsToMany
     {
         return $this->belongsToMany(
             Role::class,

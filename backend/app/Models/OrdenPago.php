@@ -16,4 +16,10 @@ class OrdenPago extends Model
     {
         return $this->belongsTo(Tutor::class, 'idTutor', 'idTutor');
     }
+
+    public function recibo()
+    {
+        return $this->hasOne(Recibo::class, 'idOrdenPago', 'idOrdenPago');
+    }
+
 }

@@ -15,7 +15,10 @@ class ConvocatoriaEstructuraController extends Controller
 {
     public function areasEstructura(Request $request, $id)
     {
-        // obtiene todas las convocatorias
+        // // obtiene todas las convocatorias
+        
+        // Buscar la convocatoria (lanza error 404 si no existe)
+        $convocatoria = Convocatoria::findOrFail($id);
 
         DB::beginTransaction();
 
@@ -24,7 +27,7 @@ class ConvocatoriaEstructuraController extends Controller
                 $area = Area::firstOrCreate(
                     [
                         'tituloArea' => $areaData['tituloArea'],
-                        'idConvocatoria' => $convocatoria->idConvocatoria
+                        //'idConvocatoria' => $convocatoria->idConvocatoria
                     ],
                     [
                         'descArea' => $areaData['descArea'] ?? null,
@@ -41,15 +44,45 @@ class ConvocatoriaEstructuraController extends Controller
                     []
                 );
 
+                // // Procesar categorías
+                // foreach ($areaData['categorias'] as $catData) {
+                //     $categoria = Categoria::create([
+                //         'nombreCategoria' => $catData['nombreCategoria'],
+                //         'descCategoria' => $catData['descCategoria'],
+                //         'habilitada' => $areaData['habilitada'] ?? true,
+                //         'maxPost' => $catData['maxPost'] ?? 0,
+                //         'idArea' => $area->idArea
+                //     ]);
+                // }
                 // Procesar categorías
                 foreach ($areaData['categorias'] as $catData) {
                     $categoria = Categoria::create([
                         'nombreCategoria' => $catData['nombreCategoria'],
                         'descCategoria' => $catData['descCategoria'],
                         'habilitada' => $areaData['habilitada'] ?? true,
-                        'maxPost' => $catData['maxPost'] ?? 0,
-                        'idArea' => $area->idArea
+                        'maxPost' => $convocatoria->maximoPostPorArea ?? 0,
+                        'idArea' => $area->idArea,
+                        'idConvocatoria' => $convocatoria->idConvocatoria,
+                        'montoCate' => $catData['montoCate'],
                     ]);
+
+                    // Separar niveles de descCategoria (ej: "1° Primaria, 2° Primaria")
+                    $niveles = array_map('trim', explode(',', $catData['descCategoria']));
+
+                    // Comparar con cursos existentes
+                    $cursos = Curso::all();
+
+                    foreach ($cursos as $curso) {
+                        foreach ($niveles as $nivel) {
+                            if ($this->compararNombres($curso->Curso, $nivel)) {
+                                DB::table('categoria_curso')->insert([
+                                    'idCategoria' => $categoria->idCategoria,
+                                    'idCurso' => $curso->idCurso
+                                ]);
+                                break; // Ya lo encontró, salir del foreach
+                            }
+                        }
+                    }
                 }
             }
 

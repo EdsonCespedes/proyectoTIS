@@ -46,17 +46,25 @@ const AsignarRoles = () => {
     setPersonas([...personasFijas, ...usuariosFormateados]);
   }, []);
 
-  const handleNombre = (e) => {
-    const nombre = e.target.value;
-    setSearchTerm(nombre);
-    const nuevasFilas = [...filas];
-    nuevasFilas[0].nombre = nombre;
-    setFilas(nuevasFilas);
+  const normalize = (str) =>
+    str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    const isNombreExistente = personas.some(persona =>
-      persona.nombre.toLowerCase() === nombre.toLowerCase()
-    );
-    setNombreNoEncontrado(!isNombreExistente);
+  const handleNombre = (e) => {
+    const nombreInput = e.target.value;
+    setSearchTerm(nombreInput);
+
+    const personaEncontrada = personas.find((persona) => {
+      const primerNombre = persona.nombre.split(" ")[0];
+      return normalize(primerNombre) === normalize(nombreInput);
+    });
+
+    if (personaEncontrada) {
+      setFilas([{ ...filas[0], nombre: personaEncontrada.nombre }]);
+      setNombreNoEncontrado(false);
+    } else {
+      setNombreNoEncontrado(true);
+      setFilas([{ ...filas[0], nombre: "" }]); // limpia el select
+    }
   };
 
   const handleChange = (index, field, value) => {
@@ -163,3 +171,4 @@ const AsignarRoles = () => {
 };
 
 export default AsignarRoles;
+

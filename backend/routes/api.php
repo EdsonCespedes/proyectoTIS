@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\TutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostulanteController;
-use App\Http\Controllers\ColegioController;
+// use App\Http\Controllers\ColegioController;
+use App\Http\Controllers\Api\ColegioController;
 use App\Http\Controllers\Api\CursoController;
 //use App\Http\Controllers\Api\ConvocatoriaController;
 use App\Http\Controllers\ConvocatoriaController;
@@ -21,9 +23,12 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
-use App\Http\Controllers\PostulacionController;
+//use App\Http\Controllers\PostulacionController;
+use App\Http\Controllers\Api\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
 use App\Http\Controllers\ConvocatoriaEstructuraController;
+
+use App\Http\Controllers\ConvocatoriaRoleController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -43,7 +48,7 @@ Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rr
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
 Route::get('/areas', [AreaController::class, 'index']);
-Route::get('/categorias', [AreaController::class, 'index']);
+Route::get('/categorias', [CategoriaController::class, 'index']);
 
 
 // Ruta de usuario autenticado (por defecto de laravel) NO BORRAR
@@ -96,7 +101,7 @@ Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocat
 
 Route::get('/postulantes', [PostulanteController::class, 'index']);
 
-//obtiene todo los datos de la tabla area 
+//obtiene todo los datos de la tabla area
 
 Route::get('/todasAreas', [AreaController::class, 'index']);
 
@@ -111,11 +116,11 @@ Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocator
 //obtiene todas las convocatorias
 Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 
-//obtiene los datos de una convocatoria activa mediante su id 
+//obtiene los datos de una convocatoria activa mediante su id
 Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
 
 
-//obtiene todas las convocatorias activas 
+//obtiene todas las convocatorias activas
 Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
 
 
@@ -129,7 +134,7 @@ Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::
 //guarda Convocatoria junto con todos su datos
 //Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
 
-//obtiene todas las convocatorias activas 
+//obtiene todas las convocatorias activas
 Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
 
 //eliminar convocatoria mediante id convocatoria
@@ -138,7 +143,7 @@ Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::cla
 //actualiza los datos de orden pago mediante id convocatoria
 Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
 
-//edita solo convocatorias 
+//edita solo convocatorias
 // Para editar solo la convocatoria
 Route::put('/editconvocatorias/{id}', [ConvocatoriaController::class, 'updateConvocatoria']);
 
@@ -152,7 +157,9 @@ Route::get('/tutor', [TutorController::class, 'index']);
 Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
+//Route::post('/register', [AuthController::class, 'registrarTutor']);
 Route::post('/register', [AuthController::class, 'registrarTutor']);
+
 Route::post('/login', [AuthController::class, 'login']);
 
 // guarda los datos de un usuario
@@ -181,7 +188,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{id}/roles', [ConvocatoriaRoleController::class,'index']);
 
-Route::get('/convocatorias/{convocatoria}/gestion-estudiantes', 
+Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
     [GestionController::class, 'index']
 )->middleware('auth', 'role.in.convocatoria:Tutor');
 
@@ -256,3 +263,8 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
     $role->givePermissionTo($req->permission);
     return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
 });
+
+
+// RECIBOS
+Route::post('/recibos', [ReciboController::class, 'store']);
+Route::get('/recibos/{id}', [ReciboController::class, 'show']);
