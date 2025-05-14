@@ -23,7 +23,8 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
-use App\Http\Controllers\PostulacionController;
+//use App\Http\Controllers\PostulacionController;
+use App\Http\Controllers\Api\PostulacionController;
 use App\Http\Controllers\EstructuraConvocatoriaController;
 use App\Http\Controllers\ConvocatoriaEstructuraController;
 
@@ -156,7 +157,9 @@ Route::get('/tutor', [TutorController::class, 'index']);
 Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
+//Route::post('/register', [AuthController::class, 'registrarTutor']);
 Route::post('/register', [AuthController::class, 'registrarTutor']);
+
 Route::post('/login', [AuthController::class, 'login']);
 
 // guarda los datos de un usuario
