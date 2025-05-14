@@ -36,8 +36,8 @@ const Recibo = () => {
 
     console.log(tutorGuardado);
     console.log(orden);
-    
-    
+
+
 
     Tesseract.recognize(
       file,
@@ -53,10 +53,10 @@ const Recibo = () => {
           setMensajeCoincidencia('✅ El ID fue encontrado en la imagen.');
           const textPlano = text.toLowerCase();
           console.log(textPlano);
-          
+
           const tutor = tutorGuardado.nombreTutor + " " + tutorGuardado.apellidoTutor;
           console.log(tutor.toLowerCase());
-          
+
           if (textPlano.includes(tutor.toLowerCase()) && textPlano.includes(orden.montoTotal)) {
             setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
           } else {
@@ -103,6 +103,29 @@ const Recibo = () => {
         const errorText = await response.text();
         console.error(`Error al registrar el recibo:`, errorText);
         return;
+      }
+
+      const { idOrdenPago, ...datos } = orden;
+      datos.cancelado = true;
+      try {
+        const respuesta = await fetch(`http://localhost:8000/api/ordenpago/${orden.idOrdenPago}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(datos)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(resultado.message || 'Error al actualizar la orden');
+        }
+
+        console.log('Orden actualizada:', resultado.orden);
+      } catch (error) {
+        console.error('Error:', error.message);
+        alert('Hubo un problema al actualizar la orden de pago');
       }
 
       navigate("/ordenes-pago");
