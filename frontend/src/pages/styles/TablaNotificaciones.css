@@ -1,40 +1,71 @@
 .tabla-container {
-  padding: 16px;
-  background-color: #e0f7fa;
+  padding: 24px;
+  background-color: #e3f2fd;
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
+}
+
+.tabla-container:hover {
+  background-color: #bbdefb;
+}
+
+.convocatoria-selector {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.convocatoria-selector label {
+  font-weight: bold;
+  color: #1565c0;
+}
+
+.convocatoria-selector select {
+  padding: 8px;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #90caf9;
+  background-color: #e3f2fd;
+  transition: border-color 0.3s ease;
+}
+
+.convocatoria-selector select:focus {
+  border-color: #42a5f5;
 }
 
 .tabla-notificaciones {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
 .tabla-notificaciones th, .tabla-notificaciones td {
-  padding: 12px;
-  border-bottom: 1px solid #ccc;
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
   text-align: left;
 }
 
 .tabla-notificaciones th {
-  background-color: #00796b;
+  background-color: #1976d2;
   color: #fff;
 }
 
 .tabla-notificaciones .seleccionado {
-  background-color: #b2dfdb;
+  background-color: #bbdefb;
 }
 
 .btn-enviar {
-  padding: 10px 16px;
-  background-color: #00796b;
+  padding: 12px 24px;
+  background-color: #1976d2;
   color: #fff;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 .btn-enviar:hover {
-  background-color: #004d40;
+  background-color: #1565c0;
 }

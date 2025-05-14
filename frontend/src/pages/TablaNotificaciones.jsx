@@ -3,11 +3,12 @@ import './styles/TablaNotificaciones.css';
 
 const TablaNotificaciones = () => {
   const [usuarios, setUsuarios] = useState({
-    operador: { correo: 'operador@example.com', funciones: ['Gestión de Convocatoria', 'Gestión de Colegios'], seleccionado: false },
-    tutor: { correo: 'tutor@example.com', funciones: ['Gestión de Convocatoria', 'Orden Pago (Verificar)'], seleccionado: false },
-    auxiliar: { correo: 'auxiliar@example.com', funciones: ['Gestión de Convocatoria', 'Gestión de Colegios'], seleccionado: false }
+    usuario1: { correo: 'persona1@example.com', seleccionado: false },
+    usuario2: { correo: 'persona2@example.com', seleccionado: false },
+    usuario3: { correo: 'persona3@example.com', seleccionado: false }
   });
   const [seleccionarTodo, setSeleccionarTodo] = useState(false);
+  const [convocatoria, setConvocatoria] = useState({ id: '', nombre: '' });
 
   const handleSeleccionarTodo = () => {
     const nuevoEstado = !seleccionarTodo;
@@ -32,13 +33,21 @@ const TablaNotificaciones = () => {
   return (
     <div className="tabla-container">
       <h2>Enviar Notificaciones</h2>
+
+      <div className="convocatoria-selector">
+        <label>Seleccionar Convocatoria: </label>
+        <select value={convocatoria.id} onChange={(e) => setConvocatoria({ id: e.target.value, nombre: e.target.options[e.target.selectedIndex].text })}>
+          <option value="">Seleccione una convocatoria</option>
+          <option value="convocatoria1">Convocatoria 1</option>
+          <option value="convocatoria2">Convocatoria 2</option>
+        </select>
+      </div>
+
       <table className="tabla-notificaciones">
         <thead>
           <tr>
-            <th><input type="checkbox" checked={seleccionarTodo} onChange={handleSeleccionarTodo} /></th>
+            <th>Selecciona Todo<input type="checkbox" checked={seleccionarTodo} onChange={handleSeleccionarTodo} /></th>
             <th>Correo</th>
-            <th>Funciones</th>
-            <th>Seleccionar Convocatoria</th>
           </tr>
         </thead>
         <tbody>
@@ -46,14 +55,6 @@ const TablaNotificaciones = () => {
             <tr key={key} className={usuario.seleccionado ? 'seleccionado' : ''}>
               <td><input type="checkbox" checked={usuario.seleccionado} onChange={() => handleSeleccionarUsuario(key)} /></td>
               <td>{usuario.correo}</td>
-              <td>{usuario.funciones.join(', ')}</td>
-              <td>
-                <select>
-                  <option value="">Seleccionar Convocatoria</option>
-                  <option value="convocatoria1">Convocatoria 1</option>
-                  <option value="convocatoria2">Convocatoria 2</option>
-                </select>
-              </td>
             </tr>
           ))}
         </tbody>
@@ -64,3 +65,4 @@ const TablaNotificaciones = () => {
 };
 
 export default TablaNotificaciones;
+
