@@ -197,7 +197,9 @@ Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::cla
 
 // Listar roles
 Route::get('/roles', function(){
-    return response()->json(Role::all());
+    $roles = Role::with('permissions')->get(); // Carga los permisos de cada rol
+    // return response()->json(Role::all());
+    return response()->json($roles);
 });
 
 // Crear rol
@@ -205,6 +207,23 @@ Route::post('/roles', function(Request $req){
     $req->validate(['name'=>'required|string|unique:roles,name']);
     $r = Role::create(['name'=>$req->name,'guard_name'=>'sanctum']);
     return response()->json($r,201);
+});
+
+//Actualiza el nombre del rol
+Route::put('/roles/{id}', function($id, Request $request) {
+    $request->validate(['name' => 'required|string|unique:roles,name,' . $id]);
+    
+    $rol = Role::findOrFail($id);
+    $rol->name = $request->name;
+    $rol->save();
+
+    return response()->json(['message' => 'Rol actualizado correctamente', 'rol' => $rol]);
+});
+
+// Obtiene un rol en especifico con sus permisos
+Route::get('/roles/{id}', function($id) {
+    $rol = Role::with('permissions')->findOrFail($id);
+    return response()->json($rol);
 });
 
 // Listar permisos
@@ -226,7 +245,17 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
     return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
 });
 
+//Actualiza los permisos del rol
+Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
+    $request->validate(['permissions' => 'required|array']);
+    
+    $rol = Role::findOrFail($id);
+    $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
+
+    return response()->json(['message' => 'Permisos actualizados correctamente']);
+});
 
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);

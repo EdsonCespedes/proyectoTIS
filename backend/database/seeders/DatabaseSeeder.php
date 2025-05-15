@@ -30,7 +30,9 @@ class DatabaseSeeder extends Seeder
             //DelegacionSeeder::class,
             PostulanteSeeder::class,
             PostulacionSeeder::class,
-            RoleSeeder::class
+            RoleSeeder::class,
+
+            PermissionSeeder::class
         ]);
     }
 }
