@@ -11,6 +11,10 @@ use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\OrdenPagoController;
 
 
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\PasswordResetController;
+
+
 
 use App\Http\Controllers\UserController;
 
@@ -147,4 +151,17 @@ Route::get('/todosusers', [UserController::class, 'index']);
 
 // muestra los datos de un usuario mediante su id
 Route::get('/especificousers/{id}', [UserController::class, 'show']);
+
+
+
+
+
+//envia correo de restablecimiento de contraseña
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
+//actualiza la contraseña 
+Route::post('/password/reset', [PasswordResetController::class, 'resetPassword']);
+
+
+
 
