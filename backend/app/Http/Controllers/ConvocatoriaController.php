@@ -195,7 +195,7 @@ public function areasEstructura(Request $request, $id)
               DB::table('convocatoria_area')->where('idConvocatoria', $idConvocatoria)->delete();
       
               // Insertar nuevas áreas y categorías
-              foreach ($request->input('area') as $areaData) {
+              foreach ($request->input('areas') as $areaData) {
                   $area = Area::firstOrCreate(
                       ['tituloArea' => $areaData['tituloArea']],
                       [
@@ -209,7 +209,7 @@ public function areasEstructura(Request $request, $id)
                       'idArea' => $area->idArea
                   ]);
       
-                  foreach ($areaData['categoria'] as $catData) {
+                  foreach ($areaData['categorias'] as $catData) {
                       $categoria = Categoria::create([
                           'nombreCategoria' => $catData['nombreCategoria'],
                           'descCategoria' => $catData['descCategoria'],

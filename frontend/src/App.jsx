@@ -42,6 +42,7 @@ import { RutasInscripcion } from "./routes/RutasInscripcion";
 import NoAutorizado from "./pages/NoAutorizado";
 
 import EditConvForm from "./pages/EditConvForm";
+import CategoriaEdit from "./pages/CategoriaEdit"
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
         <Route path="/editar-convocatoria/:id" element={<EditConvForm/>} />
         <Route path="/area" element={<Categoria/>} />
+        <Route path="/editar-convocatoria/:id/edit-area" element={<CategoriaEdit/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
 
         <Route path="/convocatorias" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Convocatorias /></PrivateRoute>} />

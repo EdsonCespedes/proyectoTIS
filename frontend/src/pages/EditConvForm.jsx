@@ -126,8 +126,8 @@ export const EditConvForm = () => {
         return;
       }
 
-      navigate(`/area`, {
-        state: { idConvocatoria: id },
+      navigate(`/editar-convocatoria/${id}/edit-area`, {
+        state: { idConvocatoria: id, areas: areas, maxPost: formData.maxConcursantes },
       });
     } catch (error) {
       console.error('Error al guardar la convocatoria:', error);
