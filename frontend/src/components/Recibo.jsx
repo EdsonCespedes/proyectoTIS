@@ -2,9 +2,15 @@
 import React, { useState, useRef } from 'react';
 import Tesseract from 'tesseract.js';
 import './styles/Recibo.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const Recibo = () => {
+  const location = useLocation();
+  const orden = location.state.orden;
+  const tutorGuardado = JSON.parse(localStorage.getItem('tutor'));
+  const navigate = useNavigate();
+
   const [idRecibo, setIdRecibo] = useState('');
   const [imagen, setImagen] = useState(null);
   const [textoExtraido, setTextoExtraido] = useState('');
@@ -28,6 +34,11 @@ const Recibo = () => {
     setTextoExtraido('');
     setMensajeCoincidencia('');
 
+    console.log(tutorGuardado);
+    console.log(orden);
+
+
+
     Tesseract.recognize(
       file,
       'spa',
@@ -40,13 +51,27 @@ const Recibo = () => {
       if (idRecibo.trim() !== '') {
         if (text.includes(idRecibo)) {
           setMensajeCoincidencia('✅ El ID fue encontrado en la imagen.');
+          const textPlano = text.toLowerCase();
+          console.log(textPlano);
+
+          const tutor = tutorGuardado.nombreTutor + " " + tutorGuardado.apellidoTutor;
+          console.log(tutor.toLowerCase());
+
+          if (textPlano.includes(tutor.toLowerCase()) && textPlano.includes(orden.montoTotal)) {
+            setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
+          } else {
+            setMensajeCoincidencia('❌ El ID fue encontrado en la imagen pero no coincide con el tutor o la orden de pago. Por favor suba una imagen mas clara o la imagen correcta.');
+          }
+
         } else {
           setMensajeCoincidencia('❌ El ID no se encontró en la imagen por favor suba la imagen correcta .');
-          
+
         }
       } else {
         setMensajeCoincidencia('⚠️ Por favor, escribe un ID antes de subir la imagen.');
       }
+
+
     }).catch((err) => {
       console.error('Error al procesar OCR:', err);
       setProcesandoOCR(false);
@@ -55,12 +80,58 @@ const Recibo = () => {
   };
 
 
-  const handleImportar = () => {
+  const handleImportar = async () => {
     if (!idRecibo || !imagen) {
       alert('Por favor, ingresa un ID de recibo y sube una imagen.');
       return;
     }
     console.log('Importando recibo con ID:', idRecibo, 'y archivo:', imagen);
+
+    const formData = new FormData();
+    formData.append('id', idRecibo);
+    formData.append('idOrdenPago', orden.idOrdenPago);
+    formData.append('imagen_comprobante', imagen);
+
+
+    try {
+      const response = await fetch('http://localhost:8000/api/recibos', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error al registrar el recibo:`, errorText);
+        return;
+      }
+
+      const { idOrdenPago, ...datos } = orden;
+      datos.cancelado = true;
+      try {
+        const respuesta = await fetch(`http://localhost:8000/api/ordenpago/${orden.idOrdenPago}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(datos)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(resultado.message || 'Error al actualizar la orden');
+        }
+
+        console.log('Orden actualizada:', resultado.orden);
+      } catch (error) {
+        console.error('Error:', error.message);
+        alert('Hubo un problema al actualizar la orden de pago');
+      }
+
+      navigate("/ordenes-pago");
+    } catch (error) {
+      console.error(`Error al registrar el recibo:`, error);
+    }
   };
 
   const handleEliminarImagen = () => {
@@ -155,7 +226,7 @@ const Recibo = () => {
 
 
       <button className="btn-importar" onClick={handleImportar}>
-        Importar
+        Enviar
       </button>
     </div>
   );

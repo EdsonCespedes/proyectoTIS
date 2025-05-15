@@ -16,6 +16,9 @@ const AddRoles = () => {
     "Orden Pago (Vereficar)"
   ];
 
+  const [permisosDisponibles, setPermisosDisponibles] = useState([]);
+
+
   useEffect(() => {
     const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
     if (rolEditar) {
@@ -24,6 +27,20 @@ const AddRoles = () => {
       setModoEdicion(true);
       setIndexEditar(rolEditar.index);
     }
+
+
+    const fetchPermisos = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/permissions");
+        if (!res.ok) throw new Error("Error al obtener permisos");
+        const data = await res.json();        
+        setPermisosDisponibles(data);
+      } catch (error) {
+        console.error("Error cargando permisos:", error);
+      }
+    };
+  
+    fetchPermisos();
   }, []);
 
   const handleCheckboxChange = (funcion) => {
@@ -34,25 +51,60 @@ const AddRoles = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const rolesExistentes = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
+  //   const nuevoRol = { nombreRol, funciones };
+
+  //   let actualizados;
+
+  //   if (modoEdicion && indexEditar !== null) {
+  //     rolesExistentes[indexEditar] = nuevoRol;
+  //     actualizados = [...rolesExistentes];
+  //     localStorage.removeItem("rolEditar");
+  //   } else {
+  //     actualizados = [...rolesExistentes, nuevoRol];
+  //   }
+
+  //   localStorage.setItem("rolesAsignados", JSON.stringify(actualizados));
+  //   navigate("/tablaRoles");
+  // };
+
+  const crearRol = async (nombreRol) => {
+    const res = await fetch('http://localhost:8000/api/roles', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: nombreRol }),
+    });
+    const data = await res.json();
+    return data; // contiene el rol creado
+  };
+
+  const asignarPermisoARol = async (roleId, permiso) => {
+    await fetch(`http://localhost:8000/api/roles/${roleId}/give-permission`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ permission: permiso }),
+    });
+  };
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const rolesExistentes = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
-    const nuevoRol = { nombreRol, funciones };
-
-    let actualizados;
-
-    if (modoEdicion && indexEditar !== null) {
-      rolesExistentes[indexEditar] = nuevoRol;
-      actualizados = [...rolesExistentes];
-      localStorage.removeItem("rolEditar");
-    } else {
-      actualizados = [...rolesExistentes, nuevoRol];
+  
+    // 1. Crear el rol
+    const nuevoRol = await crearRol(nombreRol);
+  
+    // 2. Asignar cada permiso (funcion) al nuevo rol
+    for (let funcion of funciones) {
+      await asignarPermisoARol(nuevoRol.id, funcion);
     }
-
-    localStorage.setItem("rolesAsignados", JSON.stringify(actualizados));
+  
+    // 3. Redirigir
     navigate("/tablaRoles");
   };
+  
+  
 
   const handleCancel = () => {
     localStorage.removeItem("rolEditar");
@@ -73,15 +125,21 @@ const AddRoles = () => {
 
         <label>Funciones:</label>
         <div className="funciones">
-          {opcionesFunciones.map((funcion, index) => (
-            <div key={index}>
+          {/* {opcionesFunciones.map((funcion, index) => ( */}
+          {permisosDisponibles.map((funcion) => (
+            // <div key={index}>
+            <div key={funcion.id}>
               <input
                 type="checkbox"
-                id={`funcion-${index}`}
-                checked={funciones.includes(funcion)}
-                onChange={() => handleCheckboxChange(funcion)}
+                // id={`funcion-${index}`}
+                id={`funcion-${funcion.id}`}
+                // checked={funciones.includes(funcion)}
+                // onChange={() => handleCheckboxChange(funcion)}
+                checked={funciones.includes(funcion.name)}
+                onChange={() => handleCheckboxChange(funcion.name)}
               />
-              <label htmlFor={`funcion-${index}`}>{funcion}</label>
+              {/* <label htmlFor={`funcion-${index}`}>{funcion}</label> */}
+              <label htmlFor={`funcion-${funcion.id}`}>{funcion.name}</label>
             </div>
           ))}
         </div>
