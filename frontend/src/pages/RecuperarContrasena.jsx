@@ -4,24 +4,64 @@ import './styles/RecuperarContrasena.css';
 const RecuperarContrasena = () => {
   const [email, setEmail] = useState('');
   const [verificado, setVerificado] = useState(false);
+  const [token, setToken] = useState('');
   const [nueva, setNueva] = useState('');
   const [confirmar, setConfirmar] = useState('');
   const [mostrar, setMostrar] = useState(false);
 
-  const handleVerificar = (e) => {
+  const handleVerificar = async (e) => {
     e.preventDefault();
-    // Aquí va la lógica de verificación de email
-    setVerificado(true);
+    try {
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Correo enviado. Revisa tu bandeja de entrada.');
+        setVerificado(true);
+      } else {
+        alert(data.message || 'Error al enviar el correo');
+      }
+    } catch (error) {
+      console.error('Error en la verificación:', error);
+    }
   };
 
-  const handleCambio = (e) => {
+  const handleCambio = async (e) => {
     e.preventDefault();
     if (nueva !== confirmar) {
-      alert("Las contraseñas no coinciden");
+      alert('Las contraseñas no coinciden');
       return;
     }
-    // Aquí va la lógica para guardar la nueva contraseña
-    alert("Contraseña actualizada correctamente");
+
+    try {
+      const response = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, password: nueva, password_confirmation: confirmar }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Contraseña actualizada correctamente');
+        setVerificado(false);
+        setEmail('');
+        setNueva('');
+        setConfirmar('');
+        setToken('');
+      } else {
+        alert(data.message || 'Error al actualizar la contraseña');
+      }
+    } catch (error) {
+      console.error('Error en el cambio de contraseña:', error);
+    }
   };
 
   return (
@@ -29,7 +69,6 @@ const RecuperarContrasena = () => {
       {!verificado ? (
         <>
           <h2>¿Has olvidado la contraseña?</h2>
-          <h2>Ingrese su email con el que se registro</h2>
           <form onSubmit={handleVerificar} className="recuperar-form">
             <label htmlFor="email">Email *</label>
             <input
@@ -39,32 +78,42 @@ const RecuperarContrasena = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <p>Se verificará este email para restablecer su contraseña</p>
-            <button type="submit">Verificar</button>
+            <p>Se enviará un enlace de restablecimiento a este email</p>
+            <button type="submit">Enviar</button>
           </form>
         </>
       ) : (
         <>
-          <h2>Cambiar contraseña</h2>
+          <h2>Restablecer contraseña</h2>
           <form onSubmit={handleCambio} className="recuperar-form">
-            <label>Contraseña nueva*</label>
+            <label>Token recibido por correo *</label>
+            <input
+              type="text"
+              required
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+            />
+            <label>Nueva contraseña *</label>
             <div className="input-con-icono">
               <input
-                type={mostrar ? "text" : "password"}
-                value={nueva}
+                type={mostrar ? 'text' : 'password'}
                 required
+                value={nueva}
                 onChange={(e) => setNueva(e.target.value)}
               />
               <span onClick={() => setMostrar(!mostrar)}>👁️</span>
             </div>
-
-            <label>Confirmar contraseña*</label>
+            <label>Confirmar nueva contraseña *</label>
             <div className="input-con-icono">
-              <input type={mostrar ? "text" : "password"} value={confirmar} required  onChange={(e) => setConfirmar(e.target.value)}/>
+              <input
+                type={mostrar ? 'text' : 'password'}
+                required
+                value={confirmar}
+                onChange={(e) => setConfirmar(e.target.value)}
+              />
               <span onClick={() => setMostrar(!mostrar)}>👁️</span>
             </div>
-
-            <button type="submit">Confirmar cambio</button>
+            <button type="submit">Restablecer contraseña</button>
           </form>
         </>
       )}
