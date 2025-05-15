@@ -105,35 +105,19 @@ export const EditConvForm = () => {
     newformData.append('fechaPublicacion', convocatoria.fechaPublicacion.split(' ')[0]);
     newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
     newformData.append('fechaFinInsc', formData.fechaCierreInscripcion);
-    newformData.append('portada', formData.imagenPortada); // <-- tu imagen
+    //newformData.append('portada', formData.imagenPortada); // <-- tu imagen
+    if (formData.imagenPortada instanceof File) {
+      newformData.append('portada', formData.imagenPortada);
+    }
     newformData.append('habilitada', '1');
     newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
     newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
     newformData.append('maximoPostPorArea', formData.maxConcursantes);
 
-  
-    // const dataToSend = {
-    //   tituloConvocatoria: formData.titulo,
-    //   descripcion: formData.descripcion,
-    //   fechaPublicacion: convocatoria.fechaPublicacion,
-    //   fechaInicioInsc: formData.fechaInicioInscripcion,
-    //   fechaFinInsc: formData.fechaCierreInscripcion,
-    //   portada: formData.imagenPortada, // <-- tu imagen
-    //   habilitada: '1',
-    //   fechaInicioOlimp: formData.fechaInicioOlimpiada,
-    //   fechaFinOlimp: formData.fechaFinOlimpiada,
-    //   maximoPostPorArea: formData.maxConcursantes,
-    // }
-
     try {
       const response = await fetch(`http://localhost:8000/api/editconvocatorias/${id}`, {
         method: 'POST',
         body: newformData,
-        // headers: {
-        //   "Content-Type": "application/json",
-        //   Accept: "application/json",
-        // },
-        // body: JSON.stringify(dataToSend),
       });
 
       const text = await response.text();
@@ -230,7 +214,7 @@ export const EditConvForm = () => {
         />
 
         <label>Imagen de portada:</label>
-        <ImageUpload onFileSelect={handleFileChange} />
+        <ImageUpload onFileSelect={handleFileChange} imagenInicial={formData.imagenPortada}/>
 
         {error && <p className="error-message">{error}</p>}
 

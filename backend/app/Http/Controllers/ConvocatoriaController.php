@@ -318,6 +318,11 @@ public function getConvocatoriaById($idConvocatoria)
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
 
+        // Convertir la ruta de la imagen a URL pública
+        if ($convocatoria->portada) {
+            $convocatoria->portada = Storage::disk('public')->url($convocatoria->portada);
+        }
+
         // ✅ Falta este return si todo va bien
         return response()->json($convocatoria, 200);
     } catch (\Exception $e) {
@@ -412,6 +417,12 @@ public function getConvocatoriasActivas()
                 return response()->json(['message' => 'No se encontraron convocatorias activas'], 404);
             }
 
+            foreach ($convocatorias as $conv) {
+                if ($conv->portada) {
+                    $conv->portada = Storage::disk('public')->url($conv->portada);
+                }
+            }
+
             // Retornar las convocatorias activas con todas sus relaciones
             return response()->json($convocatorias, 200);
 
@@ -423,6 +434,13 @@ public function getConvocatoriasActivas()
 
     public function index(){
         $convocatorias = Convocatoria::all();
+        
+        foreach ($convocatorias as $conv) {
+            if ($conv->portada) {
+                $conv->portada = Storage::disk('public')->url($conv->portada);
+            }
+        }
+        
         return response()->json($convocatorias);
     }
 
