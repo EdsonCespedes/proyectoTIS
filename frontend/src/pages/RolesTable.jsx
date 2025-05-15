@@ -7,20 +7,32 @@ const RolesTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const datosGuardados = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
+    // const datosGuardados = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
 
-    // Verifica el contenido de los datos guardados
-    console.log("Datos guardados en localStorage:", datosGuardados);  // Esto es solo para depurar
+    // // Verifica el contenido de los datos guardados
+    // console.log("Datos guardados en localStorage:", datosGuardados);  // Esto es solo para depurar
 
-    // Asegúrate de que todos los roles tienen valores válidos
-    const datosValidados = datosGuardados.map((rol) => {
-      return {
-        nombreRol: rol.nombreRol && rol.nombreRol.trim() !== "" ? rol.nombreRol : 'Sin nombre',
-        funciones: Array.isArray(rol.funciones) && rol.funciones.length > 0 ? rol.funciones : ['Sin funciones'],
-      };
-    });
+    // // Asegúrate de que todos los roles tienen valores válidos
+    // const datosValidados = datosGuardados.map((rol) => {
+    //   return {
+    //     nombreRol: rol.nombreRol && rol.nombreRol.trim() !== "" ? rol.nombreRol : 'Sin nombre',
+    //     funciones: Array.isArray(rol.funciones) && rol.funciones.length > 0 ? rol.funciones : ['Sin funciones'],
+    //   };
+    // });
 
-    setRoles(datosValidados);
+    // setRoles(datosValidados);
+    const fetchRoles = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/roles");
+        if (!res.ok) throw new Error("Error al obtener roles");
+        const data = await res.json();
+        setRoles(data);
+      } catch (error) {
+        console.error("Error cargando permisos:", error);
+      }
+    };
+
+    fetchRoles();
   }, []);
 
   const handleEdit = (index) => {
@@ -50,13 +62,28 @@ const RolesTable = () => {
         </thead>
         <tbody>
           {roles.length > 0 ? (
-            roles.map((rol, index) => (
-              <tr key={index}>
-                <td>{rol.nombreRol}</td>
-                <td>{rol.funciones.join(', ')}</td>
+            // roles.map((rol, index) => (
+            //   <tr key={index}>
+            //     <td>{rol.nombreRol}</td>
+            //     <td>{rol.funciones.join(', ')}</td>
+            //     <td>
+            //       <button onClick={() => handleEdit(index)}>✏️</button>
+            //       <button onClick={() => handleDelete(index)}>❌</button>
+            //     </td>
+            //   </tr>
+            // ))
+            roles.map((rol) => (
+              <tr key={rol.id}>
+                <td>{rol.name}</td>
+                {/* <td>{rol.funciones.join(', ')}</td> */}
                 <td>
-                  <button onClick={() => handleEdit(index)}>✏️</button>
-                  <button onClick={() => handleDelete(index)}>❌</button>
+                  {rol.permissions && rol.permissions.length > 0
+                    ? rol.permissions.map((permiso) => permiso.name).join(', ')
+                    : 'Sin funciones'}
+                </td>
+                <td>
+                  <button onClick={() => handleEdit(rol.id)}>✏️</button>
+                  <button onClick={() => handleDelete(rol.id)}>❌</button>
                 </td>
               </tr>
             ))

@@ -197,7 +197,9 @@ Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::cla
 
 // Listar roles
 Route::get('/roles', function(){
-    return response()->json(Role::all());
+    $roles = Role::with('permissions')->get(); // Carga los permisos de cada rol
+    // return response()->json(Role::all());
+    return response()->json($roles);
 });
 
 // Crear rol
@@ -230,3 +232,4 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
