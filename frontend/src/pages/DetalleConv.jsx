@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./styles/DetalleConv.css";
-import { Link } from "react-router-dom";
-import Header from "../layout/Header";
+import { Link, useNavigate } from "react-router-dom";
 
 const DetalleConv = () => {
-  const data = [
-    // { id: 1, area: "Matemáticas", categoria: "Segundo Nivel", inscripcion: "01/04/2025 - 15/04/2025", olimpiada: "15/05/2025 - 20/05/2025", estado: "Activo" },
-    // { id: 2, area: "Física", categoria: "5_Secundaria", inscripcion: "05/04/2025 - 10/04/2025", olimpiada: "20/05/2025 - 25/05/2025", estado: "Activo" },
-    // { id: 3, area: "Química", categoria: "4_Secundaria", inscripcion: "10/04/2025 - 15/04/2025", olimpiada: "25/05/2025 - 30/05/2025", estado: "Activo" },
-    // { id: 4, area: "Informática", categoria: "Londra", inscripcion: "12/04/2025 - 17/04/2025", olimpiada: "30/05/2025 - 05/06/2025", estado: "Activo" },
-    { titulo: "Olimpiadas 1-2023", inscripcion: "01/04/2025 - 15/04/2025", olimpiada: "15/05/2025 - 20/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 2-2023", inscripcion: "05/04/2025 - 10/04/2025", olimpiada: "20/05/2025 - 25/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 1-2024", inscripcion: "10/04/2025 - 15/04/2025", olimpiada: "25/05/2025 - 30/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 2-2024", inscripcion: "12/04/2025 - 17/04/2025", olimpiada: "30/05/2025 - 05/06/2025", estado: "Activo" },
-  ];
-
   const [convocatorias, setConvocatorias] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:8000/api/todasconvocatorias")
@@ -24,15 +13,16 @@ const DetalleConv = () => {
       .catch(error => console.error("Error al obtener colegios:", error));
   }, []);
 
+  const handleEdit = (id) => {
+    navigate(`/editar-convocatoria/${id}`);
+  }
+
   return (
     <div className="container-detalleCov">
       <h2 className="title-detalleConv">Detalle de convocatorias</h2>
       <table className="convocatoria-table">
         <thead>
           <tr>
-            {/* <th>N°</th>
-            <th>ÁREA DE COMPETENCIA</th>
-            <th>CATEGORIA</th> */}
             <th>TÍTULO</th>
             <th>FECHA DE INSCRIPCIONES</th>
             <th>FECHA DE OLIMPIADAS</th>
@@ -41,25 +31,6 @@ const DetalleConv = () => {
           </tr>
         </thead>
         <tbody>
-          {/* {data.map((item) => (
-            <tr key={item.id}> */}
-              {/* <td>{index + 1}</td>
-              <td>{item.area}</td>
-              <td>{item.categoria}</td> */}
-              {/* <td>{item.titulo}</td>
-              <td>{item.inscripcion}</td>
-              <td>{item.olimpiada}</td>
-              <td>
-                <span className={`estado ${item.estado === "Inactivo" ? "rojo" : "verde"}`}>
-                  {item.estado}
-                </span>
-              </td>
-              <td>
-                <button className="btn editar">Editar</button>
-                <button className="btn eliminar">Retirar</button>
-              </td>
-            </tr>
-          ))} */}
           {convocatorias.map((convocatoria) => (
             <tr key={convocatoria.idConvocatoria}>
 
@@ -73,7 +44,7 @@ const DetalleConv = () => {
                 </span>
               </td>
               <td>
-                <button className="btn editar">Editar</button>
+                <button className="btn editar" onClick={()=>handleEdit(convocatoria.idConvocatoria)}>Editar</button>
                 <button className="btn eliminar">Retirar</button>
               </td>
             </tr>

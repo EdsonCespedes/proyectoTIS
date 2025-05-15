@@ -41,6 +41,7 @@ import { RutasInscripcion } from "./routes/RutasInscripcion";
 
 import NoAutorizado from "./pages/NoAutorizado";
 
+import EditConvForm from "./pages/EditConvForm";
 
 function App() {
 
@@ -56,6 +57,7 @@ function App() {
         <Route path="/edit-colegios" element={<EditColegios />} />
 
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
+        <Route path="/editar-convocatoria/:id" element={<EditConvForm/>} />
         <Route path="/area" element={<Categoria/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
 
