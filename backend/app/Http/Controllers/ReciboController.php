@@ -36,4 +36,11 @@ class ReciboController extends Controller
         $recibo = Recibo::findOrFail($id);
         return response()->json($recibo);
     }
+
+    public function getByOrdenPago($idOrdenPago)
+    {
+        $recibos = Recibo::where('idOrdenPago', $idOrdenPago)->get();
+        return response()->json($recibos);
+    }
+
 }

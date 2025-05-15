@@ -80,6 +80,8 @@ function App() {
 
        {/* Katy */}
        <Route path="/addRoles" element={<AddRoles />} />
+       <Route path="/editRoles/:id" element={<AddRoles />} />
+
        <Route path="/tablaRoles" element={<RolesTable />} />
        <Route path="/addUser" element={<AddUser />} /> 
        <Route path="/tablaUsuarios" element={<TablaUsuarios />} /> 
