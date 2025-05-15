@@ -12,7 +12,6 @@ use App\Http\Controllers\OrdenPagoController;
 
 
 use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\PasswordResetController;
 
 
 
@@ -160,7 +159,10 @@ Route::get('/especificousers/{id}', [UserController::class, 'show']);
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 //actualiza la contraseña 
-Route::post('/password/reset', [PasswordResetController::class, 'resetPassword']);
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+
 
 
 
