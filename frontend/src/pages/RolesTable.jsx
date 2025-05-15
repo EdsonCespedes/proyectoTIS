@@ -36,18 +36,20 @@ const RolesTable = () => {
   }, []);
 
   const handleEdit = (index) => {
-    const rolParaEditar = roles[index];
+    // const rolParaEditar = roles[index];
 
-    // Guardar el rol a editar en localStorage (temporal)
-    localStorage.setItem("rolEditar", JSON.stringify({ ...rolParaEditar, index }));
-    navigate("/addRoles");
+    // // Guardar el rol a editar en localStorage (temporal)
+    // localStorage.setItem("rolEditar", JSON.stringify({ ...rolParaEditar, index }));
+    // navigate("/addRoles");
+    navigate(`/editRoles/${index}`)
   };
 
-  const handleDelete = (index) => {
-    const updatedRoles = roles.filter((_, i) => i !== index);
-    setRoles(updatedRoles);
-    localStorage.setItem("rolesAsignados", JSON.stringify(updatedRoles));
+  const handleDelete = async (index) => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este rol?")) return;
   };
+
+
+
 
   return (
     <div className="table-container">
