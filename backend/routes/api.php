@@ -209,6 +209,29 @@ Route::post('/roles', function(Request $req){
     return response()->json($r,201);
 });
 
+
+
+
+//Actualiza el nombre del rol
+Route::put('/roles/{id}', function($id, Request $request) {
+    $request->validate(['name' => 'required|string|unique:roles,name,' . $id]);
+    
+    $rol = Role::findOrFail($id);
+    $rol->name = $request->name;
+    $rol->save();
+
+    return response()->json(['message' => 'Rol actualizado correctamente', 'rol' => $rol]);
+});
+
+// Obtiene un rol en especifico con sus permisos
+Route::get('/roles/{id}', function($id) {
+    $rol = Role::with('permissions')->findOrFail($id);
+    return response()->json($rol);
+});
+
+
+
+
 // Listar permisos
 Route::get('/permissions', function(){
     return response()->json(Permission::all());
@@ -226,6 +249,17 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
     $req->validate(['permission'=>'required|exists:permissions,name']);
     $role->givePermissionTo($req->permission);
     return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
+});
+
+
+//Actualiza los permisos del rol
+Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
+    $request->validate(['permissions' => 'required|array']);
+    
+    $rol = Role::findOrFail($id);
+    $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
+
+    return response()->json(['message' => 'Permisos actualizados correctamente']);
 });
 
 
