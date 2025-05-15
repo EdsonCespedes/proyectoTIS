@@ -29,6 +29,7 @@ const RecuperarContrasena = () => {
       {!verificado ? (
         <>
           <h2>¿Has olvidado la contraseña?</h2>
+          <h2>Ingrese su email con el que se registro</h2>
           <form onSubmit={handleVerificar} className="recuperar-form">
             <label htmlFor="email">Email *</label>
             <input
