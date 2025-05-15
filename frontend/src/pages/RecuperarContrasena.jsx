@@ -9,13 +9,15 @@ const RecuperarContrasena = () => {
   const [confirmar, setConfirmar] = useState('');
   const [mostrar, setMostrar] = useState(false);
 
+  // Enviar correo para reset
   const handleVerificar = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/forgot-password', {
+      const response = await fetch('http://localhost:8000/api/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({ email }),
       });
@@ -29,9 +31,11 @@ const RecuperarContrasena = () => {
       }
     } catch (error) {
       console.error('Error en la verificación:', error);
+      alert('Error al enviar el correo. Intenta nuevamente.');
     }
   };
 
+  // Restablecer contraseña
   const handleCambio = async (e) => {
     e.preventDefault();
     if (nueva !== confirmar) {
@@ -40,12 +44,18 @@ const RecuperarContrasena = () => {
     }
 
     try {
-      const response = await fetch('/api/reset-password', {
+      const response = await fetch('http://localhost:8000/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({ token, password: nueva, password_confirmation: confirmar }),
+        body: JSON.stringify({
+          token,
+          email,
+          password: nueva,
+          password_confirmation: confirmar,
+        }),
       });
 
       const data = await response.json();
@@ -57,10 +67,12 @@ const RecuperarContrasena = () => {
         setConfirmar('');
         setToken('');
       } else {
+        console.log('Error detalle:', data);
         alert(data.message || 'Error al actualizar la contraseña');
       }
     } catch (error) {
       console.error('Error en el cambio de contraseña:', error);
+      alert('Error al actualizar la contraseña. Intenta nuevamente.');
     }
   };
 
@@ -93,6 +105,15 @@ const RecuperarContrasena = () => {
               value={token}
               onChange={(e) => setToken(e.target.value)}
             />
+
+            <label>Email *</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
             <label>Nueva contraseña *</label>
             <div className="input-con-icono">
               <input
@@ -103,6 +124,7 @@ const RecuperarContrasena = () => {
               />
               <span onClick={() => setMostrar(!mostrar)}>👁️</span>
             </div>
+
             <label>Confirmar nueva contraseña *</label>
             <div className="input-con-icono">
               <input
@@ -113,6 +135,7 @@ const RecuperarContrasena = () => {
               />
               <span onClick={() => setMostrar(!mostrar)}>👁️</span>
             </div>
+
             <button type="submit">Restablecer contraseña</button>
           </form>
         </>
@@ -122,4 +145,5 @@ const RecuperarContrasena = () => {
 };
 
 export default RecuperarContrasena;
+
 
