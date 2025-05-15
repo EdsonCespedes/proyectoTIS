@@ -18,6 +18,11 @@ use App\Http\Controllers\OrdenPagoController;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+
+use App\Http\Controllers\ForgotPasswordController;
+
+
+
 use App\Http\Controllers\UserController;
 
 
@@ -178,6 +183,7 @@ Route::get('/todosusers', [UserController::class, 'index']);
 // muestra los datos de un usuario mediante su id
 Route::get('/especificousers/{id}', [UserController::class, 'show']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -230,3 +236,17 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+
+
+
+
+
+//envia correo de restablecimiento de contraseña
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
+//actualiza la contraseña 
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+
+
