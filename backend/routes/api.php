@@ -192,7 +192,7 @@ Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
     [GestionController::class, 'index']
 )->middleware('auth', 'role.in.convocatoria:Tutor');
 
-Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
+//Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
 
 // Listar roles
