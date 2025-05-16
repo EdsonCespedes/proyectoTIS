@@ -81,4 +81,27 @@ class ConvocatoriaRoleController extends Controller
 
         return response()->json($out);
     }
+
+    public function all()
+    {
+        // Cargar todas las convocatorias con sus usuarios y roles relacionados
+        $convocatorias = Convocatoria::with('usersRoles')->get();
+
+        $out = $convocatorias->map(function ($conv) {
+            return [
+                'convocatoria_id' => $conv->idConvocatoria,
+                'convocatoria_nombre' => $conv->tituloConvocatoria, // si tienes un campo nombre
+                'usuarios' => $conv->usersRoles->map(function ($u) {
+                    return [
+                        'user_id' => $u->id,
+                        'name'    => $u->name . " " . $u->apellido,
+                        'role'    => Role::find($u->pivot->role_id)?->name ?? 'Sin rol'
+                    ];
+                })
+            ];
+        });
+
+        return response()->json($out);
+    }
+
 }
