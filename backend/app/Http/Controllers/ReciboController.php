@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Recibo;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+
 class ReciboController extends Controller
 {
     //
@@ -40,6 +42,13 @@ class ReciboController extends Controller
     public function getByOrdenPago($idOrdenPago)
     {
         $recibos = Recibo::where('idOrdenPago', $idOrdenPago)->get();
+
+        foreach ($recibos as $r) {
+            if ($r->imagen_comprobante) {
+                $r->imagen_comprobante = Storage::disk('public')->url($r->imagen_comprobante);
+            }
+        }
+
         return response()->json($recibos);
     }
 
