@@ -45,6 +45,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit"
+import ReportePostulantes from "./pages/ReportePostulantes";
 
 
 function App() {
@@ -93,7 +94,7 @@ function App() {
        <Route path="/listaRoles" element={<ListaRoles />} /> 
        <Route path="/recuperacionC" element={<RecuperarContrasena />} />
        <Route path="/tablaNotif" element={<TablaNotificaciones />} />
-
+       <Route path="/reporte" element={<ReportePostulantes />} />
         <Route path="/no-autorizado" element={<NoAutorizado />} />
       </Routes>
       </div>
