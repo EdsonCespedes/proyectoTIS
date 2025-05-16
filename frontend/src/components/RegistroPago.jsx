@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './styles/RegistroPago.css';
 import { useNavigate } from 'react-router-dom';
 
+import ModalImagen from './ModalImage';
+
+
 const normalizeText = (text) => {
   return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 };
@@ -10,6 +13,8 @@ const ahora = new Date();
 
 const RegistroPago = () => {
   const navigate = useNavigate();
+
+  const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
   const [tutores, setTutores] = useState([]);
 
@@ -72,7 +77,7 @@ const RegistroPago = () => {
   const [verificaciones, setVerificaciones] = useState({});
 
   const buscarTutor = () => {
-    if(searchText.trim() === ''){
+    if (searchText.trim() === '') {
       return;
     }
     const textoBuscado = normalizeText(searchText);
@@ -295,7 +300,14 @@ const RegistroPago = () => {
                                 <input type="text" value={orden.recibos[0].id} disabled className="input-disabled" />
                               </td>
                               <td>
-                                <button>Imagen</button>
+                                {/* <button>Imagen</button> */}
+
+
+                                <button onClick={() => setImagenSeleccionada(orden.recibos[0].imagen_comprobante)}>
+                                  Imagen
+                                </button>
+
+                                {/* <img src={orden.recibos[0].imagen_comprobante} alt="Imagen" /> */}
                               </td>
                               <td style={{ textAlign: 'center' }}>
                                 <input
@@ -398,6 +410,14 @@ const RegistroPago = () => {
           </button>
           <button className="cancelar-btn" onClick={(e) => navigate("/")}>Salir</button>
         </div>
+
+        {imagenSeleccionada && (
+          <ModalImagen
+            imagenUrl={imagenSeleccionada}
+            onClose={() => setImagenSeleccionada(null)}
+          />
+        )}
+
       </div>
     </div>
   );

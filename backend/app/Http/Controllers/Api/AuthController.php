@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tutor;
+use Spatie\Permission\Traits\HasRoles;
 
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    use HasRoles;
     public function registrarTutor(Request $request)
     {
         $request->validate([
@@ -35,10 +37,11 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'apellido' => $request->lastName,
                 'email' => $request->email,
-                'rol' => 'tutor',
                 'password' => Hash::make($request->password),
                 'eliminado' => true,
             ]);
+
+            $user->assignRole('Tutor');
 
             // Crear tutor vinculado
             Tutor::create([

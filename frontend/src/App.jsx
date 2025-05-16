@@ -33,6 +33,10 @@ import AsignarRoles from './pages/AsignarRoles';
 import ListaRoles from './pages/ListaRoles';
 import TablaUsuarios from './pages/TablaUsuarios';
 import RolesTable from './pages/RolesTable';
+import RecuperarContrasena from './pages/RecuperarContrasena';
+import TablaNotificaciones from './pages/TablaNotificaciones';
+
+
 
 
 
@@ -41,6 +45,8 @@ import { RutasInscripcion } from "./routes/RutasInscripcion";
 
 import NoAutorizado from "./pages/NoAutorizado";
 
+import EditConvForm from "./pages/EditConvForm";
+import CategoriaEdit from "./pages/CategoriaEdit"
 
 function App() {
 
@@ -56,7 +62,9 @@ function App() {
         <Route path="/edit-colegios" element={<EditColegios />} />
 
         <Route path="/crear-convocatoria" element={<CrearConvForm/>} />
+        <Route path="/editar-convocatoria/:id" element={<EditConvForm/>} />
         <Route path="/area" element={<Categoria/>} />
+        <Route path="/editar-convocatoria/:id/edit-area" element={<CategoriaEdit/>} />
         <Route path="/detalle-convocatoria" element={<DetalleConv />} />
 
         <Route path="/convocatorias" element={<PrivateRoute allowedRoles={['tutor', 'admin']}><Convocatorias /></PrivateRoute>} />
@@ -84,7 +92,9 @@ function App() {
        <Route path="/addUser/:id" element={<AddUser />} />
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
-       
+       <Route path="/recuperacionC" element={<RecuperarContrasena />} />
+      <Route path="/tablaNotif" element={<TablaNotificaciones />} />
+
         <Route path="/no-autorizado" element={<NoAutorizado />} />
       </Routes>
       </div>

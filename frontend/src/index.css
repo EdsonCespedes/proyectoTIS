@@ -1,13 +1,18 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Playfair Display', Georgia, serif;
   background-color: #DBEDEF;
-  
 }
 
-html, body{
+html, body {
   height: 100%;
   margin: 0;
 }
+
+body, h1, h2, h3, p, span, div {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  
+}
+
 
 * {
   box-sizing: border-box;
@@ -22,5 +27,6 @@ button {
   font-family: inherit;
   cursor: pointer;
 }
+
 
 

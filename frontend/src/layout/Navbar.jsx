@@ -21,8 +21,8 @@ const Navbar = () => {
           <li><Link to="/addUser">📄 Registrar Usuario</Link></li>
           <li><Link to="/asignarRoles">👤 Asignar Roles</Link></li>
           <li><Link to="/tablaRoles">✉️ Gestionar Roles</Link></li>
-          <li><Link to="/tablaUsuarios">✉️ Lista de Roles</Link></li>
-          <li><Link to="/listaRoles">✉️ Lista de Usuarios</Link></li>
+          <li><Link to="/tablaUsuarios">✉️ Lista de Usuarios</Link></li>
+          <li><Link to="/listaRoles">✉️ Lista de Roles</Link></li>
           <li><Link to="/crear-convocatoria">📄 Crear Convocatoria</Link></li>
           <li><Link to="/reportes">📊 Reportes</Link></li>
         </ul>
