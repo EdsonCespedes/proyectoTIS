@@ -14,7 +14,7 @@ const Convocatorias = () => {
                 .then(response => response.json())
                 // .then(data => setConvocatorias(data))
                 .then(data => {
-                    const convocatoriasHabilitadas = data.filter(conv => conv.habilitada === 1);
+                    const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
                     setConvocatorias(convocatoriasHabilitadas);
                     console.log("Convocatorias:", convocatoriasHabilitadas);
                   })
