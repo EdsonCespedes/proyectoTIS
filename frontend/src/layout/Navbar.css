@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 0px 20px;
   background-color: #09052C;
   color: white;
   position: relative;
@@ -21,7 +21,7 @@
 .menu {
   display: none;
   position: absolute;
-  top: 50px;
+  top: 1px;
   left: 0;
   width: 200px;
   background-color: #1a1f36;

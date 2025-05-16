@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./styles/Categoria.css";
 import { useLocation, useNavigate } from "react-router-dom";
-//import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
 
 const iconStyle = { cursor: "pointer", marginLeft: "10px" };
 
 export default function ac() {
-  //const { convocatoria } = useContext(ConvocatoriaContext);
   const location = useLocation();
   const idConvocatoria = location.state.idConvocatoria;
   console.log(idConvocatoria);
