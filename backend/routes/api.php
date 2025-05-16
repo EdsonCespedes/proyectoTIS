@@ -20,6 +20,7 @@ use Spatie\Permission\Models\Permission;
 
 
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\TutorNotificationController;
 
 
 
@@ -315,6 +316,9 @@ Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkE
 //actualiza la contraseña 
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+// envia notificaciones a tutores
+Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTutors']);
 
 
 
