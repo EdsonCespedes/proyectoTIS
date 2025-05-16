@@ -16,6 +16,7 @@ const Convocatorias = () => {
                 .then(data => {
                     const convocatoriasHabilitadas = data.filter(conv => conv.habilitada === 1);
                     setConvocatorias(convocatoriasHabilitadas);
+                    console.log("Convocatorias:", convocatoriasHabilitadas);
                   })
                 .catch(error => console.error("Error al obtener convocatorias:", error));
         }, []);

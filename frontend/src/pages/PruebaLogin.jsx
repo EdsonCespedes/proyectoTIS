@@ -76,6 +76,7 @@ const PruebaLogin = () => {
                     <div className="button-container">
                         <button type="submit" className="btn-iniciar">INICIAR</button>
                     </div>
+                    <p> <Link to="/recuperacionC" className="btn-contraseña">¿Olvidaste tu contraseña ?</Link></p>
                     <p>¿No tienes una cuenta? <Link to="/registro-tutor" className="btn-registro">Regístrate aquí</Link></p>
 
                     

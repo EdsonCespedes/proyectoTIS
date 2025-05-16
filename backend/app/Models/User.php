@@ -15,7 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
-class User extends Authenticatable
+use Illuminate\Contracts\Auth\CanResetPassword;
+use App\Notifications\CustomResetPasswordNotification; // Agregar la importación
+
+
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -77,5 +81,17 @@ class User extends Authenticatable
             'role_id'
         )->withPivot('convocatoria_id')
          ->withTimestamps();
+        }
+
+    /**
+     * Sobrescribir la notificación para el restablecimiento de contraseña.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token)); // Usar la notificación personalizada
+
     }
 }

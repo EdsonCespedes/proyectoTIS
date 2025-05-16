@@ -18,6 +18,11 @@ use App\Http\Controllers\OrdenPagoController;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+
+use App\Http\Controllers\ForgotPasswordController;
+
+
+
 use App\Http\Controllers\UserController;
 
 
@@ -178,6 +183,7 @@ Route::get('/todosusers', [UserController::class, 'index']);
 // muestra los datos de un usuario mediante su id
 Route::get('/especificousers/{id}', [UserController::class, 'show']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -188,9 +194,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{id}/roles', [ConvocatoriaRoleController::class,'index']);
 
-Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
-    [GestionController::class, 'index']
-)->middleware('auth', 'role.in.convocatoria:Tutor');
+//Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
+//    [GestionController::class, 'index']
+//)->middleware('auth', 'role.in.convocatoria:Tutor');
 
 //Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
@@ -247,6 +253,23 @@ Route::get('/roles/{role}', function(Role $role){
     return response()->json($role->load('permissions'));
 });
 
+//Actualiza el nombre del rol
+Route::put('/roles/{id}', function($id, Request $request) {
+    $request->validate(['name' => 'required|string|unique:roles,name,' . $id]);
+    
+    $rol = Role::findOrFail($id);
+    $rol->name = $request->name;
+    $rol->save();
+
+    return response()->json(['message' => 'Rol actualizado correctamente', 'rol' => $rol]);
+});
+
+// Obtiene un rol en especifico con sus permisos
+Route::get('/roles/{id}', function($id) {
+    $rol = Role::with('permissions')->findOrFail($id);
+    return response()->json($rol);
+});
+
 // Listar permisos
 Route::get('/permissions', function(){
     return response()->json(Permission::all());
@@ -266,8 +289,32 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
     return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
 });
 
+//Actualiza los permisos del rol
+Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
+    $request->validate(['permissions' => 'required|array']);
+    
+    $rol = Role::findOrFail($id);
+    $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
+
+    return response()->json(['message' => 'Permisos actualizados correctamente']);
+});
 
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+
+
+
+
+
+//envia correo de restablecimiento de contraseña
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
+//actualiza la contraseña 
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+
+
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
+
