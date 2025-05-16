@@ -145,5 +145,3 @@ const RecuperarContrasena = () => {
 };
 
 export default RecuperarContrasena;
-
-
