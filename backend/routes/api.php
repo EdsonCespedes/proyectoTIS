@@ -194,9 +194,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{id}/roles', [ConvocatoriaRoleController::class,'index']);
 
-Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
-    [GestionController::class, 'index']
-)->middleware('auth', 'role.in.convocatoria:Tutor');
+//Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
+//    [GestionController::class, 'index']
+//)->middleware('auth', 'role.in.convocatoria:Tutor');
 
 Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
 Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
