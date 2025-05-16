@@ -311,7 +311,7 @@ Route::get('/recibos/{id}', [ReciboController::class, 'show']);
 
 
 //envia correo de restablecimiento de contraseña
-Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 //actualiza la contraseña 
 
