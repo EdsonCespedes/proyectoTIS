@@ -1,28 +1,80 @@
 import React, { useState, useEffect } from "react";
 import "./styles/DetalleConv.css";
-import { Link } from "react-router-dom";
-import Header from "../layout/Header";
+import { Link, useNavigate } from "react-router-dom";
 
 const DetalleConv = () => {
-  const data = [
-    // { id: 1, area: "Matemáticas", categoria: "Segundo Nivel", inscripcion: "01/04/2025 - 15/04/2025", olimpiada: "15/05/2025 - 20/05/2025", estado: "Activo" },
-    // { id: 2, area: "Física", categoria: "5_Secundaria", inscripcion: "05/04/2025 - 10/04/2025", olimpiada: "20/05/2025 - 25/05/2025", estado: "Activo" },
-    // { id: 3, area: "Química", categoria: "4_Secundaria", inscripcion: "10/04/2025 - 15/04/2025", olimpiada: "25/05/2025 - 30/05/2025", estado: "Activo" },
-    // { id: 4, area: "Informática", categoria: "Londra", inscripcion: "12/04/2025 - 17/04/2025", olimpiada: "30/05/2025 - 05/06/2025", estado: "Activo" },
-    { titulo: "Olimpiadas 1-2023", inscripcion: "01/04/2025 - 15/04/2025", olimpiada: "15/05/2025 - 20/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 2-2023", inscripcion: "05/04/2025 - 10/04/2025", olimpiada: "20/05/2025 - 25/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 1-2024", inscripcion: "10/04/2025 - 15/04/2025", olimpiada: "25/05/2025 - 30/05/2025", estado: "Inactivo" },
-    { titulo: "Olimpiadas 2-2024", inscripcion: "12/04/2025 - 17/04/2025", olimpiada: "30/05/2025 - 05/06/2025", estado: "Activo" },
-  ];
-
   const [convocatorias, setConvocatorias] = useState([]);
+  const navigate = useNavigate();
+
+  const [refresh, setRefresh] = useState(false); // estado auxiliar
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/todasconvocatorias")
+    //fetch("http://localhost:8000/api/todasconvocatorias")
+    fetch("http://localhost:8000/api/convocatorias/activas")
       .then(response => response.json())
       .then(data => setConvocatorias(data))
       .catch(error => console.error("Error al obtener colegios:", error));
-  }, []);
+  }, [refresh]);
+
+  const handleEdit = (id) => {
+    navigate(`/editar-convocatoria/${id}`);
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/veridconvocatorias/${id}`);
+      if (!res.ok) throw new Error("Error al obtener la convocatoria");
+      const data = await res.json();
+
+      const formData = {
+        titulo: data.tituloConvocatoria,
+        descripcion: data.descripcion,
+        habilitada: data.habilitada,
+        fechaPublicacion: data.fechaPublicacion.split(' ')[0],
+        fechaInicioInscripcion: data.fechaInicioInsc.split(' ')[0],
+        fechaCierreInscripcion: data.fechaFinInsc.split(' ')[0],
+        fechaInicioOlimpiada: data.fechaInicioOlimp.split(' ')[0],
+        fechaFinOlimpiada: data.fechaFinOlimp.split(' ')[0],
+        imagenPortada: data.portada,
+        maxConcursantes: data.maximoPostPorArea,
+        maxArea: [],
+      }
+
+      const newformData = new FormData();
+      newformData.append('_method', 'PUT');
+      newformData.append('tituloConvocatoria', formData.titulo);
+      newformData.append('descripcion', formData.descripcion);
+      newformData.append('fechaPublicacion', formData.fechaPublicacion.split(' ')[0]);
+      newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
+      newformData.append('fechaFinInsc', formData.fechaCierreInscripcion);
+      //newformData.append('portada', formData.imagenPortada); // <-- tu imagen
+      if (formData.imagenPortada instanceof File) {
+        newformData.append('portada', formData.imagenPortada);
+      }
+      newformData.append('habilitada', formData.habilitada);
+      newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
+      newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
+      newformData.append('maximoPostPorArea', formData.maxConcursantes);
+      newformData.append('eliminado', '1');
+
+
+      const response = await fetch(`http://localhost:8000/api/editconvocatorias/${id}`, {
+        method: 'POST',
+        body: newformData,
+      });
+
+      const text = await response.text();
+      if (!response.ok) {
+        console.error('Error del servidor:', text); // en vez de tratar de hacer response.json() directamente
+        return;
+      }else{
+        alert("Convocatoria eliminada correctamente");
+        setRefresh(prev => !prev); // invertimos el valor para forzar el useEffect
+      }
+    } catch (error) {
+      console.error('Error al eliminar la convocatoria:', error);
+    }
+  }
 
   return (
     <div className="container-detalleCov">
@@ -30,9 +82,6 @@ const DetalleConv = () => {
       <table className="convocatoria-table">
         <thead>
           <tr>
-            {/* <th>N°</th>
-            <th>ÁREA DE COMPETENCIA</th>
-            <th>CATEGORIA</th> */}
             <th>TÍTULO</th>
             <th>FECHA DE INSCRIPCIONES</th>
             <th>FECHA DE OLIMPIADAS</th>
@@ -41,25 +90,6 @@ const DetalleConv = () => {
           </tr>
         </thead>
         <tbody>
-          {/* {data.map((item) => (
-            <tr key={item.id}> */}
-              {/* <td>{index + 1}</td>
-              <td>{item.area}</td>
-              <td>{item.categoria}</td> */}
-              {/* <td>{item.titulo}</td>
-              <td>{item.inscripcion}</td>
-              <td>{item.olimpiada}</td>
-              <td>
-                <span className={`estado ${item.estado === "Inactivo" ? "rojo" : "verde"}`}>
-                  {item.estado}
-                </span>
-              </td>
-              <td>
-                <button className="btn editar">Editar</button>
-                <button className="btn eliminar">Retirar</button>
-              </td>
-            </tr>
-          ))} */}
           {convocatorias.map((convocatoria) => (
             <tr key={convocatoria.idConvocatoria}>
 
@@ -73,8 +103,8 @@ const DetalleConv = () => {
                 </span>
               </td>
               <td>
-                <button className="btn editar">Editar</button>
-                <button className="btn eliminar">Retirar</button>
+                <button className="btn editar" onClick={() => handleEdit(convocatoria.idConvocatoria)}>Editar</button>
+                <button className="btn eliminar" onClick={() => handleDelete(convocatoria.idConvocatoria)}>Retirar</button>
               </td>
             </tr>
           ))}

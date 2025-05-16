@@ -31,7 +31,6 @@ const Navbar = () => {
           <li><Link to="/reportes" onClick={closeMenu}>📊 Reportes</Link></li>
         </ul>
       </div>
-
       {/* Botón para abrir o cerrar el menú */}
       <button className="menu-toggle" onClick={toggleMenu}>
         {menuOpen ? '☰' : '☰'}

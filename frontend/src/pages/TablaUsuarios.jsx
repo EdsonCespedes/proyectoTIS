@@ -11,23 +11,38 @@ const TablaUsuarios = () => {
   }, []);
 
   const cargarUsuarios = () => {
-    const datosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-    setUsuarios(datosGuardados);
+    fetch("http://localhost:8000/api/todosusers")
+      .then(response => response.json())
+      .then(data => setUsuarios(data))
+      .catch(error => console.error("Error al obtener usuarios:", error));
   };
 
   const handleEditar = (id) => {
     navigate(`/addUser/${id}`);
   };
 
-  const handleEliminar = (id) => {
+  const handleEliminar = async (id) => {
     const confirmacion = window.confirm("¿Estás seguro de eliminar este usuario?");
-    if (confirmacion) {
-      const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-      const nuevosUsuarios = usuariosGuardados.filter((u) => u.id !== id);
-      localStorage.setItem("usuarios", JSON.stringify(nuevosUsuarios));
-      setUsuarios(nuevosUsuarios);
+    if (!confirmacion) return;
+
+    try {
+      const res = await fetch(`http://localhost:8000/api/eliminausers/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Error:", errorData);
+        alert("Error al eliminar el usuario");
+        return;
+      }
+
+      cargarUsuarios(); // <-- Asegúrate de tener esta función definida (con useEffect o aparte)
+    } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
     }
   };
+
 
   const handleAsignarRol = (nombre) => {
     localStorage.setItem("rolEditar", JSON.stringify({ nombre }));
@@ -55,7 +70,7 @@ const TablaUsuarios = () => {
         <table>
           <thead>
             <tr>
-              <th>Nombre</th>
+              <th>Nombre Completo</th>
               <th>Email</th>
               <th>Acciones</th>
             </tr>
@@ -63,7 +78,7 @@ const TablaUsuarios = () => {
           <tbody>
             {usuarios.map((usuario) => (
               <tr key={usuario.id}>
-                <td>{usuario.nombre}</td>
+                <td>{usuario.name} {usuario.apellido}</td>
                 <td>{usuario.email}</td>
                 <td>
                   <button onClick={() => handleEditar(usuario.id)}>✍️</button>

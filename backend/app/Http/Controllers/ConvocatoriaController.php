@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 //
 use Illuminate\Support\Facades\Validator;
 
+//
+use Illuminate\Support\Facades\Storage;
+
+
 
 class ConvocatoriaController extends Controller
 {
@@ -92,34 +96,54 @@ public function areasEstructura(Request $request, $id)
      // Validación de los datos del request
      $validatedData = $request->validate([
          'tituloConvocatoria' => 'required|string',
-            'descripcion' => 'required|string',
+         'descripcion' => 'required|string',
          'fechaPublicacion' => 'required|date',
          'fechaInicioInsc' => 'required|date',
          'fechaFinInsc' => 'required|date',
-         'portada' => 'required|string',
+         //'portada' => 'required|string',
+         'portada' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
          'habilitada' => 'required|boolean',
          'fechaInicioOlimp' => 'required|date',
          'fechaFinOlimp' => 'required|date',
          'maximoPostPorArea' => 'required|integer',
+         'eliminado' => 'required|boolean',
      ]);
 
      try {
          // Buscar la convocatoria por el ID
          $conv = Convocatoria::findOrFail($idConvocatoria);
 
-         // Actualizar los campos específicos de la convocatoria
-         $conv->update([
-             'tituloConvocatoria' => $validatedData['tituloConvocatoria'],
-             'descripcion' => $validatedData['descripcion'],
-             'fechaPublicacion' => $validatedData['fechaPublicacion'],
-             'fechaInicioInsc' => $validatedData['fechaInicioInsc'],
-             'fechaFinInsc' => $validatedData['fechaFinInsc'],
-             'portada' => $validatedData['portada'],
-             'habilitada' => $validatedData['habilitada'],
-             'fechaInicioOlimp' => $validatedData['fechaInicioOlimp'],
-             'fechaFinOlimp' => $validatedData['fechaFinOlimp'],
-             'maximoPostPorArea' => $validatedData['maximoPostPorArea'],
-         ]);
+        if ($request->hasFile('portada')) {
+            // Eliminar portada anterior si existe
+            if ($conv->portada && Storage::disk('public')->exists($conv->portada)) {
+                Storage::disk('public')->delete($conv->portada);
+            }
+
+            // Guardar la nueva portada
+            $path = $request->file('portada')->store('portadas', 'public');
+            $validatedData['portada'] = $path;
+        }
+
+
+        $updateData=[
+            'tituloConvocatoria' => $validatedData['tituloConvocatoria'],
+            'descripcion' => $validatedData['descripcion'],
+            'fechaPublicacion' => $validatedData['fechaPublicacion'],
+            'fechaInicioInsc' => $validatedData['fechaInicioInsc'],
+            'fechaFinInsc' => $validatedData['fechaFinInsc'],
+            //'portada' => $validatedData['portada'],
+            'habilitada' => $validatedData['habilitada'],
+            'fechaInicioOlimp' => $validatedData['fechaInicioOlimp'],
+            'fechaFinOlimp' => $validatedData['fechaFinOlimp'],
+            'maximoPostPorArea' => $validatedData['maximoPostPorArea'],
+            'eliminado' => $validatedData['eliminado'],
+        ];
+
+        if (isset($validatedData['portada'])) {
+            $updateData['portada'] = $validatedData['portada'];
+        }
+
+        $conv->update($updateData);
 
          // Responder con mensaje de éxito
          return response()->json(['message' => 'Convocatoria actualizada correctamente'], 200);
@@ -130,7 +154,7 @@ public function areasEstructura(Request $request, $id)
 
      } catch (\Exception $e) {
          // Error genérico
-         Log::error('Error al actualizar convocatoria: '.$e->getMessage());
+         //Log::error('Error al actualizar convocatoria: '.$e->getMessage());
          return response()->json(['error' => 'Hubo un problema al actualizar la convocatoria', 'details' => $e->getMessage()], 500);
      }
  }
@@ -173,7 +197,7 @@ public function areasEstructura(Request $request, $id)
               DB::table('convocatoria_area')->where('idConvocatoria', $idConvocatoria)->delete();
       
               // Insertar nuevas áreas y categorías
-              foreach ($request->input('area') as $areaData) {
+              foreach ($request->input('areas') as $areaData) {
                   $area = Area::firstOrCreate(
                       ['tituloArea' => $areaData['tituloArea']],
                       [
@@ -187,7 +211,7 @@ public function areasEstructura(Request $request, $id)
                       'idArea' => $area->idArea
                   ]);
       
-                  foreach ($areaData['categoria'] as $catData) {
+                  foreach ($areaData['categorias'] as $catData) {
                       $categoria = Categoria::create([
                           'nombreCategoria' => $catData['nombreCategoria'],
                           'descCategoria' => $catData['descCategoria'],
@@ -296,6 +320,11 @@ public function getConvocatoriaById($idConvocatoria)
             return response()->json(['error' => 'Convocatoria no encontrada o eliminada'], 404);
         }
 
+        // Convertir la ruta de la imagen a URL pública
+        if ($convocatoria->portada) {
+            $convocatoria->portada = Storage::disk('public')->url($convocatoria->portada);
+        }
+
         // ✅ Falta este return si todo va bien
         return response()->json($convocatoria, 200);
     } catch (\Exception $e) {
@@ -342,7 +371,7 @@ public function storeConvocatoria(Request $request)
             'fechaInicioOlimp'    => $request->input('fechaInicioOlimp'),
             'fechaFinOlimp'       => $request->input('fechaFinOlimp'),
             'maximoPostPorArea'   => $request->input('maximoPostPorArea'),
-            'eliminado' => true,
+            'eliminado' => false,
         ]);
 
         // devuelve el id del a convocatoria creada
@@ -382,12 +411,18 @@ public function getConvocatoriasActivas()
         try {
             // Recuperar todas las convocatorias activas con sus relaciones: áreas, categorías, cursos
             $convocatorias = Convocatoria::with('areas.categorias.cursos')
-                ->where('eliminado', true)  // Solo convocatorias que no han sido eliminadas
+                ->where('eliminado', false)  // Solo convocatorias que no han sido eliminadas
                 ->get();
 
             // Si no se encuentran convocatorias activas
             if ($convocatorias->isEmpty()) {
                 return response()->json(['message' => 'No se encontraron convocatorias activas'], 404);
+            }
+
+            foreach ($convocatorias as $conv) {
+                if ($conv->portada) {
+                    $conv->portada = Storage::disk('public')->url($conv->portada);
+                }
             }
 
             // Retornar las convocatorias activas con todas sus relaciones
@@ -401,6 +436,13 @@ public function getConvocatoriasActivas()
 
     public function index(){
         $convocatorias = Convocatoria::all();
+        
+        foreach ($convocatorias as $conv) {
+            if ($conv->portada) {
+                $conv->portada = Storage::disk('public')->url($conv->portada);
+            }
+        }
+        
         return response()->json($convocatorias);
     }
 
