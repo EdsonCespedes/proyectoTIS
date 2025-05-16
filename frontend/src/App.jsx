@@ -18,8 +18,6 @@ import RegistroPago from "./components/RegistroPago";
 import InscripcionExcel from "./pages/InscripcionExcel";
 
 import Historial from "./components/Historial";
-import GeneratePDF from "./components/GeneratePDF";
-import PDFTutor from "./components/PDFTutor";
 import Categoria from "./pages/Categoria";
 
 import PruebaRegister from './pages/PruebaRegister';
@@ -47,6 +45,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit"
+
 
 function App() {
 
@@ -93,7 +92,7 @@ function App() {
        <Route path="/asignarRoles" element={<AsignarRoles />} /> 
        <Route path="/listaRoles" element={<ListaRoles />} /> 
        <Route path="/recuperacionC" element={<RecuperarContrasena />} />
-      <Route path="/tablaNotif" element={<TablaNotificaciones />} />
+       <Route path="/tablaNotif" element={<TablaNotificaciones />} />
 
         <Route path="/no-autorizado" element={<NoAutorizado />} />
       </Routes>

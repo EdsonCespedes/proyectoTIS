@@ -1,33 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/TablaNotificaciones.css';
 
 const TablaNotificaciones = () => {
-  const [usuarios, setUsuarios] = useState({
-    usuario1: { correo: 'persona1@example.com', seleccionado: false },
-    usuario2: { correo: 'persona2@example.com', seleccionado: false },
-    usuario3: { correo: 'persona3@example.com', seleccionado: false }
-  });
+  const [usuarios, setUsuarios] = useState([]);
   const [seleccionarTodo, setSeleccionarTodo] = useState(false);
   const [convocatoria, setConvocatoria] = useState({ id: '', nombre: '' });
+  const [convocatorias, setConvocatorias] = useState([]);
+
+  // Cargar convocatorias desde el backend
+  useEffect(() => {
+    fetch("http://localhost:8000/api/todasconvocatorias")
+      .then(response => response.json())
+      .then(data => {
+        const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
+        setConvocatorias(convocatoriasHabilitadas);
+      })
+      .catch(error => console.error("Error al obtener convocatorias:", error));
+  }, []);
+
+  // Cargar tutores desde el backend
+  useEffect(() => {
+    fetch('http://localhost:8000/api/tutores')
+      .then(response => response.json())
+      .then(data => {
+        const usuariosConSeleccion = data.map(tutor => ({
+          ...tutor,
+          seleccionado: false
+        }));
+        setUsuarios(usuariosConSeleccion);
+      })
+      .catch((error) => console.error('Error al obtener tutores:', error));
+  }, []);
 
   const handleSeleccionarTodo = () => {
     const nuevoEstado = !seleccionarTodo;
     setSeleccionarTodo(nuevoEstado);
-    setUsuarios(
-      Object.fromEntries(
-        Object.entries(usuarios).map(([key, usuario]) => [key, { ...usuario, seleccionado: nuevoEstado }])
-      )
+    setUsuarios(prevUsuarios =>
+      prevUsuarios.map(usuario => ({
+        ...usuario,
+        seleccionado: nuevoEstado
+      }))
     );
   };
 
-  const handleSeleccionarUsuario = (key) => {
-    setUsuarios({
-      ...usuarios,
-      [key]: {
-        ...usuarios[key],
-        seleccionado: !usuarios[key].seleccionado
-      }
-    });
+  const handleSeleccionarUsuario = (index) => {
+    const nuevosUsuarios = [...usuarios];
+    nuevosUsuarios[index].seleccionado = !nuevosUsuarios[index].seleccionado;
+    setUsuarios(nuevosUsuarios);
+  };
+
+  const handleEnviarNotificacion = () => {
+    const correosSeleccionados = usuarios
+      .filter(usuario => usuario.seleccionado)
+      .map(usuario => usuario.correoTutor);
+
+    if (!convocatoria.id) {
+      alert('Selecciona una convocatoria primero.');
+      return;
+    }
+
+    if (correosSeleccionados.length === 0) {
+      alert('Selecciona al menos un tutor para enviar la notificación.');
+      return;
+    }
+
+    const data = {
+  message: `Nueva convocatoria: ${convocatoria.nombre}`
+  };
+
+    fetch('http://127.0.0.1:8000/api/notify-tutors', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(response => {
+        alert('Notificaciones enviadas exitosamente.');
+        console.log('Respuesta del servidor:', response);
+      })
+      .catch(error => {
+        console.error('Error al enviar notificaciones:', error);
+        alert('Hubo un error al enviar las notificaciones.');
+      });
   };
 
   return (
@@ -36,30 +92,57 @@ const TablaNotificaciones = () => {
 
       <div className="convocatoria-selector">
         <label>Seleccionar Convocatoria: </label>
-        <select value={convocatoria.id} onChange={(e) => setConvocatoria({ id: e.target.value, nombre: e.target.options[e.target.selectedIndex].text })}>
+        <select
+          value={convocatoria.id}
+          onChange={(e) =>
+            setConvocatoria({
+              id: e.target.value,
+              nombre: e.target.options[e.target.selectedIndex].text
+            })
+          }
+        >
           <option value="">Seleccione una convocatoria</option>
-          <option value="convocatoria1">Convocatoria 1</option>
-          <option value="convocatoria2">Convocatoria 2</option>
+          {convocatorias.map(conv => (
+            <option key={conv.idConvocatoria} value={conv.idConvocatoria}>
+              {conv.tituloConvocatoria}
+            </option>
+          ))}
         </select>
       </div>
 
       <table className="tabla-notificaciones">
         <thead>
           <tr>
-            <th>Selecciona Todo<input type="checkbox" checked={seleccionarTodo} onChange={handleSeleccionarTodo} /></th>
+            <th>
+              Selecciona Todo
+              <input
+                type="checkbox"
+                checked={seleccionarTodo}
+                onChange={handleSeleccionarTodo}
+              />
+            </th>
             <th>Correo</th>
           </tr>
         </thead>
         <tbody>
-          {Object.entries(usuarios).map(([key, usuario]) => (
-            <tr key={key} className={usuario.seleccionado ? 'seleccionado' : ''}>
-              <td><input type="checkbox" checked={usuario.seleccionado} onChange={() => handleSeleccionarUsuario(key)} /></td>
-              <td>{usuario.correo}</td>
+          {usuarios.map((usuario, index) => (
+            <tr key={usuario.idTutor} className={usuario.seleccionado ? 'seleccionado' : ''}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={usuario.seleccionado}
+                  onChange={() => handleSeleccionarUsuario(index)}
+                />
+              </td>
+              <td>{usuario.correoTutor}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button className="btn-enviar">Enviar Notificación</button>
+
+      <button className="btn-enviar" onClick={handleEnviarNotificacion}>
+        Enviar Notificación
+      </button>
     </div>
   );
 };

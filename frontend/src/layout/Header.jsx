@@ -1,5 +1,6 @@
 import React from "react";
 import "./Header.css";
+import Navbar from "./Navbar";
 import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
@@ -20,7 +21,7 @@ const Header = () => {
                 <button className="boton-header">Nosotros</button>
                 <button className="boton-header">Eventos</button>
                 <Link to="/disciplinas" className="boton-header">Areas</Link>
-                
+    
                 {user && (
                     <>
                         <Link to="/convocatorias" className="boton-header">Inscripciones</Link>
@@ -42,7 +43,7 @@ const Header = () => {
                             }}
                         >
                             Cerrar sesión
-                        </button>
+                        </button> 
                     </>
 
                 ) : (

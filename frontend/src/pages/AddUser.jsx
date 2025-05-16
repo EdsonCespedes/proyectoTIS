@@ -6,19 +6,36 @@ const AddUser = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+
   const [nombre, setNombre] = useState("");
+  const [apellido, setApellidos] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (id) {
-      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-      const usuario = usuarios.find((u) => u.id === Number(id));
-      if (usuario) {
-        setNombre(usuario.nombre);
-        setPassword(usuario.password);
-        setEmail(usuario.email);
+      const metodo = async () => {
+        fetch(`http://localhost:8000/api/especificousers/${id}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+
+            const usuario = {
+              nombre: data.name,
+              apellido: data.apellido,
+              email: data.email
+            }
+            if (usuario) {
+              setNombre(usuario.nombre);
+              setApellidos(usuario.apellido);
+              setEmail(usuario.email);
+              console.log(usuario);
+            }
+          })
+          .catch(error => console.error("Error al obtener colegios:", error));
+
       }
+      metodo();
     }
   }, [id]);
 
@@ -26,27 +43,56 @@ const AddUser = () => {
     navigate("/tablaUsuarios");
   };
 
-  const handleGuardar = () => {
-    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-
+  const handleGuardar = async () => {
     if (id) {
-      // Modo edición: actualiza usuario
-      const usuariosActualizados = usuariosGuardados.map((u) =>
-        u.id === Number(id)
-          ? { ...u, nombre, password, email }
-          : u
-      );
-      localStorage.setItem("usuarios", JSON.stringify(usuariosActualizados));
+      const dataToSend = {
+        name: nombre,
+        apellido: apellido,
+        email: email,
+      }
+      try {
+        const res = await fetch(`http://localhost:8000/api/editausers/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        });
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error("Error:", errorData);
+          alert("Error al actualizar el usuario");
+          return;
+        }
+      } catch (error) {
+        console.error('Error al actualizar el usuario: ', error);
+      }
     } else {
-      // Modo creación: agrega nuevo
-      const nuevoUsuario = {
-        id: Date.now(),
-        nombre,
-        password,
-        email,
-      };
-      usuariosGuardados.push(nuevoUsuario);
-      localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
+      const dataToSend = {
+        name: nombre,
+        apellido: apellido,
+        email: email,
+        password: password
+      }
+      try {
+        const res = await fetch(`http://localhost:8000/api/guardausers`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        });
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error("Error:", errorData);
+          alert("Error al guardar el usuario");
+          return;
+        }
+      } catch (error) {
+        console.error('Error al guardar el usuario: ', error);
+      }
     }
 
     navigate("/tablaUsuarios");
@@ -57,13 +103,19 @@ const AddUser = () => {
       <div className="form-title">{id ? "Editar Usuario" : "Add USUARIOS"}</div>
       <div className="form-body">
         <div className="form-group">
-          <label>Nombre Completo :</label>
+          <label>Nombre(s):</label>
           <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
         </div>
         <div className="form-group">
-          <label>password :</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <label>Apellidos</label>
+          <input type="text" value={apellido} onChange={(e) => setApellidos(e.target.value)} />
         </div>
+        {!id && (
+          <div className="form-group">
+            <label>password :</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+        )}
         <div className="form-group">
           <label>email :</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />

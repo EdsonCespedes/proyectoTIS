@@ -8,29 +8,66 @@ use App\Models\User;
 use App\Models\Convocatoria;
 use Spatie\Permission\Models\Role;
 
+use Illuminate\Validation\ValidationException;
+
 class ConvocatoriaRoleController extends Controller
 {
+    // public function store(Request $req)
+    // {
+    //     $data = $req->validate([
+    //         'user_id'         => 'required|exists:users,id',
+    //         'convocatoria_id' => 'required|exists:convocatoria,idConvocatoria',
+    //         'role_name'       => 'required|exists:roles,name',
+    //     ]);
+
+    //     $user = User::find($data['user_id']);
+    //     $conv = Convocatoria::find($data['convocatoria_id']);
+    //     $role = Role::where('name',$data['role_name'])->first();
+
+    //     $user->convocatoriasRoles()
+    //          ->syncWithoutDetaching([
+    //            $conv->idConvocatoria => ['role_id'=>$role->id]
+    //          ]);
+
+    //     return response()->json([
+    //       'message'=>"Usuario {$user->id} asignado rol “{$role->name}” en convocatoria {$conv->idConvocatoria}"
+    //     ],201);
+    // }
+    
+
     public function store(Request $req)
     {
-        $data = $req->validate([
-            'user_id'         => 'required|exists:users,id',
-            'convocatoria_id' => 'required|exists:convocatoria,idConvocatoria',
-            'role_name'       => 'required|exists:roles,name',
-        ]);
+        try {
+            $data = $req->validate([
+                'user_id'         => 'required|exists:users,id',
+                'convocatoria_id' => 'required|exists:convocatoria,idConvocatoria',
+                'role_name'       => 'required|exists:roles,name',
+            ]);
 
-        $user = User::find($data['user_id']);
-        $conv = Convocatoria::find($data['convocatoria_id']);
-        $role = Role::where('name',$data['role_name'])->first();
+            $user = User::find($data['user_id']);
+            $conv = Convocatoria::find($data['convocatoria_id']);
+            $role = Role::where('name', $data['role_name'])->first();
 
-        $user->convocatoriasRoles()
-             ->syncWithoutDetaching([
-               $conv->idConvocatoria => ['role_id'=>$role->id]
-             ]);
+            $user->convocatorias()
+                ->syncWithoutDetaching([
+                  $conv->idConvocatoria => ['role_id' => $role->id]
+                ]);
 
-        return response()->json([
-          'message'=>"Usuario {$user->id} asignado rol “{$role->name}” en convocatoria {$conv->idConvocatoria}"
-        ],201);
+            return response()->json([
+                'message' => "Usuario {$user->id} asignado rol “{$role->name}” en convocatoria {$conv->idConvocatoria}"
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422); // Código 422 para errores de validación
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Error inesperado.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function index($convocatoriaId)
     {
@@ -44,4 +81,27 @@ class ConvocatoriaRoleController extends Controller
 
         return response()->json($out);
     }
+
+    public function all()
+    {
+        // Cargar todas las convocatorias con sus usuarios y roles relacionados
+        $convocatorias = Convocatoria::with('usersRoles')->get();
+
+        $out = $convocatorias->map(function ($conv) {
+            return [
+                'convocatoria_id' => $conv->idConvocatoria,
+                'convocatoria_nombre' => $conv->tituloConvocatoria, // si tienes un campo nombre
+                'usuarios' => $conv->usersRoles->map(function ($u) {
+                    return [
+                        'user_id' => $u->id,
+                        'name'    => $u->name . " " . $u->apellido,
+                        'role'    => Role::find($u->pivot->role_id)?->name ?? 'Sin rol'
+                    ];
+                })
+            ];
+        });
+
+        return response()->json($out);
+    }
+
 }
