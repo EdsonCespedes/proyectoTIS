@@ -7,23 +7,23 @@ import { useNavigate } from 'react-router-dom';
 const Convocatorias = () => {
     const navigate = useNavigate();
 
-    const [convocatorias,setConvocatorias] =useState([]);
+    const [convocatorias, setConvocatorias] = useState([]);
 
     useEffect(() => { //para hacer un get
-            fetch("http://localhost:8000/api/todasconvocatorias")
-                .then(response => response.json())
-                // .then(data => setConvocatorias(data))
-                .then(data => {
-                    const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
-                    setConvocatorias(convocatoriasHabilitadas);
-                    console.log("Convocatorias:", convocatoriasHabilitadas);
-                  })
-                .catch(error => console.error("Error al obtener convocatorias:", error));
-        }, []);
+        fetch("http://localhost:8000/api/todasconvocatorias")
+            .then(response => response.json())
+            // .then(data => setConvocatorias(data))
+            .then(data => {
+                const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
+                setConvocatorias(convocatoriasHabilitadas);
+                console.log("Convocatorias:", convocatoriasHabilitadas);
+            })
+            .catch(error => console.error("Error al obtener convocatorias:", error));
+    }, []);
 
 
     const handleInscripcion = (idConvocatoria) => {
-        navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);  
+        navigate(`/convocatoria/${idConvocatoria}/tipo-inscripcion`);
     };
 
     return (
@@ -36,7 +36,7 @@ const Convocatorias = () => {
 
                         <h3>{convocatoria.tituloConvocatoria}</h3>
 
-                        <button onClick={()=>handleInscripcion(convocatoria.idConvocatoria)}>Inscribirse</button>
+                        <button onClick={() => handleInscripcion(convocatoria.idConvocatoria)}>Inscribirse</button>
                     </div>
                 ))}
             </div>
