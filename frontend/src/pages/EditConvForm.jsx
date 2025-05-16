@@ -113,6 +113,7 @@ export const EditConvForm = () => {
     newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
     newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
     newformData.append('maximoPostPorArea', formData.maxConcursantes);
+    newformData.append('eliminado', convocatoria.eliminado);
 
     try {
       const response = await fetch(`http://localhost:8000/api/editconvocatorias/${id}`, {
@@ -214,7 +215,7 @@ export const EditConvForm = () => {
         />
 
         <label>Imagen de portada:</label>
-        <ImageUpload onFileSelect={handleFileChange} imagenInicial={formData.imagenPortada}/>
+        <ImageUpload onFileSelect={handleFileChange} imagenInicial={formData.imagenPortada} />
 
         {error && <p className="error-message">{error}</p>}
 

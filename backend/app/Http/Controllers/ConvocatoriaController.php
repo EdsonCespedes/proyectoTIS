@@ -106,6 +106,7 @@ public function areasEstructura(Request $request, $id)
          'fechaInicioOlimp' => 'required|date',
          'fechaFinOlimp' => 'required|date',
          'maximoPostPorArea' => 'required|integer',
+         'eliminado' => 'required|boolean',
      ]);
 
      try {
@@ -135,6 +136,7 @@ public function areasEstructura(Request $request, $id)
             'fechaInicioOlimp' => $validatedData['fechaInicioOlimp'],
             'fechaFinOlimp' => $validatedData['fechaFinOlimp'],
             'maximoPostPorArea' => $validatedData['maximoPostPorArea'],
+            'eliminado' => $validatedData['eliminado'],
         ];
 
         if (isset($validatedData['portada'])) {
