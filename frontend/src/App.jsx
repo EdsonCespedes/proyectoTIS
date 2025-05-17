@@ -34,7 +34,7 @@ import RolesTable from './pages/RolesTable';
 import RecuperarContrasena from './pages/RecuperarContrasena';
 import TablaNotificaciones from './pages/TablaNotificaciones';
 
-
+import ReportePostulantes from "./pages/ReportePostulantes";
 
 
 
@@ -96,6 +96,8 @@ function App() {
        <Route path="/tablaNotif" element={<TablaNotificaciones />} />
 
         <Route path="/no-autorizado" element={<NoAutorizado />} />
+
+        <Route path="/reportes" element={<ReportePostulantes />} />
       </Routes>
       </div>
     
