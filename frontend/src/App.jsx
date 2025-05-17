@@ -51,25 +51,8 @@ import CategoriaEdit from "./pages/CategoriaEdit";
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
   const navigate = useNavigate();
-
-  const handleSelect = (conv) => {
-    // conv viene de tu lista de convocatorias: { idConvocatoria, titulo... }
-    cambiarConvocatoria(conv);
-    navigate('/gestion-estudiantes');
-  };
-    // por simplicidad, pongo dos botones de ejemplo:
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Elige convocatoria</h2>
-      <button onClick={() => handleSelect({ idConvocatoria: 1, titulo: 'Conv. 1' })}>
-        Convocatoria1
-      </button>
-      <button onClick={() => handleSelect({ idConvocatoria: 2, titulo: 'Conv. 2' })}>
-        Convocatoria2
-      </button>
-    </div>
-  );
 }
+
 
 function AppRoutes() {
   return (
