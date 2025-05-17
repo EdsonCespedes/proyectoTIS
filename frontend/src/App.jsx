@@ -154,6 +154,7 @@ function AppRoutes() {
 
 function App() {
   const { user } = useAuth()
+  console.log("User desde useAuth:", user); // <-- Aquí
   return (
     //<BrowserRouter>
     <ConvocatoriaProvider>

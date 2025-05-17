@@ -40,7 +40,7 @@ const Navbar = () => {
       </div>
       {/* Botón para abrir o cerrar el menú */}
       <button className="menu-toggle" onClick={toggleMenu}>
-        {menuOpen ? '☰' : '☰'}
+        {menuOpen ? '☰' : '☰ Gestionar'}
       </button>
     </div>
   );
