@@ -11,7 +11,7 @@ export const RutasInscripcion = () => (
     <Route
       path="/convocatoria/:idConvocatoria/tipo-inscripcion"
       element={
-        <PrivateRoute allowedRoles={['tutor', 'admin']}>
+        <PrivateRoute allowedRoles={['Tutor', 'Admin']}>
           <TipoInscripcion />
         </PrivateRoute>
       }
@@ -19,7 +19,7 @@ export const RutasInscripcion = () => (
     <Route
       path="/convocatoria/:idConvocatoria/inscripcion-manual"
       element={
-        <PrivateRoute allowedRoles={['tutor', 'admin']}>
+        <PrivateRoute allowedRoles={['Tutor', 'Admin']}>
           <InscripcionManual />
         </PrivateRoute>
       }
@@ -27,7 +27,7 @@ export const RutasInscripcion = () => (
     <Route
       path="/convocatoria/:idConvocatoria/inscripcion-excel"
       element={
-        <PrivateRoute allowedRoles={['tutor', 'admin']}>
+        <PrivateRoute allowedRoles={['Tutor', 'Admin']}>
           <InscripcionExcel />
         </PrivateRoute>
       }
@@ -35,7 +35,7 @@ export const RutasInscripcion = () => (
     <Route
       path="/ordenPago"
       element={
-        <PrivateRoute allowedRoles={['tutor', 'admin']}>
+        <PrivateRoute allowedRoles={['Tutor', 'Admin']}>
           <OrdenPago />
         </PrivateRoute>
       }
@@ -43,7 +43,7 @@ export const RutasInscripcion = () => (
     <Route
       path="/convocatoria/:idConvocatoria/ordenPago"
       element={
-        <PrivateRoute allowedRoles={['tutor', 'admin']}>
+        <PrivateRoute allowedRoles={['Tutor', 'Admin']}>
           <OrdenPago />
         </PrivateRoute>
       }
