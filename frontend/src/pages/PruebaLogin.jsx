@@ -17,6 +17,7 @@ const PruebaLogin = () => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleChange = (e) => {
+        console.log('📝 [Login] Campo cambiado:', e.target.name, e.target.value);
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -25,23 +26,31 @@ const PruebaLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('🔐 [Login] Enviando petición con:', formData);
         setError('');
         setSuccessMessage('');
 
         try {
             const response = await axios.post('http://localhost:8000/api/login', formData);
+            console.log('🔐 [Login] Response completo:', response);
             const { token, user } = response.data;
+
+            console.log('🔐 [Login] token recibido:', token);
+            console.log('🔐 [Login] usuario recibido:', user);
 
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+            console.log('🔐 [Login] token y user guardados en localStorage');
 
             setSuccessMessage('Inicio de sesión exitoso.');
             console.log('Usuario logueado:', user);
 
             if (user.rol === 'tutor') {
+                console.log('🔐 [Login] usuario es tutor, solicitando datos de tutor...');
                 const resTutor = await axios.get('http://localhost:8000/api/tutor', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                console.log('🔐 [Login] respuesta tutor:', resTutor);
                 localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
                 console.log('Tutor asociado:', resTutor.data.tutor);
             }
