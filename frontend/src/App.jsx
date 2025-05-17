@@ -47,6 +47,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
+import ReportePostulantes from "./pages/ReportePostulantes";
 
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
@@ -144,6 +145,9 @@ function AppRoutes() {
 
       {/* Fallback */}
       <Route path="*" element={<NoAutorizado />} />
+
+      {/* Reportes */}
+      <Route path="/reportes" element={<ReportePostulantes />} />
     </Routes>
   );
 }
@@ -152,11 +156,11 @@ function App() {
   const { user } = useAuth()
   return (
     //<BrowserRouter>
-      <ConvocatoriaProvider>
-        <Header />
-        {user && user.rol !== 'tutor' && <Navbar />}
-        <AppRoutes />
-      </ConvocatoriaProvider>
+    <ConvocatoriaProvider>
+      <Header />
+      {user && user.rol !== 'tutor' && <Navbar />}
+      <AppRoutes />
+    </ConvocatoriaProvider>
     //</BrowserRouter>
   );
 }
@@ -212,7 +216,7 @@ function App() {
 //         <Route path="/no-autorizado" element={<NoAutorizado />} />
 //       </Routes>
 //       </div>
-    
+
 //   )
 // }
 

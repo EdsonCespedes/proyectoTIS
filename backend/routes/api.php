@@ -36,6 +36,9 @@ use App\Http\Controllers\ConvocatoriaEstructuraController;
 
 use App\Http\Controllers\ConvocatoriaRoleController;
 
+use App\Http\Controllers\ReportePostulantesController;
+
+
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
 
@@ -325,3 +328,4 @@ Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTut
 
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
 
+Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
