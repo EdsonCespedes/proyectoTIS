@@ -1,110 +1,97 @@
 .container-formconv {
-  width: 750px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: white;
+  width: 50%;
   max-width: 900px;
   margin: 20px auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.title-add-convocatoria{
+.title-add-convocatoria {
   width: 100%;
-  font-size: 20px;
-  margin-bottom: 0;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
   background-color: #007290;
-  color: white;
+  color: #ffffff;
   text-align: center;
-  padding: 20px;
-  margin: auto;
+  padding: 20px 10px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
-.convocatoria-form{
-  background-color: white;
+.convocatoria-form {
+  background-color: #ffffff;
   width: 100%;
-  padding-top: 20px;
-  padding-bottom: 10px;
-
+  padding: 20px;
 }
 
 label {
   display: block;
-  margin-top: 10px;
-  font-weight: bold;
-  padding: 0px 20px 5px 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333333;
+  padding: 0 10px;
 }
 
-.input-field {
-  width: 90%;
-  border-radius: 5px;
+.input-field, .textarea {
+  width: 100%;
   border: 1px solid #ccc;
-  margin-top: 5px;
-  padding: 0px 15px 20px 10px;
+  border-radius: 6px;
+  padding: 5px;
+  margin-bottom: 1px;
+  font-size: 14px;
 }
 
 .textarea {
-  width: 90%;
-  height: 80px;
-
+  height: 120px;
+  resize: vertical;
 }
 
 .fecha-group {
   display: flex;
-  gap: 10px;
-}
-
-.area-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.add-button {
-  background: green;
-  color: white;
-  padding: 8px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.area-list {
-  list-style: none;
-  padding: 0;
-}
-
-.area-list li {
-  background: #f1f1f1;
-  margin: 5px 0;
-  padding: 5px;
-  border-radius: 5px;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
 }
 
 .button-group {
-  display: flex;
-  margin: 20px;
   justify-content: center;
   gap: 20px;
-  align-items: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .siguiente {
-  background: #0093B3;
-  color: white;
-  padding: 10px 0px;
+  background-color: #0093B3;
+  color: #ffffff;
+  padding: 8px 16px;
   border: none;
-
-  display: inline-blockf;
-  text-decoration: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 14px;
   text-align: center;
   cursor: pointer;
-  margin: 5px
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.siguiente:hover {
+  background-color: #007a96;
 }
 
 .cancelar {
-  background: #B0C4D8;
-  color: white;
-  padding: 10px;
+  background-color: #B0C4D8;
+  color: #ffffff;
+  padding: 8px 16px;
   border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancelar:hover {
+  background-color: #9eb1c5;
 }

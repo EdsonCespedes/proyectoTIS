@@ -1,154 +1,166 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/AsignarRoles.css";
 
+// Función para normalizar nombres (quitar acentos, espacios, mayúsculas)
+const normalize = (str) =>
+  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, "");
+
 const AsignarRoles = () => {
-  const [filas, setFilas] = useState([{ nombre: "", convocatoria: "", rol: "" }]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [nombreNoEncontrado, setNombreNoEncontrado] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const convocatorias = [
-    { id: 1, nombre: "Convocatoria 1" },
-    { id: 2, nombre: "Convocatoria 2" }
-  ];
-
-  const roles = [
-    { id: "aux", nombre: "Auxiliar" },
-    { id: "op", nombre: "Operador" },
-    { id: "admin", nombre: "Administrador" },
-    { id: "eval", nombre: "Evaluador" }
-  ];
-
   const [personas, setPersonas] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [convocatorias, setConvocatorias] = useState([]);
+  const [nombreNoEncontrado, setNombreNoEncontrado] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [formulario, setFormulario] = useState({
+    user_id: location.state?.rol?.user_id || "",
+    nombre: location.state?.rol?.name || "",
+    // role: location.state?.rol?.role || "",
+    role_name: location.state?.rol?.role || "",
+    // idConvocatoria: location.state?.idConvocatoria || ""
+    convocatoria_id: location.state?.idConvocatoria || ""
+  });
 
   useEffect(() => {
-    const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
-    if (rolEditar) {
-      setFilas([rolEditar]);
-      setSearchTerm(rolEditar.nombre);
-      localStorage.removeItem("rolEditar");
-    }
+    fetch("http://localhost:8000/api/todosusers")
+      .then((res) => res.json())
+      .then((data) => setPersonas(data));
 
-    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const usuariosFormateados = usuariosGuardados.map((u) => ({
-      id: u.id,
-      nombre: u.nombre
-    }));
+    fetch("http://localhost:8000/api/roles")
+      .then((res) => res.json())
+      .then((data) => setRoles(data));
 
-    const personasFijas = [
-      { id: 1, nombre: "Carlos Pérez" },
-      { id: 2, nombre: "Ana García" },
-      { id: 3, nombre: "José López" },
-      { id: 4, nombre: "Maria González" }
-    ];
-
-    setPersonas([...personasFijas, ...usuariosFormateados]);
+    fetch("http://localhost:8000/api/todasconvocatorias")
+      .then(response => response.json())
+      .then(data => {
+        const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
+        setConvocatorias(convocatoriasHabilitadas);
+      })
+      .catch(error => console.error("Error al obtener convocatorias:", error));
   }, []);
 
   const handleNombre = (e) => {
-    const nombre = e.target.value;
-    setSearchTerm(nombre);
-    const nuevasFilas = [...filas];
-    nuevasFilas[0].nombre = nombre;
-    setFilas(nuevasFilas);
+    const input = e.target.value;
+    setSearchTerm(input);
 
-    const isNombreExistente = personas.some(persona =>
-      persona.nombre.toLowerCase() === nombre.toLowerCase()
-    );
-    setNombreNoEncontrado(!isNombreExistente);
-  };
-
-  const handleChange = (index, field, value) => {
-    const nuevasFilas = [...filas];
-    nuevasFilas[index][field] = value;
-    setFilas(nuevasFilas);
-  };
-
-  const guardarDatos = () => {
-    const datosGuardados = JSON.parse(localStorage.getItem("rolesAsignados")) || [];
-
-    const nuevosDatos = datosGuardados.map((item) =>
-      item.nombre === filas[0].nombre ? filas[0] : item
+    const personaEncontrada = personas.find((p) =>
+      normalize(p.name).includes(normalize(input))
     );
 
-    const existe = datosGuardados.some((item) => item.nombre === filas[0].nombre);
-    const actualizados = existe ? nuevosDatos : [...datosGuardados, ...filas];
-
-    localStorage.setItem("rolesAsignados", JSON.stringify(actualizados));
-    alert("Los datos han sido guardados.");
-    navigate("/listaRoles");
+    if (personaEncontrada) {
+      setFormulario((prev) => ({
+        ...prev,
+        user_id: personaEncontrada.id,
+        nombre: personaEncontrada.name
+      }));
+      setNombreNoEncontrado(false);
+    } else {
+      setFormulario((prev) => ({ ...prev, user_id: "", nombre: "" }));
+      setNombreNoEncontrado(true);
+    }
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormulario((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const guardarDatos = async () => {
+    if (!formulario.user_id || !formulario.role_name || !formulario.convocatoria_id) {
+      alert("Completa todos los campos antes de guardar.");
+      return;
+    }
+
+    //const { nombre, ...formularioSend } = formulario;
+    const formData = new FormData();
+    formData.append('user_id', formulario.user_id);
+    formData.append('convocatoria_id', formulario.convocatoria_id);
+    formData.append('role_name', formulario.role_name);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/convocatoria/role", {
+        method: "POST",
+        //headers: { "Content-Type": "application/json" },
+        //body: JSON.stringify(formularioSend)
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 422 && data.errors) {
+          // Mostrar errores de validación
+          const mensajes = Object.values(data.errors).flat().join("\n");
+          alert("Errores de validación:\n" + mensajes);
+        } else {
+          alert("Error del servidor:\n" + (data.message || "Desconocido"));
+        }
+        return;
+      }
+
+      alert(data.message || "Rol asignado correctamente.");
+      navigate("/listaRoles");
+
+    } catch (error) {
+      console.error("Error al asignar rol:", error);
+      alert("Ocurrió un error inesperado.");
+    }
+  };
+
 
   return (
     <div className="roles-container">
       <div className="roles-title">Asignar Roles</div>
 
       <div className="roles-search">
-        <input
-          type="text"
-          placeholder="🔍 Buscar persona por nombre"
-          value={searchTerm}
-          onChange={handleNombre}
-        />
+        <label>Buscar por nombre:</label>
+        <input type="text" value={searchTerm} onChange={handleNombre} placeholder="🔍 Buscar persona por nombre" />
       </div>
 
-      {!nombreNoEncontrado && (
-        <table className="roles-table">
-          <thead>
-            <tr>
-              <th>Persona</th>
-              <th>Convocatoria</th>
-              <th>Rol</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filas.map((fila, index) => (
-              <tr key={index}>
-                <td>
-                  <select
-                    value={fila.nombre}
-                    onChange={(e) => handleChange(index, "nombre", e.target.value)}
-                  >
-                    <option value="">Seleccione</option>
-                    {personas.map((persona) => (
-                      <option key={persona.id} value={persona.nombre}>
-                        {persona.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <select
-                    value={fila.convocatoria}
-                    onChange={(e) => handleChange(index, "convocatoria", e.target.value)}
-                  >
-                    <option value="">Seleccione</option>
-                    {convocatorias.map((c) => (
-                      <option key={c.id} value={c.id}>{c.nombre}</option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <select
-                    value={fila.rol}
-                    onChange={(e) => handleChange(index, "rol", e.target.value)}
-                  >
-                    <option value="">Seleccione</option>
-                    {roles.map((r) => (
-                      <option key={r.id} value={r.id}>{r.nombre}</option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
 
-      {nombreNoEncontrado && (
-        <div className="mensaje-no-encontrado">No se encontró registrado.</div>
-      )}
+      <table className="roles-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Convocatoria</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select name="user_id" value={formulario.user_id} onChange={handleChange}>
+                <option value="">Seleccione</option>
+                {personas.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name} {p.apellido}</option>
+                ))}
+              </select>
+            </td>
+            <td>
+              <select name="convocatoria_id" value={formulario.convocatoria_id} onChange={handleChange}>
+                <option value="">Seleccione</option>
+                {convocatorias.map((c) => (
+                  <option key={c.idConvocatoria} value={c.idConvocatoria}>
+                    {c.tituloConvocatoria}
+                  </option>
+                ))}
+              </select>
+            </td>
+            <td>
+              <select name="role_name" value={formulario.role_name} onChange={handleChange}>
+                <option value="">Seleccione</option>
+                {roles.map((r) => (
+                  <option key={r.id} value={r.name}>{r.name}</option>
+                ))}
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <div className="roles-buttons">
         {!nombreNoEncontrado && (

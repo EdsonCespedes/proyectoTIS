@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './styles/PruebaRegister.css';
 
 const PruebaRegister = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: '',
-        //
         lastName: '',
-        //
         email: '',
         password: '',
         password_confirmation: '',
@@ -16,6 +18,8 @@ const PruebaRegister = () => {
 
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
+    const [mostrarContraseña, setMostrarContraseña] = useState(false); // Estado para controlar la visibilidad de la contraseña
+    const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false); // Estado para controlar la visibilidad de la confirmación de contraseña
 
     const handleChange = (e) => {
         setFormData({
@@ -30,14 +34,13 @@ const PruebaRegister = () => {
         setSuccessMessage('');
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/register', formData);
+            const response = await axios.post('http://localhost:8000/api/register', formData);
             setSuccessMessage('Registro exitoso. Ahora puede iniciar sesión.');
             console.log('Usuario registrado:', response.data.user);
+
             setFormData({
                 name: '',
-                //
                 lastName: '',
-                //
                 email: '',
                 password: '',
                 password_confirmation: '',
@@ -53,58 +56,79 @@ const PruebaRegister = () => {
         }
     };
 
+    const handleCancel = () => {
+        setFormData({
+            name: '',
+            lastName: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
+            telefono: '',
+            fechaNacimiento: ''
+        });
+        setErrors({});
+        navigate('/');
+    };
+
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto' }}>
-            <h2>Registro de Tutor</h2>
+        <div className="register-page">
+            <div className="register-box">
+                <h2>REGISTRO</h2>
+                {successMessage && <div className="success-message">{successMessage}</div>}
 
-            {successMessage && <div style={{ color: 'green', marginBottom: '10px' }}>{successMessage}</div>}
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre</label>
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="name">Nombre</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} />
-                    {errors.name && <small style={{ color: 'red' }}>{errors.name[0]}</small>}
-                </div>
+                    {errors.name && <small className="error">{errors.name[0]}</small>}
 
-                <div>
-                    <label>Apellidos</label>
+                    <label htmlFor="lastName">Apellido</label>
                     <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
-                    {errors.name && <small style={{ color: 'red' }}>{errors.lastName[0]}</small>}
-                </div>
+                    {errors.lastName && <small className="error">{errors.lastName[0]}</small>}
 
-                <div>
-                    <label>Email</label>
+                    <label htmlFor="email">Correo electrónico</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} />
-                    {errors.email && <small style={{ color: 'red' }}>{errors.email[0]}</small>}
-                </div>
+                    {errors.email && <small className="error">{errors.email[0]}</small>}
 
-                <div>
-                    <label>Contraseña</label>
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} />
-                    {errors.password && <small style={{ color: 'red' }}>{errors.password[0]}</small>}
-                </div>
+                    <label htmlFor="password">Contraseña</label>
+                    <input
+                        type={mostrarContraseña ? 'text' : 'password'}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                    {errors.password && <small className="error">{errors.password[0]}</small>}
+                    <span onClick={() => setMostrarContraseña(!mostrarContraseña)}>{mostrarContraseña ? '👁️' : '👁️'}</span>
 
-                <div>
-                    <label>Confirmar Contraseña</label>
-                    <input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleChange} />
-                </div>
+                    <label htmlFor="password_confirmation">Confirmar contraseña</label>
+                    <input
+                        type={mostrarConfirmarContraseña ? 'text' : 'password'}
+                        name="password_confirmation"
+                        value={formData.password_confirmation}
+                        onChange={handleChange}
+                    />
+                    <span onClick={() => setMostrarConfirmarContraseña(!mostrarConfirmarContraseña)}>{mostrarConfirmarContraseña ? '👁️' : '👁️'}</span>
+                    {errors.password_confirmation && <small className="error">{errors.password_confirmation[0]}</small>}
 
-                <div>
-                    <label>Teléfono</label>
+                    <label htmlFor="telefono">Teléfono</label>
                     <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
-                    {errors.telefono && <small style={{ color: 'red' }}>{errors.telefono[0]}</small>}
-                </div>
+                    {errors.telefono && <small className="error">{errors.telefono[0]}</small>}
 
-                <div>
-                    <label>Fecha de Nacimiento</label>
-                    <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} />
-                    {errors.fechaNacimiento && <small style={{ color: 'red' }}>{errors.fechaNacimiento[0]}</small>}
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
+                        <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} />
+                        {errors.fechaNacimiento && <small className="error">{errors.fechaNacimiento[0]}</small>}
+                    </div>
 
-                <button type="submit" style={{ marginTop: '10px' }}>Registrarse</button>
-            </form>
+                    <div className="button-container">
+                        <button type="submit" className="btn-registrarse">REGISTRARSE</button>
+                        <button type="button" className="btn-cancelar" onClick={handleCancel}>CANCELAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };
 
 export default PruebaRegister;
+
+

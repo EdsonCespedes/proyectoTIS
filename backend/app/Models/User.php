@@ -9,9 +9,17 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
-use app\Models\Convocatoria;
+use App\Models\Convocatoria;
+use App\Models\Tutor;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Authenticatable
+
+use Illuminate\Contracts\Auth\CanResetPassword;
+use App\Notifications\CustomResetPasswordNotification; // Agregar la importación
+
+
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -47,12 +55,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function tutor()
+    public function tutor(): HasOne
     {
         return $this->hasOne(Tutor::class, 'idUser');
     }
 
-    public function convocatorias()
+    public function convocatorias(): BelongsToMany
     {
         return $this->belongsToMany(
             Convocatoria::class,
@@ -64,7 +72,7 @@ class User extends Authenticatable
         ->withTimestamps();
     }
 
-    public function convocatoriaRoles()
+    public function convocatoriaRoles(): BelongsToMany
     {
         return $this->belongsToMany(
             Role::class,
@@ -73,5 +81,17 @@ class User extends Authenticatable
             'role_id'
         )->withPivot('convocatoria_id')
          ->withTimestamps();
+        }
+
+    /**
+     * Sobrescribir la notificación para el restablecimiento de contraseña.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token)); // Usar la notificación personalizada
+
     }
 }

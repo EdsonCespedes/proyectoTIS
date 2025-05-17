@@ -6,7 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateConvocatoriaRoleTable extends Migration
 {
-    public function up(): void
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+     public function up(): void
     {
         Schema::create('convocatoria_role', function (Blueprint $table) {
             $table->id();
@@ -27,7 +32,12 @@ class CreateConvocatoriaRoleTable extends Migration
         });
     }
 
-    public function down(): void
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
     {
         Schema::dropIfExists('convocatoria_role');
     }

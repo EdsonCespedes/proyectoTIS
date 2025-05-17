@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/ImageUpload.css";
 
-const ImageUpload = ({ onFileSelect }) => {
+const ImageUpload = ({ onFileSelect, imagenInicial }) => {
   const [preview, setPreview] = useState(null);
   const [dragging, setDragging] = useState(false);
+
+
+  useEffect(() => {
+    // Si no hay una nueva imagen, pero hay una imagen inicial, se muestra como preview
+    if (imagenInicial && !preview) {
+      setPreview(imagenInicial);
+    }
+  }, [imagenInicial, preview]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
