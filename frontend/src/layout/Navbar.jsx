@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
+  const { user } = useAuth();  
+  console.log("rol: ", user?.rol);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  if (!user || (user?.rol === 'tutor' || user?.rol === 'Tutor')) {
+    return null;
+  }
 
   // Función para alternar el estado del menú
   const toggleMenu = () => {
