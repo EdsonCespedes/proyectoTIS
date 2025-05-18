@@ -26,11 +26,11 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('admin123'), // Cambia la contraseña segura
                 'email_verified_at' => now(),
                 'eliminado' => true,
-                'rol' => 'admin',
+                'rol' => 'Admin',
             ]
         );
 
         // Asignar el rol
-        $admin->assignRole('admin');
+        $admin->assignRole('Admin');
     }
 }

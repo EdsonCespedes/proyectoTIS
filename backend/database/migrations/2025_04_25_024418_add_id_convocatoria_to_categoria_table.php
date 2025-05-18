@@ -15,8 +15,8 @@ class AddIdConvocatoriaToCategoriaTable extends Migration
     {
         Schema::table('categoria', function (Blueprint $table) {
 
-                $table->boolean('idConvocatoria');
-               
+                $table->bigInteger('idConvocatoria');
+
         });
     }
 
