@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Tutor;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -17,7 +18,7 @@ class AdminUserSeeder extends Seeder
     public function run()
     {
         //
-        // Crear el usuario
+        // Crear el usuario Admin, el superusuario
         $admin = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
@@ -32,5 +33,15 @@ class AdminUserSeeder extends Seeder
 
         // Asignar el rol
         $admin->assignRole('Admin');
+
+        //crea el tutor asociado al superusuario
+        Tutor::create([
+            'idUser' => $admin->id,
+            'nombreTutor' => $admin->name,
+            'apellidoTutor' => $admin->apellido, 
+            'correoTutor' => $admin->email,
+            'telefonoTutor' => "",
+            'fechaNaciTutor' => '1970-01-01',
+        ]);
     }
 }
