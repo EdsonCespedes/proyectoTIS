@@ -38,6 +38,7 @@ use App\Http\Controllers\ConvocatoriaRoleController;
 
 use App\Http\Controllers\ReportePostulantesController;
 
+
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
 
@@ -160,7 +161,7 @@ Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaControlle
 
 // RUTAS PARA TUTOR
 Route::get('/tutor/{id}', [TutorController::class, 'show']);
-Route::get('/tutor', [TutorController::class, 'index']);
+//Route::get('/tutor', [TutorController::class, 'index']);
 Route::get('/tutores', [TutorController::class, 'index']);
 ////
 Route::post('/tutor', [TutorController::class, 'store']);
@@ -327,4 +328,4 @@ Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTut
 
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
 
-Route::get('/reporte-postulantes/{curso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
+Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);

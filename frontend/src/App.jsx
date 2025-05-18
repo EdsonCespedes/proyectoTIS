@@ -47,6 +47,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
+import ReportePostulantes from "./pages/ReportePostulantes";
 
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
@@ -68,6 +69,8 @@ function AppRoutes() {
       <Route path="/crear-convocatoria" element={<CrearConvForm />} />
       <Route path="/editar-convocatoria/:id" element={<EditConvForm />} />
       <Route path="/detalle-convocatoria" element={<DetalleConv />} />
+      <Route path="/area" element={<Categoria />} />
+      <Route path="/editar-convocatoria/:id/edit-area" element={<DetalleConv />} />
 
       {/* Rutas con rol tutor|admin */}
       <Route
@@ -144,19 +147,23 @@ function AppRoutes() {
 
       {/* Fallback */}
       <Route path="*" element={<NoAutorizado />} />
+
+      {/* Reportes */}
+      <Route path="/reportes" element={<ReportePostulantes />} />
     </Routes>
   );
 }
 
 function App() {
   const { user } = useAuth()
+  console.log("User desde useAuth:", user); // <-- Aquí
   return (
     //<BrowserRouter>
-      <ConvocatoriaProvider>
-        <Header />
-        {user && user.rol !== 'tutor' && <Navbar />}
-        <AppRoutes />
-      </ConvocatoriaProvider>
+    <ConvocatoriaProvider>
+      <Header />
+      {user && user.rol !== 'tutor' && <Navbar />}
+      <AppRoutes />
+    </ConvocatoriaProvider>
     //</BrowserRouter>
   );
 }
@@ -212,7 +219,7 @@ function App() {
 //         <Route path="/no-autorizado" element={<NoAutorizado />} />
 //       </Routes>
 //       </div>
-    
+
 //   )
 // }
 

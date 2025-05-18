@@ -113,7 +113,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->rol !== 'tutor') {
+        if (strtolower($user->rol) !== 'tutor' && strtolower($user->rol) !== 'admin') {
             return response()->json(['message' => 'No autorizado'], 403);
         }
 

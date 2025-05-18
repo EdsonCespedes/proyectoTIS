@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
-class ConvocatoriaController extends Controller
+class ConvocatoriaControllerE extends Controller
 {
     public function store(Request $request)
     {
