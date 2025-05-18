@@ -21,7 +21,7 @@
         'allowed_origins' => [
             'http://localhost:3000',
             'http://localhost:5173',
-            'https://frontend-vercel-navy.vercel.app'], // Add both frontend URLs
+            'https://frontend-vercel-navy-kohl.vercel.app'], // Add both frontend URLs
         'allowed_headers' => ['*'],
         'exposed_headers' => [],
         'max_age' => 0,
