@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Postulante;
 use Illuminate\Http\Request;
 
-class PostulanteController extends Controller
+class PostulanteControllerJ extends Controller
 {
     //
     public function index(){
