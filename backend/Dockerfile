@@ -27,8 +27,10 @@ WORKDIR /var/www
 COPY . .
 
 # Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
+# RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
+    && php artisan config:clear \
+    && php artisan optimize
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www
