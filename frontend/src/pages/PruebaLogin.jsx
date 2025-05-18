@@ -5,8 +5,11 @@ import { Link } from 'react-router-dom';
 
 import "./styles/PruebaLogin.css";
 
+import { useAuth } from '../context/AuthContext';
+
 const PruebaLogin = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -38,22 +41,25 @@ const PruebaLogin = () => {
             console.log('🔐 [Login] token recibido:', token);
             console.log('🔐 [Login] usuario recibido:', user);
 
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-            console.log('🔐 [Login] token y user guardados en localStorage');
+            // localStorage.setItem('token', token);
+            // localStorage.setItem('user', JSON.stringify(user));
+            // console.log('🔐 [Login] token y user guardados en localStorage');
+            login(user, token)
 
             setSuccessMessage('Inicio de sesión exitoso.');
             console.log('Usuario logueado:', user);
 
-            if (user.rol === 'tutor') {
-                console.log('🔐 [Login] usuario es tutor, solicitando datos de tutor...');
-                const resTutor = await axios.get('http://localhost:8000/api/tutor', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                console.log('🔐 [Login] respuesta tutor:', resTutor);
-                localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
-                console.log('Tutor asociado:', resTutor.data.tutor);
-            }
+            // if (user.rol.toLowerCase() === 'tutor' || user.rol.toLowerCase() === 'admin') {
+            //     console.log('🔐 [Login] usuario es tutor, solicitando datos de tutor...');
+            //     console.log("🔐 [Token enviado]:",token);
+                
+            //     const resTutor = await axios.get('http://localhost:8000/api/tutor', {
+            //         headers: { Authorization: `Bearer ${token}` }
+            //     });
+            //     console.log('🔐 [Login] respuesta tutor:', resTutor);
+            //     localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
+            //     console.log('Tutor asociado:', resTutor.data.tutor);
+            // }
 
             navigate("/");
 
