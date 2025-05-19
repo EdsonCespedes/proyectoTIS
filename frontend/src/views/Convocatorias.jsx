@@ -4,17 +4,19 @@ import React, { useState, useEffect } from 'react'
 import "./styles/Disciplinas.css"
 import { useNavigate } from 'react-router-dom';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const Convocatorias = () => {
     const navigate = useNavigate();
 
     const [convocatorias, setConvocatorias] = useState([]);
 
     useEffect(() => { //para hacer un get
-        fetch("http://localhost:8000/api/todasconvocatorias")
+        fetch(`${apiUrl}/todasconvocatorias`)
             .then(response => response.json())
             // .then(data => setConvocatorias(data))
             .then(data => {
-                const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
+                const convocatoriasHabilitadas = data.filter(conv => ((conv.habilitada === 1 || conv.habilitada === true) && (conv.eliminado === 0 || conv.eliminado === false)));
                 setConvocatorias(convocatoriasHabilitadas);
                 console.log("Convocatorias:", convocatoriasHabilitadas);
             })
