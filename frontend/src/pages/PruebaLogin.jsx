@@ -7,6 +7,8 @@ import "./styles/PruebaLogin.css";
 
 import { useAuth } from '../context/AuthContext';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const PruebaLogin = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -34,7 +36,8 @@ const PruebaLogin = () => {
         setSuccessMessage('');
 
         try {
-            const response = await axios.post('http://localhost:8000/api/login', formData);
+            //const response = await axios.post('http://localhost:8000/api/login', formData);
+            const response = await axios.post(`${apiUrl}/login`, formData);
             console.log('🔐 [Login] Response completo:', response);
             const { token, user } = response.data;
 
