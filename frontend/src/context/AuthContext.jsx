@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -40,7 +42,8 @@ export const AuthProvider = ({ children }) => {
       console.log('🔐 [Login] usuario es tutor, solicitando datos de tutor...');
       console.log("🔐 [Token enviado]:",tokenData);
       
-      const resTutor = await axios.get('http://localhost:8000/api/tutor', {
+      //const resTutor = await axios.get('http://localhost:8000/api/tutor', {
+      const resTutor = await axios.get(`${apiUrl}/tutor`, {
           headers: { Authorization: `Bearer ${tokenData}` }
       });
       console.log('🔐 [Login] respuesta tutor:', resTutor);
