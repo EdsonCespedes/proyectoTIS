@@ -38,4 +38,9 @@ RUN chown -R www-data:www-data /var/www \
 # Expose port
 EXPOSE 8000
 
-CMD php artisan config:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+#CMD php artisan config:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+# Comando que se ejecuta al iniciar el contenedor
+CMD php artisan config:cache && \
+    php artisan storage:link && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=8000
