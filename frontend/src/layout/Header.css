@@ -4,7 +4,9 @@
     align-items: center;
     background-color: #09052C;
     width: 100%;
-    height: 111px;
+    min-height: 80px;
+    padding: 10px 20px;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -15,15 +17,15 @@
 }
 
 .logo img {
-    width: 210px;
-    height: 84px;
+    width: 120px;
+    height: auto;
     border-radius: 10px;
 }
 
 .logo .title-container{
     display: flex;
     flex-direction: column;
-    margin: 10px;
+    margin: 0 10px;
     cursor: default;
 }
 
@@ -42,8 +44,11 @@
 }
 
 .buttons {
-    padding: 20px;
-    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 0;
 }
 
 .boton-header {
@@ -59,4 +64,66 @@
 
 .boton-header:hover {
     background-color: #092E6A;
+}
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+    .header {
+        flex-direction: row; /* <-- Mantenemos en fila */
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 0; /* Eliminamos margen extra */
+    }
+
+    .buttons {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0;
+        width: auto;
+    }
+
+    .boton-header {
+        font-size: 13px;
+        padding: 6px 10px;
+        width: auto; /* Evita que se expandan a 90% */
+    }
+}
+
+/* Media query adicional para tablets o pantallas medianas */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .logo {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .buttons {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0;
+        width: auto;
+    }
+
+    .boton-header {
+        width: auto;
+    }
+
+    .banner h1, .banner h2 {
+        text-align: center;
+    }
 }

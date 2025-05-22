@@ -71,7 +71,7 @@
 /* Estilos para pantallas pequeñas (menú hamburguesa) */
 @media (max-width: 768px) {
   .navbar {
-    padding-left: 0;
+    padding-left: 0 !important;
   }
 
   .menu {
