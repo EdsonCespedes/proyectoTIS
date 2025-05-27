@@ -22,21 +22,21 @@
     border-radius: 10px;
 }
 
-.logo .title-container{
+.title-container {
     display: flex;
     flex-direction: column;
     margin: 0 10px;
     cursor: default;
 }
 
-.logo .title {
+.title {
     color: white;
     font-size: 30px;
     margin: 0;
     padding: 0px 10px;
 }
 
-.logo .subtitle {
+.subtitle {
     color: white;
     font-size: 14px;
     margin: 0;
@@ -65,65 +65,67 @@
 .boton-header:hover {
     background-color: #092E6A;
 }
-/* Media query para pantallas pequeñas */
+
+/* 📱 Ajustes para móviles */
 @media (max-width: 600px) {
     .header {
-        flex-direction: row; /* <-- Mantenemos en fila */
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: auto;
+        padding: 5px 10px;
     }
 
     .logo {
-        flex-direction: row;
-        align-items: center;
-        margin-bottom: 0; /* Eliminamos margen extra */
+        padding: 0;
+        margin-bottom: 5px;
+    }
+
+    .logo img {
+        width: 90px;
+    }
+
+    .title {
+        font-size: 22px;
+        padding: 0 5px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        padding: 0 5px;
     }
 
     .buttons {
         flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 4px;
         margin-top: 0;
-        width: auto;
+    }
+
+    .boton-header {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+}
+
+/* 🧑‍💻 Ajustes para tablets */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 15px;
+    }
+
+    .logo {
+        flex-direction: row;
+    }
+
+    .buttons {
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
     .boton-header {
         font-size: 13px;
-        padding: 6px 10px;
-        width: auto; /* Evita que se expandan a 90% */
-    }
-}
-
-/* Media query adicional para tablets o pantallas medianas */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-    }
-
-    .logo {
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .buttons {
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px;
-        margin-top: 0;
-        width: auto;
-    }
-
-    .boton-header {
-        width: auto;
-    }
-
-    .banner h1, .banner h2 {
-        text-align: center;
     }
 }
