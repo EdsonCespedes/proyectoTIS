@@ -6,7 +6,7 @@ const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 const carnetRegex = /^[0-9]+$/;
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, handleActualizar }) => {
+const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas, setAreasSeleccionadas, categoriasSeleccionadas, setCategoriasSeleccionadas, handleRegistrar, handleActualizar, setIndexEdit, setEstudianteEdit }) => {
   const [mostrarArea, setMostrarArea] = useState(false);
   const [provinciasColegio, setProvinciasColegio] = useState([]);
   const [areas, setAreas] = useState([]);
@@ -259,6 +259,14 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   };
 
   const handleCancelar = () => {
+    console.log("SI HACE CLICK");
+
+    console.log("Estudiante:", estudiante);
+
+    setIndexEdit(-1);
+    setEstudianteEdit({});
+    setAreasSeleccionadas([]);
+    setCategoriasSeleccionadas([]);
     setRegistro(false);
   };
 
