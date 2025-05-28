@@ -329,3 +329,5 @@ Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTut
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
 
 Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
+
+Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
