@@ -1,3 +1,123 @@
+// import React, { useEffect, useState, useRef } from 'react';
+// import jsPDF from 'jspdf';
+// import './styles/Reporte.css';
+
+// const apiUrl = import.meta.env.VITE_API_URL;
+
+// const ReportePostulantes = () => {
+//   const [cursos, setCursos] = useState([]);
+//   const [cursoSeleccionado, setCursoSeleccionado] = useState('');
+//   const [postulaciones, setPostulaciones] = useState([]);
+//   const [cargando, setCargando] = useState(true);
+//   const [error, setError] = useState(null);
+//   const tablaRef = useRef();
+
+//   useEffect(() => {
+//     fetch(`${apiUrl}/vercursos`)
+//       .then(res => res.json())
+//       .then(data => setCursos(data))
+//       .catch(err => setError('Error al cargar los cursos'))
+//       .finally(() => setCargando(false));
+//   }, []);
+
+// useEffect(() => {
+//   if (cursoSeleccionado) {
+//     setCargando(true);
+//     fetch(`${apiUrl}/reporte-postulantes/${cursoSeleccionado}`)
+//       .then(res => res.json())
+//       .then(data => setPostulaciones(data))
+//       .catch(err => setError('Error al cargar las postulaciones'))
+//       .finally(() => setCargando(false));
+//   }
+// }, [cursoSeleccionado]);
+
+//   const imprimirPDF = () => {
+//     const doc = new jsPDF();
+//     let y = 20;
+
+//     doc.setFontSize(14);
+//     doc.text('Reporte de Postulantes', 14, y);
+//     y += 10;
+
+//     doc.setFontSize(10);
+//     doc.text('Curso: ' + cursos.find(c => c.idCurso == cursoSeleccionado)?.Curso, 14, y);
+//     y += 10;
+
+//     doc.setFontSize(10);
+//     doc.text('N° | Postulante         | Tutor              | Áreas                        | Monto', 14, y);
+//     y += 5;
+//     doc.line(14, y, 200, y);
+//     y += 5;
+
+//     postulaciones.forEach((p, index) => {
+//       const postulante = `${p.postulante?.nombrePost} ${p.postulante?.apellidoPost}`;
+//       const tutor = `${p.postulante?.tutor?.nombreTutor} ${p.postulante?.tutor?.apellidoTutor}`;
+//       const areas = p.categoria.map(c => c.area?.nombreArea).join(', ');
+//       const monto = 'Bs. ' + p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2);
+
+//       const texto = `${index + 1} | ${postulante} | ${tutor} | ${areas} | ${monto}`;
+//       doc.text(texto, 14, y);
+//       y += 7;
+//     });
+
+//     doc.save('reporte_postulantes.pdf');
+//   };
+
+//   return (
+//     <div className="reporte-container">
+//       <h2>Reporte de Postulantes</h2>
+//       <label>Selecciona un curso:</label>
+//       <select value={cursoSeleccionado} onChange={(e) => setCursoSeleccionado(e.target.value)}>
+//         <option value="">-- Selecciona --</option>
+//         {cursos.map(c => (
+//           <option key={c.idCurso} value={c.idCurso}>{c.Curso}</option>
+//         ))}
+//       </select>
+
+//       {cargando ? (
+//         <p>Cargando datos...</p>
+//       ) : error ? (
+//         <p style={{ color: 'red' }}>{error}</p>
+//       ) : (
+//         <>
+//           <table ref={tablaRef} className="reporte-tabla">
+//             <thead>
+//               <tr>
+//                 <th>#</th>
+//                 <th>Postulante</th>
+//                 <th>Tutor</th>
+//                 <th>Áreas</th>
+//                 <th>Monto Total</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {postulaciones.length > 0 ? (
+//                 postulaciones.map((p, index) => (
+//                   <tr key={index}>
+//                     <td>{index + 1}</td>
+//                     <td>{p.postulante?.nombrePost} {p.postulante?.apellidoPost}</td>
+//                     <td>{p.postulante?.tutor?.nombreTutor} {p.postulante?.tutor?.apellidoTutor}</td>
+//                     <td>{p.categoria.map(c => c.area?.nombreArea).join(', ')}</td>
+//                     <td>Bs. {p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2)}</td>
+//                   </tr>
+//                 ))
+//               ) : (
+//                 <tr>
+//                   <td colSpan="5">No hay datos para mostrar.</td>
+//                 </tr>
+//               )}
+//             </tbody>
+//           </table>
+//           <button onClick={imprimirPDF}>Imprimir PDF</button>
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ReportePostulantes;
+
+
 import React, { useEffect, useState, useRef } from 'react';
 import jsPDF from 'jspdf';
 import './styles/Reporte.css';
@@ -6,7 +126,19 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const ReportePostulantes = () => {
   const [cursos, setCursos] = useState([]);
+  const [departamentos, setDepartamentos] = useState([]);
+  const [convocatorias, setConvocatorias] = useState([]);
+  const [provinciasColegio, setProvinciasColegio] = useState([]);
+  const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
+
   const [cursoSeleccionado, setCursoSeleccionado] = useState('');
+  const [convocatoriaSeleccionado, setConvocatoriaSeleccionado] = useState('');
+  const [areaSeleccionado, setAreaSeleccionado] = useState('');
+  const [categoriaSeleccionado, setCategoriaSeleccionado] = useState('');
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState('');
+  const [provinciaSeleccionado, setProvinciaSeleccionado] = useState('');
+  const [colegioSeleccionado, setColegioSeleccionado] = useState('');
+
   const [postulaciones, setPostulaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -21,15 +153,45 @@ const ReportePostulantes = () => {
   }, []);
 
   useEffect(() => {
-    if (cursoSeleccionado) {
-      setCargando(true);
-      fetch(`${apiUrl}/reporte-postulantes/${cursoSeleccionado}`)
+    fetch(`${apiUrl}/convocatorias/activas`)
+      .then(res => res.json())
+      .then(data => setConvocatorias(data))
+      .catch(err => setError('Error al cargar los cursos'))
+  }, [])
+
+  useEffect(() => {
+    setCargando(true);
+    fetch(`${apiUrl}/reporte-postulantes`)
+      .then(res => res.json())
+      .then(data => setPostulaciones(data))
+      .catch(err => setError('Error al cargar las postulaciones'))
+      .finally(() => setCargando(false));
+  }, []);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/verdepartamentos`)
+      .then(response => response.json())
+      .then(data => setDepartamentos(data))
+      .catch(error => console.error("Error al obtener departamentos:", error));
+  }, []);
+
+  useEffect(() => {
+    if (departamentoSeleccionado) {
+      fetch(`${apiUrl}/verprovincias/departamento/${departamentoSeleccionado}`)
         .then(res => res.json())
-        .then(data => setPostulaciones(data))
-        .catch(err => setError('Error al cargar las postulaciones'))
-        .finally(() => setCargando(false));
+        .then(data => setProvinciasColegio(data))
+        .catch(error => console.error("Error al obtener provincias:", error));
     }
-  }, [cursoSeleccionado]);
+  }, [departamentoSeleccionado]);
+
+  useEffect(() => {
+    if (departamentoSeleccionado && provinciaSeleccionado) {
+      fetch(`${apiUrl}/departamentos/${departamentoSeleccionado}/provincias/${provinciaSeleccionado}/colegios`)
+        .then(res => res.json())
+        .then(data => setColegiosDisponibles(data))
+        .catch(error => console.error("Error al obtener colegios:", error));
+    }
+  }, [departamentoSeleccionado, provinciaSeleccionado]);
 
   const imprimirPDF = () => {
     const doc = new jsPDF();
@@ -66,13 +228,69 @@ const ReportePostulantes = () => {
   return (
     <div className="reporte-container">
       <h2>Reporte de Postulantes</h2>
-      <label>Selecciona un curso:</label>
-      <select value={cursoSeleccionado} onChange={(e) => setCursoSeleccionado(e.target.value)}>
-        <option value="">-- Selecciona --</option>
-        {cursos.map(c => (
-          <option key={c.idCurso} value={c.idCurso}>{c.Curso}</option>
-        ))}
-      </select>
+      <div className="select-container">
+        <label>Selecciona un curso:</label>
+        <select value={cursoSeleccionado} onChange={(e) => setCursoSeleccionado(e.target.value)}>
+          <option value="">-- Selecciona --</option>
+          {cursos.map(c => (
+            <option key={c.idCurso} value={c.Curso}>{c.Curso}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="select-container">
+        <label>Selecciona una convocatoria:</label>
+        <select value={convocatoriaSeleccionado} onChange={(e) => setConvocatoriaSeleccionado(e.target.value)}>
+          <option value="">-- Selecciona --</option>
+          {convocatorias.map(c => (
+            <option key={c.idConvocatoria} value={c.tituloConvocatoria}>{c.tituloConvocatoria}</option>
+          ))}
+        </select>
+
+        <label>Selecciona una area de la convocatoria:</label>
+        <select value={areaSeleccionado} onChange={(e) => setAreaSeleccionado(e.target.value)} disabled={convocatoriaSeleccionado == ''}>
+          <option value="">-- Selecciona --</option>
+          {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.map(a => (
+            <option key={a.idArea} value={a.tituloArea}>{a.tituloArea}</option>
+          ))}
+        </select>
+
+        <label>Selecciona una categoria del area de la convocatoria:</label>
+        <select value={categoriaSeleccionado} onChange={(e) => setCategoriaSeleccionado(e.target.value)} disabled={areaSeleccionado == ''}>
+          <option value="">-- Selecciona --</option>
+          {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.find(a => a.tituloArea == areaSeleccionado)?.categorias.map(c => (
+            <option key={c.idCategoria} value={c.nombreCategoria}>{c.nombreCategoria}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="select-container">
+        <label>Selecciona un departamento:</label>
+        <select value={departamentoSeleccionado} onChange={(e) => setDepartamentoSeleccionado(e.target.value)}>
+          <option value="">-- Selecciona --</option>
+          {departamentos.map(d => (
+            <option key={d.idDepartamento} value={d.nombreDepartamento}>{d.nombreDepartamento}</option>
+          ))}
+        </select>
+
+        <label>Selecciona una provincia del departamento:</label>
+        <select value={provinciaSeleccionado} onChange={(e) => setProvinciaSeleccionado(e.target.value)} disabled={departamentoSeleccionado == ''}>
+          <option value="">-- Selecciona --</option>
+          {provinciasColegio.map(p => (
+            <option key={p.idProvincia} value={p.nombreProvincia}>{p.nombreProvincia}</option>
+          ))}
+        </select>
+
+        <label>Selecciona un colegio:</label>
+        <select value={colegioSeleccionado} onChange={(e) => setColegioSeleccionado(e.target.value)} disabled={provinciaSeleccionado == ''}>
+          <option value="">-- Selecciona --</option>
+          {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
+            <option key={id} value={nombre}>
+              {nombre}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {cargando ? (
         <p>Cargando datos...</p>
@@ -86,6 +304,7 @@ const ReportePostulantes = () => {
                 <th>#</th>
                 <th>Postulante</th>
                 <th>Tutor</th>
+                <th>Colegio</th>
                 <th>Áreas</th>
                 <th>Monto Total</th>
               </tr>
@@ -97,7 +316,10 @@ const ReportePostulantes = () => {
                     <td>{index + 1}</td>
                     <td>{p.postulante?.nombrePost} {p.postulante?.apellidoPost}</td>
                     <td>{p.postulante?.tutor?.nombreTutor} {p.postulante?.tutor?.apellidoTutor}</td>
-                    <td>{p.categoria.map(c => c.area?.nombreArea).join(', ')}</td>
+                    <td>
+                      {p.postulante?.colegio?.nombreColegio}
+                    </td>
+                    <td>{p.categoria.map(c => c.area?.nombreArea + "-" + c.nombreCategoria).join(', ')}</td>
                     <td>Bs. {p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2)}</td>
                   </tr>
                 ))

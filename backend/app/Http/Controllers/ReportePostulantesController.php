@@ -89,9 +89,9 @@ class ReportePostulantesController extends Controller
                             'apellidoTutor' => $postulante->tutor->apellidoTutor ?? '',
                         ],
                         'colegio' => [
-                            $postulante->colegio->nombreColegio ?? '',
-                            $postulante->colegio->departamento ?? '',
-                            $postulante->colegio->provincia ?? '',
+                            'nombreColegio' =>$postulante->colegio->nombreColegio ?? '',
+                            'departamentoColegio' =>$postulante->colegio->departamento ?? '',
+                            'provinciaColegio' =>$postulante->colegio->provincia ?? '',
                         ],
                         'departamentoNacimiento' => $postulante->departamento ?? '',
                         'provinciaNacimiento' => $postulante->provincia ?? '',
