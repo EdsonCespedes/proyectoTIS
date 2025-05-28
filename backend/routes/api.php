@@ -329,3 +329,16 @@ Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTut
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
 
 Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
+
+Route::prefix('convocatoria')->group(function(){
+    Route::post('role',      [ConvocatoriaRoleController::class,'store']);
+    Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
+    Route::get('roles/all',  [ConvocatoriaRoleController::class,'all']);
+});
+
+Route::prefix('user')->group(function(){
+    // 1) Todos los roles y permisos de un usuario en todas las convocatorias
+    Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
+    // 2) Roles y permisos de un usuario dentro de UNA convocatoria
+    Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
+});
