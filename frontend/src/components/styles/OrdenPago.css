@@ -1,10 +1,10 @@
 /* Fondo general de la página */
-body {
+/* body {
   margin: 0;
   padding: 0;
-  background-color: #cfe7ef; /* tono celeste suave */
+  background-color: #cfe7ef;
   font-family: 'Segoe UI', sans-serif;
-}
+} */
 
 /* Ocupa toda la pantalla con padding cómodo */
 .contenedor-orden {
