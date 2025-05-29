@@ -74,3 +74,18 @@
 .reporte-container button:hover {
   background-color: #00509e;
 }
+
+.toggle-filtros-btn {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 1px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggle-filtros-btn:hover {
+  background-color: #2563eb;
+}
