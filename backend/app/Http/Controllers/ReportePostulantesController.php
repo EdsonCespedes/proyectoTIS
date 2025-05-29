@@ -61,6 +61,7 @@ class ReportePostulantesController extends Controller
             $postulantes = Postulante::with([
                 'tutor',
                 'colegio',
+                'curso',
                 'postulaciones.categoria.area'
             ])
             // ->where('idCurso', $idCurso)
@@ -92,6 +93,10 @@ class ReportePostulantesController extends Controller
                             'nombreColegio' =>$postulante->colegio->nombreColegio ?? '',
                             'departamentoColegio' =>$postulante->colegio->departamento ?? '',
                             'provinciaColegio' =>$postulante->colegio->provincia ?? '',
+                        ],
+                        'curso' => [
+                            'idCurso' =>$postulante->curso->idCurso ?? '',
+                            'nombreCurso' =>$postulante->curso->Curso ?? '',
                         ],
                         'departamentoNacimiento' => $postulante->departamento ?? '',
                         'provinciaNacimiento' => $postulante->provincia ?? '',
