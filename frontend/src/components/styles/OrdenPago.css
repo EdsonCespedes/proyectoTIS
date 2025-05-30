@@ -35,37 +35,42 @@
     font-size: 18px;
   }
 }
+
+/* Botones */
 .botones {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   margin-top: 20px;
+  justify-content: stretch; /* Centra los botones si no ocupan todo el ancho */
 }
 
 .botones button {
-  padding: 10px 20px;
+  padding: 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   color: white;
+  text-align: center;
+  width: 100%;              /* ocupa todo el ancho del contenedor */
+  max-width: 100%;
 }
 
+/* Colores personalizados */
 .btn-descargar {
-  background-color: #007A8F; /* verde */
+  background-color: #007A8F; 
 }
 
 .btn-cancelar {
-  background-color: #0099B3; /* rojo */
+  background-color: #0099B3; 
 }
 
 .botones button:disabled {
-  background-color: #007A8F; /* gris para deshabilitado */
+  background-color: #007A8F; 
   cursor: not-allowed;
 }
-
-
-
 
 
  
