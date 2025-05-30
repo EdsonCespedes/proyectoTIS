@@ -267,7 +267,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       <div className="seccion-container">
         <div className="seccion">
           <h2 className="subtitulo">Postulante</h2>
-          <div className="grid-container">
+          <div className="grid-container-Registro">
             <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
             <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />

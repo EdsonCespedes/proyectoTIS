@@ -5,89 +5,112 @@ import { Link, useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const GestionColegios = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [colegios, setColegios] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [expandedId, setExpandedId] = useState(null);
+  const itemsPerPage = 8;
 
-    const [colegios, setColegios] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 8;
+  useEffect(() => {
+    fetch(`${apiUrl}/getcolegio`)
+      .then((response) => response.json())
+      .then((data) => setColegios(data))
+      .catch((error) => console.error("Error al obtener colegios:", error));
+  }, []);
 
-    useEffect(() => {
-        fetch(`${apiUrl}/getcolegio`)
-            .then(response => response.json())
-            .then(data => setColegios(data))
-            .catch(error => console.error("Error al obtener colegios:", error));
-    }, []);
+  const startIndex = currentPage * itemsPerPage;
+  const currentColegios = colegios.slice(startIndex, startIndex + itemsPerPage);
 
-    const startIndex = currentPage * itemsPerPage;
-    const currentColegios = colegios.slice(startIndex, startIndex + itemsPerPage);
+  const handleModificar = (colegio) => {
+    navigate("/edit-colegios", {
+      state: { colegio },
+    });
+  };
 
-    const handleModificar = (colegio) => {
-        navigate("/edit-colegios", {
-            state: { colegio },
-        });
-    };
-    
+  const toggleExpand = (id) => {
+    setExpandedId((prevId) => (prevId === id ? null : id));
+  };
 
-    return (
-        <div className="contenedor-colegio">
-            <h3 className="title-tabla">UNIDADES EDUCATIVAS</h3>
-            <div className="tabla">
-                <table>
-                    <thead>
-                        <tr>
-                            <th className="col-rue">RUE</th>
-                            <th className="col-rue">ID</th>
-                            <th className="col-nombre">UNIDAD EDUCATIVA</th>
-                            <th className="col-accion">ACCIÓN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentColegios.map((colegio) => (
-                            <tr key={colegio.idColegio}>
-                                <td>{colegio.RUE}</td>
-                                <td>{colegio.idColegio}</td>
-                                <td>{colegio.nombreColegio}</td>
-                                <td className="actions">
-                                    <button onClick={() => handleModificar(colegio)} className="boton-style btn-rechazo">
-                                        Modificar
-                                    </button>
-                                    <button className="boton-style btn-rechazo">Retirar</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+  return (
+    <div className="lista-usuarios">
+      <h2>Unidades Educativas</h2>
 
-                {colegios.length === 0 && (
-                    <h1 className="no-data">
-                        NO HAY COLEGIOS REGISTRADOS AÚN...
-                    </h1>
-                )}
+      {/* Vista escritorio */}
+      <div className="tabla-contenedor desktop">
+        <table>
+          <thead>
+            <tr>
+              <th>RUE</th>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentColegios.map((colegio) => (
+              <tr key={colegio.idColegio}>
+                <td>{colegio.RUE}</td>
+                <td>{colegio.idColegio}</td>
+                <td>{colegio.nombreColegio}</td>
+                <td>
+                  <button onClick={() => handleModificar(colegio)}>✏️</button>
+                  <button>❌</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-                {colegios.length > itemsPerPage && (
-                    <div className="pagination">
-                        <button
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 0}
-                        >
-                            Anterior
-                        </button>
-                        <span>Página {currentPage + 1} de {Math.ceil(colegios.length / itemsPerPage)}</span>
-                        <button
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                            disabled={startIndex + itemsPerPage >= colegios.length}
-                        >
-                            Siguiente
-                        </button>
-                    </div>
-                )}
+      {/* Vista móvil */}
+      <div className="mobile-cards">
+        {currentColegios.map((colegio) => (
+          <div className="user-card" key={colegio.idColegio}>
+            <div className="user-header" onClick={() => toggleExpand(colegio.idColegio)}>
+              <span className="user-name">{colegio.nombreColegio}</span>
+              <span className="toggle-icon">{expandedId === colegio.idColegio ? '▲' : '▼'}</span>
             </div>
-            <div className="control">
-                <Link to="/registro-colegios" className="boton-style btn-aceptacion">Añadir nuevo</Link>
-                <Link to="/" className="boton-style btn-rechazo">Cancelar</Link>
-            </div>
+            {expandedId === colegio.idColegio && (
+              <div className="user-details">
+                <p><strong>RUE:</strong> {colegio.RUE}</p>
+                <p><strong>ID:</strong> {colegio.idColegio}</p>
+                <div className="card-actions">
+                  <button onClick={() => handleModificar(colegio)}>✏️ Editar</button>
+                  <button>❌ Retirar</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {colegios.length === 0 && <h3 className="no-data">NO HAY COLEGIOS REGISTRADOS AÚN...</h3>}
+
+      {colegios.length > itemsPerPage && (
+        <div className="pagination">
+          <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0}>
+            Anterior
+          </button>
+          <span>
+            Página {currentPage + 1} de {Math.ceil(colegios.length / itemsPerPage)}
+          </span>
+          <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={startIndex + itemsPerPage >= colegios.length}
+          >
+            Siguiente
+          </button>
         </div>
-    );
-}
+      )}
+
+      <div className="botones-containe">
+        <Link to="/registro-colegios" className="btn-registrar">Registrar Colegio</Link>
+        <button className="btn-cancelar" onClick={() => navigate("/")}>Cancelar</button>
+      </div>
+
+      <hr className="separador" />
+    </div>
+  );
+};
 
 export default GestionColegios;

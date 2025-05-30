@@ -159,7 +159,7 @@ const TablaNotificaciones = () => {
         </tbody>
       </table>
 
-      <button className="btn-enviar" onClick={handleEnviarNotificacion}>
+      <button className="btn-enviarcorreo" onClick={handleEnviarNotificacion}>
         Enviar Notificación
       </button>
       <button onClick={()=>navigate("/detalle-convocatoria")}>Salir</button>

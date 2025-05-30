@@ -57,7 +57,7 @@ body {
 }
 
 /* Estilos de los campos */
-.grid-container {
+.grid-container-Registro {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;

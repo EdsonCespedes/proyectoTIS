@@ -82,7 +82,7 @@ form button:hover {
   }
 
   form button {
-    width: 100%; /* ya lo tienes */
+    width: 50%; /* ya lo tienes */
   }
 
   .form-buttons {

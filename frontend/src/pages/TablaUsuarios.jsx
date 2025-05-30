@@ -65,8 +65,9 @@ const TablaUsuarios = () => {
 
   return (
     <div>
+      <div className="titulo-tabla">
       <h2>Lista de Usuarios</h2>
-
+      </div>
       {/* Vista escritorio */}
       <div className="tabla-contenedor desktop">
         <table>
