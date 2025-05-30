@@ -31,6 +31,45 @@ const GestionColegios = () => {
     setExpandedId((prevId) => (prevId === id ? null : id));
   };
 
+  const handleRetirar = async(colegio) => {
+    // const dataToSend = {
+    //   nombreColegio: colegio.nombreColegio,
+    //   departamento,
+    //   provincia,
+    //   RUE: formData.rue,
+    //   direccion: formData.direccion,
+    //   fecha_creacion: formData.fechaCreacion,
+    // };
+
+
+    // try {
+    //   const response = await fetch(`${apiUrl}/colegio/${idColegio}`, {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Accept: "application/json",
+    //     },
+    //     body: JSON.stringify(dataToSend),
+    //   });
+
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     console.error("Error:", errorData);
+    //     alert("Error al actualizar el colegio");
+    //     return;
+    //   }
+
+    //   setDepartamento("");
+    //   setProvincia("");
+    //   setProvincias([]);
+
+    //   navigate("/colegios");
+    // } catch (error) {
+    //   console.error("Error en el envío:", error);
+    //   alert("Ocurrió un error al eliminar el colegio.");
+    //}
+  }
+
   return (
     <div className="lista-usuarios">
       <h2>Unidades Educativas</h2>
@@ -54,7 +93,7 @@ const GestionColegios = () => {
                 <td>{colegio.nombreColegio}</td>
                 <td>
                   <button onClick={() => handleModificar(colegio)}>✏️</button>
-                  <button>❌</button>
+                  <button onClick={() => handleRetirar(colegio)}>❌</button>
                 </td>
               </tr>
             ))}
@@ -76,7 +115,7 @@ const GestionColegios = () => {
                 <p><strong>ID:</strong> {colegio.idColegio}</p>
                 <div className="card-actions">
                   <button onClick={() => handleModificar(colegio)}>✏️ Editar</button>
-                  <button>❌ Retirar</button>
+                  <button onClick={() => handleRetirar(colegio)}>❌ Retirar</button>
                 </div>
               </div>
             )}
