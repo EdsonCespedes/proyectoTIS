@@ -54,35 +54,3 @@
     height: auto;
 }
 
-/* === MEDIA QUERIES === */
-
-/* Para pantallas medianas (tablets) */
-@media (max-width: 768px) {
-    .title-tipo {
-        font-size: 32px;
-    }
-
-    .image-button img {
-        width: 240px;
-    }
-}
-
-/* Para pantallas pequeñas (móviles) */
-@media (max-width: 480px) {
-    .title-tipo {
-        font-size: 24px;
-    }
-
-    .buttons-tipo {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .image-button img {
-        width: 90%;
-    }
-
-    .button-tipo h1 {
-        font-size: 18px;
-    }
-}
