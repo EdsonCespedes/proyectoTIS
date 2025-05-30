@@ -1,11 +1,11 @@
-.container-tipo{
+.container-tipo {
     display: flex;
     flex-direction: column;
     width: 100%;
     /* background-color: aqua; */
 }
 
-.title-tipo{
+.title-tipo {
     width: 100%;
     text-align: center;
     padding: 20px 20px 0 20px;
@@ -14,35 +14,43 @@
     font-size: 40px;
 }
 
-.buttons-tipo{
+.buttons-tipo {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap; /* para permitir que los elementos bajen */
     padding: 10px;
+    gap: 20px; /* espacio entre botones */
 }
 
-.button-tipo{
+.button-tipo {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.button-tipo h1{
+.button-tipo h1 {
     color: black;
     margin-bottom: 0;
+    font-size: 20px;
+    text-align: center;
 }
 
-.image-button{
-    margin: 0 15px;
+.image-button {
     background-color: white;
     border: 5px solid black;
+    padding: 5px;
+    border-radius: 10px;
 }
 
-.image-button img{
+.image-button img {
     user-select: none;
     -webkit-user-drag: none;
     pointer-events: none;
     width: 300px;
+    max-width: 90vw; /* no se desborda en móviles */
+    height: auto;
 }
+
