@@ -13,15 +13,55 @@ const DetalleConv = () => {
     fetch(`${apiUrl}/convocatorias/activas`)
       .then((response) => response.json())
       .then((data) => setConvocatorias(data))
-      .catch((error) => console.error("Error al obtener colegios:", error));
+      .catch((error) => console.error("Error al obtener convocatorias:", error));
   }, [refresh]);
 
   const handleEdit = (id) => {
     navigate(`/editar-convocatoria/${id}`);
   };
 
-  const handleDelete = async (id) => {
-    // (dejas tu código actual para eliminar aquí)
+  const handleDelete = async (id, convocatoria) => {
+    console.log(convocatoria);
+    console.log(id);
+
+    if (!convocatoria) {
+      console.error('Convocatoria no definida');
+      return;
+    }
+
+    const newformData = new FormData();
+    newformData.append('_method', 'PUT');
+    newformData.append('tituloConvocatoria', convocatoria.tituloConvocatoria);
+    newformData.append('descripcion', convocatoria.descripcion);
+    newformData.append('fechaPublicacion', convocatoria.fechaPublicacion.split(' ')[0]);
+    newformData.append('fechaInicioInsc', convocatoria.fechaInicioInsc.split(' ')[0]);
+    newformData.append('fechaFinInsc', convocatoria.fechaFinInsc.split(' ')[0]);
+    //newformData.append('portada', formData.imagenPortada); // <-- tu imagen
+    if (convocatoria.portada instanceof File) {
+      newformData.append('portada', convocatoria.portada);
+    }
+    newformData.append('habilitada', convocatoria.habilitada);
+    newformData.append('fechaInicioOlimp', convocatoria.fechaInicioOlimp.split(' ')[0]);
+    newformData.append('fechaFinOlimp', convocatoria.fechaFinOlimp.split(' ')[0]);
+    newformData.append('maximoPostPorArea', convocatoria.maximoPostPorArea);
+    newformData.append('eliminado', '1');
+
+    try {
+      const response = await fetch(`${apiUrl}/editconvocatorias/${id}`, {
+        method: 'POST',
+        body: newformData,
+      });
+
+      const text = await response.text();
+      if (!response.ok) {
+        console.error('Error del servidor:', text); // en vez de tratar de hacer response.json() directamente
+        return;
+      }
+
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error('Error al eliminar la convocatoria:', error);
+    }
     // ...
   };
 
@@ -53,9 +93,8 @@ const DetalleConv = () => {
                 </td>
                 <td>
                   <span
-                    className={`estado ${
-                      convocatoria.habilitada === 0 ? "rojo" : "verde"
-                    }`}
+                    className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
+                      }`}
                   >
                     {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
                   </span>
@@ -69,7 +108,9 @@ const DetalleConv = () => {
                   </button>
                   <button
                     className="delete-btn"
-                    onClick={() => handleDelete(convocatoria.idConvocatoria)}
+                    onClick={() => {
+                      handleDelete(convocatoria.idConvocatoria, convocatoria);
+                    }}
                   >
                     ❌
                   </button>
@@ -87,9 +128,8 @@ const DetalleConv = () => {
             <div className="user-header">
               <span>{convocatoria.tituloConvocatoria}</span>
               <span
-                className={`estado ${
-                  convocatoria.habilitada === 0 ? "rojo" : "verde"
-                }`}
+                className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
+                  }`}
               >
                 {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
               </span>
@@ -112,7 +152,7 @@ const DetalleConv = () => {
                 </button>
                 <button
                   className="delete-btn"
-                  onClick={() => handleDelete(convocatoria.idConvocatoria)}
+                  onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}
                 >
                   ❌ Eliminar
                 </button>
