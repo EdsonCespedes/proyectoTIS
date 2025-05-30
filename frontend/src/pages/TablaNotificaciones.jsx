@@ -166,7 +166,7 @@ const TablaNotificaciones = () => {
         </tbody>
       </table>
 
-      <button className="btn-enviar" onClick={handleEnviarNotificacion} disabled={submitting}>
+      <button className="btn-enviarcorreo" onClick={handleEnviarNotificacion}>
         Enviar Notificación
         {submitting && <SpinnerInsideButton />}
       </button>
