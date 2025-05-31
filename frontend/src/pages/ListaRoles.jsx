@@ -114,9 +114,9 @@ const ListaRoles = () => {
           )}
       </div>
 
-      <div className="botones-container">
-        <button className="btn-agregar" onClick={irASignarRoles}>Agregar +</button>
-        <button className="btn-cancelar" onClick={irACancelar}>Cancelar</button>
+      <div className="botones-container-tu">
+        <button className="btn-agregar-lr" onClick={irASignarRoles}>Agregar +</button>
+        <button className="btn-cancelar-lr" onClick={irACancelar}>Cancelar</button>
       </div>
     </div>
   );

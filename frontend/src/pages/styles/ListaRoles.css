@@ -3,6 +3,23 @@
   display: none;
 }
 
+.lista-container{
+  padding: 20px;
+  text-align: center;
+}
+
+.botones-container-tu{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-agregar-lr, .btn-cancelar-lr{
+  background-color: #0099B3;
+  padding: 10px 20px;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .lista-table {
     display: none;
