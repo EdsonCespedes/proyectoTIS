@@ -42,67 +42,69 @@ const RolesTable = () => {
   };
 
   return (
-    <div className="table-container">
-      <h2>Roles Registrados</h2>
+    <div className="roles-table-container">
+      <div className="table-container">
+        <h2>Roles Registrados</h2>
 
-      {/* Vista de escritorio */}
-      <div className="desktop-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre Rol</th>
-              <th>Funciones</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles.length > 0 ? (
-              roles.map((rol) => (
-                <tr key={rol.id}>
-                  <td>{rol.name}</td>
-                  <td>
-                    {rol.permissions && rol.permissions.length > 0
-                      ? rol.permissions.map((p) => p.name).join(', ')
-                      : 'Sin funciones'}
-                  </td>
-                  <td>
-                    <button onClick={() => handleEdit(rol.id)}>✏️</button>
-                    <button onClick={() => handleDelete(rol.id)}>❌</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
+        {/* Vista de escritorio */}
+        <div className="desktop-table">
+          <table>
+            <thead>
               <tr>
-                <td colSpan="3">No hay roles registrados.</td>
+                <th>Nombre Rol</th>
+                <th>Funciones</th>
+                <th>Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {roles.length > 0 ? (
+                roles.map((rol) => (
+                  <tr key={rol.id}>
+                    <td>{rol.name}</td>
+                    <td>
+                      {rol.permissions && rol.permissions.length > 0
+                        ? rol.permissions.map((p) => p.name).join(', ')
+                        : 'Sin funciones'}
+                    </td>
+                    <td>
+                      <button onClick={() => handleEdit(rol.id)}>✏️</button>
+                      <button onClick={() => handleDelete(rol.id)}>❌</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">No hay roles registrados.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Vista móvil */}
-      <div className="mobile-cards">
-        {roles.map((rol) => (
-          <div className="role-card" key={rol.id}>
-            <div className="role-summary" onClick={() => toggleCard(rol.id)}>
-              <span className="role-name">{rol.name}</span>
-              <span className="expand-icon">{rol.expanded ? '▲' : '▼'}</span>
-            </div>
-            {rol.expanded && (
-              <div className="role-details">
-                <p><strong>Funciones:</strong> {rol.permissions && rol.permissions.length > 0 ? rol.permissions.map((p) => p.name).join(', ') : 'Sin funciones'}</p>
-                <div className="card-actions">
-                  <button className="edit-btn" onClick={() => handleEdit(rol.id)}>✏️ Editar</button>
-                  <button className="delete-btn" onClick={() => handleDelete(rol.id)}>❌ Eliminar</button>
-                </div>
+        {/* Vista móvil */}
+        <div className="mobile-cards">
+          {roles.map((rol) => (
+            <div className="role-card" key={rol.id}>
+              <div className="role-summary" onClick={() => toggleCard(rol.id)}>
+                <span className="role-name">{rol.name}</span>
+                <span className="expand-icon">{rol.expanded ? '▲' : '▼'}</span>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {rol.expanded && (
+                <div className="role-details">
+                  <p><strong>Funciones:</strong> {rol.permissions && rol.permissions.length > 0 ? rol.permissions.map((p) => p.name).join(', ') : 'Sin funciones'}</p>
+                  <div className="card-actions">
+                    <button className="edit-btn" onClick={() => handleEdit(rol.id)}>✏️ Editar</button>
+                    <button className="delete-btn" onClick={() => handleDelete(rol.id)}>❌ Eliminar</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
 
-      <Link to="/addRoles"><button className="btn">Nuevo rol</button></Link>
-      <Link to="/"><button className="btn">Cancelar</button></Link>
+        <Link to="/addRoles"><button className="btn">Nuevo rol</button></Link>
+        <Link to="/"><button className="btn">Cancelar</button></Link>
+      </div>
     </div>
   );
 };

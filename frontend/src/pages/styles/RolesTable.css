@@ -1,6 +1,15 @@
+.roles-table-container{
+  padding: 20px;
+}
+
 .table-container {
   padding: 20px;
   background-color: #f9f9f9;
+}
+
+.table-container h2{
+  text-align: center;
+  margin-top: 0;
 }
 
 table {

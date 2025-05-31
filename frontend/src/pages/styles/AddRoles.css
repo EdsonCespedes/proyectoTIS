@@ -3,7 +3,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -33,7 +34,9 @@ html, body {
 }
 
 /* ✅ Campos del formulario */
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -70,6 +73,12 @@ form button:hover {
   background-color: #025e70;
 }
 
+.add-rol-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (max-width: 600px) {
   .form-container {
     max-width: 100%;
@@ -78,15 +87,29 @@ form button:hover {
   }
 
   .funciones {
-    grid-template-columns: 1fr; /* ya lo tienes, ok */
+    grid-template-columns: 1fr;
+    /* ya lo tienes, ok */
   }
 
   form button {
-    width: 50%; /* ya lo tienes */
+    width: 50%;
+    /* ya lo tienes */
   }
 
   .form-buttons {
-    flex-direction: column; /* ya lo tienes */
+    flex-direction: column;
+    /* ya lo tienes */
     align-items: stretch;
+  }
+
+  .add-rol-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .add-rol-buttons button{
+    width: 100%;
   }
 }
