@@ -41,7 +41,7 @@ const Header = () => {
                 {isLoggedIn && (
                     <>
                         <Link to="/convocatorias" className="boton-header" onClick={closeMenu}>Inscripciones</Link>
-                        <Link to="/registroPago" className="boton-header" onClick={closeMenu}>Mis pagos</Link>
+                        <Link to="/ordenes-pago" className="boton-header" onClick={closeMenu}>Mis pagos</Link>
                     </>
                 )}
 
@@ -58,7 +58,7 @@ const Header = () => {
                             <Link to="/tablaRoles" onClick={closeMenu}>Gestionar Roles</Link>
                             <Link to="/tablaUsuarios" onClick={closeMenu}>Lista de Usuarios</Link>
                             <Link to="/listaRoles" onClick={closeMenu}>Lista de Roles</Link>
-                            <Link to="/ordenes-pago" onClick={closeMenu}>Ordenes de pago</Link>
+                            <Link to="/registroPago" onClick={closeMenu}>Ordenes de pago</Link>
                             <Link to="/reportes" onClick={closeMenu}>Reportes</Link>
                         </div>
                     </div>

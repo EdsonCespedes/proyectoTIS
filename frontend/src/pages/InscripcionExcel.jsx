@@ -350,7 +350,7 @@ const InscripcionExcel = () => {
         <div className="excel-container">
             <div className="excel-title">
                 <h2>TODOS LOS POSTULANTES DEBEN PERTENECER AL MISMO COLEGIO Y TENER EL MISMO TUTOR</h2>
-                <h2>Descague la plantilla aqui y suba el archivo .xlsx con el formato dado</h2>
+                <h2>Descargue la plantilla aqui y suba el archivo .xlsx con el formato dado</h2>
                 <ExcelDownload />
             </div>
 

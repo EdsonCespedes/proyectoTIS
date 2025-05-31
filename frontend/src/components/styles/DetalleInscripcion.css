@@ -8,6 +8,35 @@
   display: none;
 }
 
+.title-tabla-d {
+  margin: 25px;
+  padding: 25px;
+  background-color: #007899;
+  color: white;
+  text-align: center;
+}
+
+.control {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 25px;
+}
+
+.tabla-d{
+  margin: 0;
+  padding: 25px;
+}
+
+.tabla-d th{
+  background-color: #007899;
+  color: white;
+}
+
+.tabla-d td{
+  background-color: white;
+}
+
 /* Vista móvil (máximo 768px) */
 @media (max-width: 768px) {
   .desktop-only {
@@ -20,7 +49,8 @@
 
   /* Fondo general de la tarjeta */
   .user-card-d {
-    background-color: #b8cee0; /* igual que el fondo de la imagen */
+    background-color: #b8cee0;
+    /* igual que el fondo de la imagen */
     border-radius: 15px;
     padding: 20px;
     margin: 15px;
@@ -102,34 +132,41 @@
   }
 
   /* Estilo general para botones, visibles en escritorio y móvil */
-.action-buttons {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-}
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+  }
 
-.action-buttons button {
-  flex: 1;
-  padding: 12px;
-  font-weight: bold;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+  .action-buttons button {
+    flex: 1;
+    padding: 12px;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
 
-.btn-modificar {
-  background-color: #007899;
-}
+  .btn-modificar {
+    background-color: #007899;
+  }
 
-.btn-eliminar {
-  background-color: #007899;
-}
+  .btn-eliminar {
+    background-color: #007899;
+  }
 
-.action-buttons button:hover {
-  opacity: 0.9;
-}
+  .action-buttons button:hover {
+    opacity: 0.9;
+  }
+
+  .control {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 25px;
+  }
 }

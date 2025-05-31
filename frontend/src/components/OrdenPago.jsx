@@ -181,7 +181,7 @@ const OrdenPago = () => {
         telefonoPost: String(estudiante.telefonoPost ?? ""),
         idCurso: String(estudiante.idCurso ?? ""),
         idColegio: String(estudiante.idColegio ?? ""),
-        fechaNaciPost: estudiante.fechaNaciPost,
+        fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split('T')[0],
         idTutor: tutor.idTutor,
         tutor: tutor,
       };
