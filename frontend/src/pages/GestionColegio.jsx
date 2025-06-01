@@ -36,7 +36,6 @@ const GestionColegios = () => {
   };
 
   return (
-    <div className="contenedor-gestion-col">
       <div className="contenedor-blanco">
         <h2 className="titulo-colegios">Unidades Educativas</h2>
 
@@ -105,8 +104,6 @@ const GestionColegios = () => {
           <button type="button" className="btn-cancelar-col"onClick={() => navigate("/")}>Cancelar</button>
         </div>
       </div>
-      <hr className="separador" />
-    </div>
   );
 };
 

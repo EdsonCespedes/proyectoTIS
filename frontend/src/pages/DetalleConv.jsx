@@ -74,9 +74,10 @@ const DetalleConv = () => {
   };
 
   return (
-    <div className="container-detalleConv lista-usuarios">
-      <h2 className="title-detalleConv">Detalle de convocatorias</h2>
-
+    <div className="container-detalleConv">
+       <div className="title-detalleConv">
+      <h2>Detalle de convocatorias</h2>
+      </div>
       {/* Vista escritorio */}
       <div className="desktop tabla-contenedor">
         <table className="convocatoria-table">

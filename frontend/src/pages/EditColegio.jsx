@@ -132,6 +132,10 @@ const EditColegios = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleCancelar = () => {
+    navigate("/colegios");
+    };
+
     return (
         <div className="contenedor-add-colegio">
             <h3 className="title-add-colegio">UNIDAD EDUCATIVA</h3>
@@ -182,11 +186,12 @@ const EditColegios = () => {
                     </div>
                 </div>
             </form>
-            <div className="control">
-                <button type="submit" form="colegio-form" className="boton-style btn-aceptacion">
+            <div className="botones-editcol">
+                <button type="submit" form="colegio-form" className="modcol">
                     Modificar
                 </button>
-                <Link to="/colegios" className="boton-style btn-rechazo">Cancelar</Link>
+                <button type="button" className="cancol" onClick={handleCancelar}>
+                Cancelar</button>
             </div>
         </div>
     );

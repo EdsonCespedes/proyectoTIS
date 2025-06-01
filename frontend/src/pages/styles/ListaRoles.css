@@ -1,11 +1,21 @@
 /* Fondo general */
 .lista-container {
- 
-  padding: 20px;
-  min-height: 100vh;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 90%;
 }
-.lista-titulo {
+
+.lista-titulo h2 {
   text-align: center;
+  color: #ffffff;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  background-color: #007290;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 10px 10px 0px 0; 
 }
 
 /* Tabla */
