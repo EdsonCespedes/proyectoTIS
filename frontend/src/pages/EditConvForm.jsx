@@ -223,11 +223,11 @@ export const EditConvForm = () => {
 
 
       </form>
-      <div className="button-group">
-        <button type="submit" className="siguiente" onClick={handleSubmit}>
+      <div className="button-crearconv">
+        <button type="submit" className="siguiente-crearconv" onClick={handleSubmit}>
           Siguiente
         </button>
-        <button type="button" className="cancelar" onClick={handleCancelar}>
+        <button type="button" className="cancelar-crearconv" onClick={handleCancelar}>
           Cancelar
         </button>
       </div>

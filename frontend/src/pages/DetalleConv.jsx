@@ -65,6 +65,14 @@ const DetalleConv = () => {
     // ...
   };
 
+  const handleAbrir = () => {
+    navigate("/crear-convocatoria");
+  };
+
+  const handleCancelar = () => {
+    navigate("/");
+  };
+
   return (
     <div className="container-detalleConv lista-usuarios">
       <h2 className="title-detalleConv">Detalle de convocatorias</h2>
@@ -100,20 +108,10 @@ const DetalleConv = () => {
                   </span>
                 </td>
                 <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(convocatoria.idConvocatoria)}
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => {
-                      handleDelete(convocatoria.idConvocatoria, convocatoria);
-                    }}
-                  >
-                    ❌
-                  </button>
+                  <div className="btn-groupdetconv">
+                    <button className="edit-btndetconv" onClick={() => handleEdit(convocatoria.idConvocatoria)}>✏️</button>
+                    <button className="delete-btndetconv" onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}>❌</button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -143,15 +141,15 @@ const DetalleConv = () => {
                 <strong>Olimpiadas:</strong>{" "}
                 {convocatoria.fechaInicioOlimp} - {convocatoria.fechaFinOlimp}
               </p>
-              <div className="card-actions">
+              <div className="card-actionsdetconv">
                 <button
-                  className="edit-btn"
+                  className="edit-btndetconv"
                   onClick={() => handleEdit(convocatoria.idConvocatoria)}
                 >
                   ✏️ Editar
                 </button>
                 <button
-                  className="delete-btn"
+                  className="delete-btndetconv"
                   onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}
                 >
                   ❌ Eliminar
@@ -161,17 +159,14 @@ const DetalleConv = () => {
           </div>
         ))}
       </div>
-
-      <button className="btn agregar">
-        <Link to="/crear-convocatoria" className="text-button">
+       <div className="botones-detconv">
+        <button type="button" className="btn-agregar-detconv" onClick={handleAbrir}>
           + Agregar
-        </Link>
-      </button>
-      <button className="btn-ir">
-        <Link to="/" className="text-button">
-          Salir
-        </Link>
-      </button>
+        </button>
+        <button type="button" className="btn-salir-detconv" onClick={handleCancelar}>
+          Cancelar
+        </button>
+      </div>
     </div>
   );
 };

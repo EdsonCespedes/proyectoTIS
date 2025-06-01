@@ -240,7 +240,7 @@ export default function ac() {
         ))}
       </select>
 
-      <button onClick={handleAddArea}>+ Área</button>
+      <button type="button" className="area-cat" onClick={handleAddArea}>+ Área</button>
 
       <div className="area-cards-container">
         {selectedAreas.map((areaId) => {
@@ -261,7 +261,7 @@ export default function ac() {
               {isExpanded && (
                 <>
                   <p>{area.description}</p>
-                  <button onClick={() => handleAddCategory(area.id)}>+ Categorías</button>
+                  <button type="button" className="cat-cat" onClick={() => handleAddCategory(area.id)}>+ Categorías</button>
                   {area.categories.map((cat) => {
                     const isCatExpanded = expandedCategories.includes(cat.id);
                     return (
@@ -324,9 +324,9 @@ export default function ac() {
           </div>
         </div>
       )}
-      <div className="button-group">
-        <button onClick={handlePublicar} className="publicar-btn">Siguiente</button>
-        <button type="button" className="cancelar" onClick={handleCancelar}>
+      <div className="botones-cat">
+        <button onClick={handlePublicar} className="siguiente-cat">Siguiente</button>
+        <button type="button" className="cancelar-cat" onClick={handleCancelar}>
           Cancelar
         </button>
       </div>

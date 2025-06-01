@@ -111,10 +111,10 @@ const TablaNotificaciones = () => {
   };
 
   return (
-    <div className="tabla-container">
-      <h2>Enviar Notificaciones</h2>
+    <div className="tabla-container-not">
+      <h2 className='titulo-not'>Enviar Notificaciones</h2>
 
-      <div className="convocatoria-selector">
+      <div className="convocatoria-info">
         {/* <label>Seleccionar Convocatoria: </label>
         <select
           value={convocatoria.id}
@@ -165,12 +165,14 @@ const TablaNotificaciones = () => {
           ))}
         </tbody>
       </table>
-
-      <button className="btn-enviarcorreo" onClick={handleEnviarNotificacion}>
-        Enviar Notificación
-        {submitting && <SpinnerInsideButton />}
-      </button>
-      <button onClick={() => navigate("/detalle-convocatoria")} disabled={submitting}>Salir</button>
+      <div className="botones-container">
+        <button className="btn-enviar" onClick={handleEnviarNotificacion} disabled={submitting}>
+          {submitting ? <SpinnerInsideButton /> : 'Enviar Notificación'}
+        </button>
+        <button className="btn-salir" onClick={() => navigate("/detalle-convocatoria")} disabled={submitting}>
+          Salir
+        </button>
+      </div>
     </div>
   );
 };
