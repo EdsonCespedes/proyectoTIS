@@ -53,8 +53,9 @@ const ListaRoles = () => {
 
   return (
     <div className="lista-container">
+      <div className="lista-titulo">
       <h2>Lista de Roles Asignados</h2>
-
+      </div>
       {/* Vista de tabla (escritorio) */}
       {datos.length === 0 ? (
         <p>No hay datos guardados.</p>

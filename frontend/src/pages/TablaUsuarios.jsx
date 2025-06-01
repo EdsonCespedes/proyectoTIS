@@ -115,11 +115,10 @@ const TablaUsuarios = () => {
           </div>
         ))}
       </div>
-      <div className="botones-containe">
+      <div className="acciones-superiores">
         <button className="btn-registrar" onClick={handleRegistrar}>Agregar +</button>
         <button className="btn-cancelar" onClick={() => navigate("/")}>Cancelar</button>
       </div>
-      <hr className="separador" />
     </div>
   );
 };

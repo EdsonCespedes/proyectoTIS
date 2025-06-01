@@ -172,15 +172,10 @@ const AddRoles = () => {
 
   return (
     <div className="form-container">
-      <h2 className="form-title">{modoEdicion ? "Editar Rol" : "Añadir Rol"}</h2>
+      <h2 className="form-title">{modoEdicion ? "Editar Rol" : "Crear Rol"}</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="nombreRol">Nombre Rol:</label>
-        <input
-          type="text"
-          id="nombreRol"
-          value={nombreRol}
-          onChange={(e) => setNombreRol(e.target.value)}
-        />
+        <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)}/>
 
         <label>Funciones:</label>
         <div className="funciones">

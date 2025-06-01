@@ -124,7 +124,8 @@ const AsignarRoles = () => {
         <input type="text" value={searchTerm} onChange={handleNombre} placeholder="🔍 Buscar persona por nombre" />
       </div>
 
-
+       {/* Vista escritorio */}
+    <div className="desktop-view">
       <table className="roles-table">
         <thead>
           <tr>
@@ -164,7 +165,48 @@ const AsignarRoles = () => {
           </tr>
         </tbody>
       </table>
+      </div>
 
+{/* Vista móvil */}
+    <div className="mobile-view">
+      <div className="form-group">
+        <label>Nombre:</label>
+        <select name="user_id" value={formulario.user_id} onChange={handleChange}>
+          <option value="">Seleccione</option>
+          {personas.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name} {p.apellido}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Convocatoria:</label>
+        <select
+          name="convocatoria_id"
+          value={formulario.convocatoria_id}
+          onChange={handleChange}
+        >
+          <option value="">Seleccione</option>
+          {convocatorias.map((c) => (
+            <option key={c.idConvocatoria} value={c.idConvocatoria}>
+              {c.tituloConvocatoria}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Rol:</label>
+        <select name="role_name" value={formulario.role_name} onChange={handleChange}>
+          <option value="">Seleccione</option>
+          {roles.map((r) => (
+            <option key={r.id} value={r.name}>
+              {r.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
       <div className="roles-buttons">
         {!nombreNoEncontrado && (
           <button className="btn-guardar" onClick={guardarDatos}>💾</button>

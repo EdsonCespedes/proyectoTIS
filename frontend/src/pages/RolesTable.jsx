@@ -45,7 +45,7 @@ const RolesTable = () => {
     <div className="roles-table-container">
       <div className="table-container">
         <h2>Roles Registrados</h2>
-
+      </div>
         {/* Vista de escritorio */}
         <div className="desktop-table">
           <table>
@@ -102,6 +102,7 @@ const RolesTable = () => {
           ))}
         </div>
 
+      <div className="roles-actions">
         <Link to="/addRoles"><button className="btn">Nuevo rol</button></Link>
         <Link to="/"><button className="btn">Cancelar</button></Link>
       </div>

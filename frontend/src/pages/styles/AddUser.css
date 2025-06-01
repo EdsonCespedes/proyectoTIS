@@ -1,6 +1,7 @@
 /* Título del formulario */
 .form-title {
   background-color: #007b9e;
+  margin: 0 0 16px 0; 
   color: white;
   padding: 15px;
   text-align: center;

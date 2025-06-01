@@ -102,7 +102,7 @@ const AddUser = () => {
 
   return (
     <div className="form-container">
-      <div className="form-title">{id ? "Editar Usuario" : "Add USUARIOS"}</div>
+      <div className="form-title">{id ? "Editar Usuario" : "Registrar Usuarios"}</div>
       <div className="form-body">
         <div className="form-group">
           <label>Nombre(s):</label>
