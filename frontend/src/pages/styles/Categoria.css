@@ -279,6 +279,12 @@
   background-color: #007a96;
 }
 
+.siguiente-cat:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
 .cancelar-cat {
   background-color: #6B7280;
   color: #ffffff;
@@ -288,6 +294,12 @@
   background-color: #4B5563;
 }
 
+.cancelar-cat:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
 .area-cat {
   background-color: #0093B3;
   color: #ffffff;
@@ -295,6 +307,12 @@
 
 .area-cat:hover {
   background-color: #007a96;
+}
+
+.area-cat:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 
 .cat-cat {
@@ -315,3 +333,9 @@
     padding: 10px;
   }
 }
+
+.divDeshabilitado {
+  pointer-events: none; /* Evita clicks, focus, etc */
+  opacity: 0.5;         /* Visualmente indica deshabilitado */
+}
+

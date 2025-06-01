@@ -103,6 +103,12 @@
   background-color: #005a6a;
 }
 
+.btn-enviar:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
 .btn-salir {
   background-color: #6b7280;
   color: white;
@@ -110,6 +116,12 @@
 
 .btn-salir:hover {
   background-color: #4b5563;
+}
+
+.btn-salir:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 
 /* Responsive */

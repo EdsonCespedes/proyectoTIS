@@ -93,6 +93,12 @@ label {
   background-color: #007a96;
 }
 
+.siguiente-crearconv:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
 .cancelar-crearconv {
   background-color: #6B7280;
   color: #ffffff;
@@ -100,6 +106,12 @@ label {
 
 .cancelar-crearconv:hover {
   background-color: #4B5563;
+}
+
+.cancelar-crearconv:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 
 /* 📱 Media Query para pantallas pequeñas */
