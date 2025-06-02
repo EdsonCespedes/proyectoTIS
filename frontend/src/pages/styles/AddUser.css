@@ -27,6 +27,12 @@
   background-color: #007290;
 }
 
+.btn-agregar-addusr:disabled, .btn-cancelar-addusr:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* ... (el resto de tus estilos se mantiene igual) ... */
 
 /* Media Query para pantallas pequeñas */

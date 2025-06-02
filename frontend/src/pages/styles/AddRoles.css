@@ -76,6 +76,12 @@ form button:hover {
   background-color: #025e70;
 }
 
+form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .add-rol-buttons {
   display: flex;
   justify-content: center;
