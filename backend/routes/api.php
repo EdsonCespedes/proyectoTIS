@@ -337,8 +337,8 @@ Route::prefix('convocatoria')->group(function(){
 });
 
 Route::prefix('user')->group(function(){
-    // 1) Todos los roles y permisos de un usuario en todas las convocatorias
+    // .todos los roles y permisos de un usuario en todas las convocatorias
     Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
-    // 2) Roles y permisos de un usuario dentro de UNA convocatoria
+    // Roles y permisos de un usuario dentro de UNA convocatoria
     Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
 });
