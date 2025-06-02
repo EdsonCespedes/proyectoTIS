@@ -1,32 +1,167 @@
+.roles-table-container {
+  width: 700px;
+  margin: 50px auto;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding-bottom: 20px;
+}
+
 .table-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
+  background-color: #007b9e;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.table-container h2 {
+  text-align: center;
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+button {
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background-color: #007b9a;
+  color: white;
+}
+
+.btn {
+  margin: 10px 5px;
+  background-color: #009fc2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: #007b9e;
+}
+
+/* Desktop visible por defecto */
+.desktop-table {
+  display: block;
+}
+
+.mobile-cards {
+  display: none;
+}
+.roles-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .roles-table-container {
+    width: 95%;
+    margin: 20px auto;
     padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
   }
-  
-  th {
-    background-color: #f4f4f4;
+
+  .desktop-table {
+    display: none;
   }
-  
-  button {
-    padding: 8px 12px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
+
+  .mobile-cards {
+    display: block;
+    margin: 15px 0;
   }
-  
-  button:hover {
+
+  .role-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .role-summary {
     background-color: #007b9a;
     color: white;
+    padding: 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
   }
-  
+
+  .role-details {
+    padding: 15px;
+    background-color: #f0f8fa;
+  }
+
+  .roles-actions {
+    flex-direction: column;
+   
+  }
+
+  .roles-actions .btn {
+    width: 100%;
+    max-width: 300%;
+  }
+  .edit-btn,
+  .delete-btn {
+    padding: 8px 12px;
+    margin: 5px 2px 0 0;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    width: 48%;
+  }
+
+  .edit-btn {
+    background-color: #00a9c9;
+  }
+
+  .delete-btn {
+    background-color: #d9534f;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    margin: 5px 0;
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+

@@ -330,6 +330,7 @@ Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrden
 
 Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
 
+<<<<<<< HEAD
 Route::prefix('convocatoria')->group(function(){
     Route::post('role',      [ConvocatoriaRoleController::class,'store']);
     Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
@@ -342,3 +343,6 @@ Route::prefix('user')->group(function(){
     // Roles y permisos de un usuario dentro de UNA convocatoria
     Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
 });
+=======
+Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
+>>>>>>> 1a3fe98c15a6651b3cc83f0057cd42df7f31765b

@@ -1,24 +1,23 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/Categoria.css";
 import { useLocation, useNavigate } from "react-router-dom";
-//import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
+
+import FullScreenSpinner from "../components/FullScreenSpinner";
+import SpinnerInsideButton from "../components/SpinnerInsideButton";
 
 const iconStyle = { cursor: "pointer", marginLeft: "10px" };
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ac() {
-  //const { convocatoria } = useContext(ConvocatoriaContext);
   const location = useLocation();
   const idConvocatoria = location.state.idConvocatoria;
   const datosAreas = location.state.areas;
   const maxPost = location.state.maxPost;
-
-
   const navigate = useNavigate();
 
-
   const [areas, setAreas] = useState([]);
-  const [selectedAreas, setSelectedAreas] = useState([]); // Ahora es un array
+  const [selectedAreas, setSelectedAreas] = useState([]);
+  const [expandedAreas, setExpandedAreas] = useState([]); // <-- Estados para expandir/contraer
   const [showAreaModal, setShowAreaModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingArea, setEditingArea] = useState(null);
@@ -26,9 +25,11 @@ export default function ac() {
   const [formArea, setFormArea] = useState({ name: "", description: "" });
   const [newDescription, setNewDescription] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
-  //const [idConvocatoria, setIdConvocatoria] = useState("123");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [formCategory, setFormCategory] = useState({ name: "", options: [], monto: 0, areaId: null });
+  const [expandedCategories, setExpandedCategories] = useState([]); // agregar esto
+
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -64,21 +65,15 @@ export default function ac() {
           }))
         }));
 
-        // Crear un mapa para las áreas seleccionadas por id
         const mapSelected = new Map(dataTransformada.map(area => [area.id, area]));
-        console.log(mapSelected);
-        
-        // Mapear el backendAreas reemplazando cuando haya coincidencia
-        const mergedAreas = areasConCategorias.map(area => {
-          return mapSelected.get(area.id) || area;
-        });
+        const mergedAreas = areasConCategorias.map(area => mapSelected.get(area.id) || area);
 
         setAreas(mergedAreas);
         setCategoryOptions(dataCursos.map((curso) => curso.Curso));
 
         const areasSeleccionadas = dataTransformada.map(area => area.id);
         setSelectedAreas(areasSeleccionadas);
-        
+        setCargando(false);
       } catch (err) {
         console.error("Error cargando datos:", err);
       }
@@ -86,6 +81,13 @@ export default function ac() {
 
     fetchDatos();
   }, []);
+
+  const toggleExpandArea = (id) => {
+    setExpandedAreas(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+  const toggleExpandCategory = (id) => {
+    setExpandedCategories(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
 
   const handleAddArea = () => {
     setFormArea({ name: "", description: "" });
@@ -145,14 +147,16 @@ export default function ac() {
   };
 
   const handleSaveCategory = () => {
-    const newOptions = newDescription.split(",").map(opt => opt.trim());
+    if (!formCategory.name.trim() || selectedCategories.length === 0 || !formCategory.monto) {
+      alert("Debe llenar todos los campos y seleccionar al menos una opción");
+      return;
+    }
     const newCat = {
       id: editingCategory ? editingCategory.id : Date.now(),
       name: formCategory.name,
-      options: newOptions,
+      options: selectedCategories,
       monto: formCategory.monto,
     };
-
     const updatedAreas = areas.map((area) => {
       if (area.id === formCategory.areaId) {
         const updatedCategories = editingCategory
@@ -162,7 +166,6 @@ export default function ac() {
       }
       return area;
     });
-
     setAreas(updatedAreas);
     setShowCategoryModal(false);
     setSelectedCategories([]);
@@ -186,54 +189,20 @@ export default function ac() {
     }
   };
 
-  const generarJSONFinal = () => {
-    const json = {
-      //convocatoria,
-      areas: areas
-        .filter((a) => selectedAreas.includes(a.id)) // Filtramos las áreas seleccionadas
-        .map((a) => ({
-          tituloArea: a.name, // Título del área
-          descArea: a.description, // Descripción del área
-          habilitada: true, // Habilitación del área
-          categorias: a.categories.map((cat) => ({
-            nombreCategoria: cat.name, // Nombre de la categoría
-            descCategoria: cat.options.join(", "), // Descripción de la categoría (con los niveles)
-            montoCate: cat.monto, // Monto de la categoría (que asumo existe en tus datos)
-            maxPost: maxPost
-          }))
-        }))
-    };
-
-    console.log("JSON Final:", JSON.stringify(json, null, 2));
-    return json;
-  };
-
-
-  const handleMostrarJSON = () => {
-    generarJSONFinal();
-    alert("Revisa la consola (F12) para ver el JSON generado.");
-  };
-
   const handlePublicar = async (e) => {
     e.preventDefault();
 
-    if (!idConvocatoria) {
-      alert("ID de convocatoria no disponible");
-      return;
-    }
-
-    // Estructura que enviarás en el cuerpo de la solicitud
     const payload = {
       areas: areas
-        .filter((a) => selectedAreas.includes(a.id)) // Filtramos las áreas seleccionadas
+        .filter((a) => selectedAreas.includes(a.id))
         .map((a) => ({
-          tituloArea: a.name, // Título del área
-          descArea: a.description, // Descripción del área
-          habilitada: true, // Habilitación del área
+          tituloArea: a.name,
+          descArea: a.description,
+          habilitada: true,
           categorias: a.categories.map((cat) => ({
-            nombreCategoria: cat.name, // Nombre de la categoría
-            descCategoria: cat.options.join(", "), // Descripción de la categoría (con los niveles)
-            montoCate: cat.monto, // Monto de la categoría (que asumo existe en tus datos)
+            nombreCategoria: cat.name,
+            descCategoria: cat.options.join(", "),
+            montoCate: cat.monto,
             maxPost: maxPost
           }))
         }))
@@ -249,29 +218,28 @@ export default function ac() {
       const data = await res.json();
       if (res.ok) {
         alert("Estructura actualizada con éxito ✅");
-        console.log("Respuesta del servidor:", data);
+        navigate(`/editar-convocatoria/${idConvocatoria}/tablaNotif`);
+        setCargando(false);
       } else {
-        alert(`Error al actualizar estructura: ${data.error || data.message}`);
-        return;
+        alert(`Error: ${data.error || data.message}`);
+        setCargando(false);
       }
-
-      //navigate('/detalle-convocatoria');
-      navigate(`/editar-convocatoria/${idConvocatoria}/tablaNotif`);
     } catch (error) {
       alert("Error de red al guardar la estructura");
       console.error(error);
+      setCargando(false);
     }
   };
-
-
+  const handleCancelar = () => {
+    navigate("/detalle-convocatoria");
+  };
 
   return (
     <div className="container-Area">
       <div className="title-area">
         <h2>Áreas de competencia</h2>
       </div>
-
-      <select onChange={handleSelectArea}>
+      <select onChange={handleSelectArea} disabled={cargando}>
         <option value="">Seleccione un área</option>
         {areas.map((a) => (
           <option key={a.id} value={a.id}>
@@ -280,27 +248,51 @@ export default function ac() {
         ))}
       </select>
 
-      <button onClick={handleAddArea}>+ Área</button>
+      {(cargando && areas.length == 0 && categoryOptions.length == 0) && (
+        <FullScreenSpinner />
+      )}
 
-      <div className="area-cards-container">
+      <button type="button" className="area-cat" onClick={handleAddArea} disabled={cargando}>+ Área</button>
+
+      <div className={cargando ? "area-cards-container divDeshabilitado" : "area-cards-container"}>
         {selectedAreas.map((areaId) => {
           const area = areas.find((a) => a.id === areaId);
           if (!area) return null;
+          const isExpanded = expandedAreas.includes(area.id);
           return (
             <div key={area.id} className="area-card-area">
-              <strong>Área: {area.name}</strong>
-              <span onClick={() => handleEditArea(area)} style={iconStyle}>✏️</span>
-              <span onClick={() => handleDeleteArea(area.id)} style={iconStyle}>🗑️</span>
-              <p>{area.description}</p>
-              <button onClick={() => handleAddCategory(area.id)}>+ Categorías</button>
-              {area.categories.map((cat) => (
-                <div key={cat.id} style={{ marginLeft: "10px", marginTop: "5px" }}>
-                  <b>{cat.name}    Bs. {cat.monto}</b>
-                  <span onClick={() => handleEditCategory(cat, area.id)} style={iconStyle}>✏️</span>
-                  <span onClick={() => handleDeleteCategory(cat.id, area.id)} style={iconStyle}>🗑️</span>
-                  <p>{cat.options.join(", ")}</p>
+              <div className="area-name-header">
+                <div className="area-name" onClick={() => toggleExpandArea(area.id)} style={{ cursor: "pointer" }}>
+                  {isExpanded ? "▼" : "▶"} Área: {area.name}
                 </div>
-              ))}
+                <div className="area-icons">
+                  <span onClick={() => handleEditArea(area)} style={iconStyle}>✏️</span>
+                  <span onClick={() => handleDeleteArea(area.id)} style={iconStyle}>🗑️</span>
+                </div>
+              </div>
+              {isExpanded && (
+                <>
+                  <p>{area.description}</p>
+                  <button type="button" className="cat-cat" onClick={() => handleAddCategory(area.id)}>+ Categorías</button>
+                  {area.categories.map((cat) => {
+                    const isCatExpanded = expandedCategories.includes(cat.id);
+                    return (
+                      <div key={cat.id} style={{ marginLeft: "10px", marginTop: "5px" }}>
+                        <div className="category-name-header">
+                          <div className="category-name" onClick={() => toggleExpandCategory(cat.id)} style={{ cursor: "pointer" }}>
+                            {isCatExpanded ? "▼" : "▶"} {cat.name} Bs. {cat.monto}
+                          </div>
+                          <div className="category-icons">
+                            <span onClick={() => handleEditCategory(cat, area.id)} style={iconStyle}>✏️</span>
+                            <span onClick={() => handleDeleteCategory(cat.id, area.id)} style={iconStyle}>🗑️</span>
+                          </div>
+                        </div>
+                        {isCatExpanded && <p>{cat.options.join(", ")}</p>}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           );
         })}
@@ -319,47 +311,36 @@ export default function ac() {
       )}
 
       {showCategoryModal && (
-        < div className="modal-area">
-          <div className="modal-content-area">
-            <span className="close-modal-area" onClick={() => setShowCategoryModal(false)}>❌</span>
+        <div className="modal-cat">
+          <div className="modal-content-cat">
+            <span className="close-modal-cat" onClick={() => setShowCategoryModal(false)}>❌</span>
             <h3>{editingCategory ? "Editar Categoría" : "Agregar Categoría"}</h3>
             <label>Nombre de la categoría:</label>
-            <input
-              type="text"
-              value={formCategory.name}
-              onChange={(e) => setFormCategory({ ...formCategory, name: e.target.value })}
-            />
+            <input type="text" value={formCategory.name} onChange={(e) => setFormCategory({ ...formCategory, name: e.target.value })} />
             <label>Monto:</label>
             <input
-              type="number"
-              min="0"
+              type="text"
               value={formCategory.monto}
-              onChange={(e) => setFormCategory({ ...formCategory, monto: Number(e.target.value) })}
+              onChange={(e) => setFormCategory({ ...formCategory, monto: e.target.value })}
             />
-
             <label>Descripción de la categoría:</label>
             <div className="checkbox-grid">
               {categoryOptions.map((category) => (
                 <label key={category} className="checkbox-item">
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCheckboxChange(category)}
-                  />
+                  <input type="checkbox" checked={selectedCategories.includes(category)} onChange={() => handleCheckboxChange(category)} />
                   {category}
                 </label>
               ))}
             </div>
-
             <button onClick={handleSaveCategory}>Guardar Categoría</button>
           </div>
         </div>
       )}
-
-      <div className="actions">
-        <button onClick={handleMostrarJSON}>Ver JSON en consola</button>
-        <button onClick={handlePublicar}>Actualizar estructura</button>
-        {/* <button onClick={()=>navigate("/detalle-convocatoria")}>Salir</button> */}
+      <div className="botones-cat">
+        <button onClick={handlePublicar} className="siguiente-cat"disabled={cargando || selectedAreas.length == 0 || areas.every(area => area.categories.length === 0)}>Siguiente {cargando && (<span><SpinnerInsideButton/></span>)}</button>
+        {/* <button type="button" className="cancelar-cat" onClick={handleCancelar}>
+          Cancelar
+        </button> */}
       </div>
     </div>
   );

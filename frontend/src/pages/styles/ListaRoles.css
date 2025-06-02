@@ -1,39 +1,154 @@
+/* Fondo general */
 .lista-container {
+ 
   padding: 20px;
-  max-width: 800px;
-  margin: auto;
+  min-height: 100vh;
+}
+.lista-titulo {
+  text-align: center;
 }
 
+/* Tabla */
 .lista-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.lista-table th,
-.lista-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
+.lista-table th {
+  background-color: #006d81;
+  color: white;
+  padding: 12px;
   text-align: left;
 }
 
-.lista-table button {
-  margin-right: 5px;
-  padding: 4px 8px;
+.lista-table td {
+  background-color: white; /* ✅ Fondo blanco en las filas */
+  color: #000;
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+/* Vista móvil: tarjetas colapsables */
+.role-card {
+  background-color: white; /* ✅ Fondo blanco en tarjeta */
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.role-summary {
+  background-color: #006d81;
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
   cursor: pointer;
 }
 
-.botones-container {
-  display: flex;
-  justify-content: flex-start; 
-  gap: 10px; 
-  margin-top: 20px; 
-  align-items: center; 
+.role-details {
+  padding: 10px 15px;
+  background-color: white;
+  color: #000;
 }
 
+.role-details p strong {
+  color: #219ebc;
+}
 
-.botones-container button {
+/* Botones */
+button {
+  margin: 3px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-btn, .rol-btn {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.delete-btn {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+}
+
+.botones-container-tu {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.botones-container-tu button {
+  background-color: #0097a7;
+  color: white;
   padding: 10px 20px;
+  border-radius: 6px;
   font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .lista-table {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: block;
+    margin-top: 20px;
+  }
+
+  .role-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .role-summary {
+    background-color: #007290;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .role-details {
+    padding: 15px;
+    background-color: #f9f9f9;
+  }
+
+  .card-actions {
+    margin-top: 10px;
+  }
+
+  .card-actions button {
+    margin-right: 10px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .edit-btn {
+    background-color: #0099b3;
+  }
+
+  .delete-btn {
+    background-color: #dc3545;
+  }
+
+  .card-actions button:hover {
+    opacity: 0.9;
+  }
 }
 
   

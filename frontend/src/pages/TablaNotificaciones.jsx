@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './styles/TablaNotificaciones.css';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import SpinnerInsideButton from '../components/SpinnerInsideButton';
+import FullScreenSpinner from '../components/FullScreenSpinner';
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const TablaNotificaciones = () => {
@@ -11,20 +14,11 @@ const TablaNotificaciones = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [seleccionarTodo, setSeleccionarTodo] = useState(false);
   const [convocatoria, setConvocatoria] = useState({ id: '', nombre: '' });
-  //const [convocatorias, setConvocatorias] = useState([]);
 
-  // Cargar convocatorias desde el backend
-  // useEffect(() => {
-  //   fetch(`${apiUrl}/todasconvocatorias`)
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       const convocatoriasHabilitadas = data.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
-  //       setConvocatorias(convocatoriasHabilitadas);
-  //     })
-  //     .catch(error => console.error("Error al obtener convocatorias:", error));
-  // }, []);
+  const [submitting, setSubmitting] = useState(false);
+  const [cargandoConv, setCargandoConv] = useState(true);
+  const [cargandoT, setCargandoT] = useState(true);
 
-  // Cargar convocatorias desde el backend
   useEffect(() => {
     fetch(`${apiUrl}/veridconvocatorias/${id}`)
       .then(response => response.json())
@@ -32,8 +26,9 @@ const TablaNotificaciones = () => {
         const convocatoriasHabilitadas = data //.filter(conv => (conv.habilitada === 1 && conv.eliminado === 0));
         setConvocatoria(convocatoriasHabilitadas);
       })
-      .catch(error => console.error("Error al obtener convocatorias:", error));
-  }, []);  
+      .catch(error => console.error("Error al obtener convocatorias:", error))
+      .finally(setCargandoConv(false));
+  }, []);
 
   // Cargar tutores desde el backend
   useEffect(() => {
@@ -46,7 +41,8 @@ const TablaNotificaciones = () => {
         }));
         setUsuarios(usuariosConSeleccion);
       })
-      .catch((error) => console.error('Error al obtener tutores:', error));
+      .catch((error) => console.error('Error al obtener tutores:', error))
+      .finally(setCargandoT(false));
   }, []);
 
   const handleSeleccionarTodo = () => {
@@ -85,6 +81,8 @@ const TablaNotificaciones = () => {
       message: `Nueva convocatoria: ${convocatoria.nombre}`
     };
 
+    setSubmitting(true);
+
     fetch(`${apiUrl}/notify-tutors`, {
       method: 'POST',
       headers: {
@@ -100,33 +98,20 @@ const TablaNotificaciones = () => {
       .catch(error => {
         console.error('Error al enviar notificaciones:', error);
         alert('Hubo un error al enviar las notificaciones.');
-      });
+      })
+      .finally(() => setSubmitting(false));
   };
 
   return (
-    <div className="tabla-container">
-      <h2>Enviar Notificaciones</h2>
-
-      <div className="convocatoria-selector">
-        {/* <label>Seleccionar Convocatoria: </label>
-        <select
-          value={convocatoria.id}
-          onChange={(e) =>
-            setConvocatoria({
-              id: e.target.value,
-              nombre: e.target.options[e.target.selectedIndex].text
-            })
-          }
-        >
-          <option value="">Seleccione una convocatoria</option>
-          {convocatorias.map(conv => (
-            <option key={conv.idConvocatoria} value={conv.idConvocatoria}>
-              {conv.tituloConvocatoria}
-            </option>
-          ))}
-        </select> */}
+    <div className="tabla-container-not">
+      <h2 className='titulo-not'>Enviar Notificaciones</h2>
+      <div className="convocatoria-info">
         <label>Convocatoria:</label>
-        <h4>{convocatoria.tituloConvocatoria}</h4>
+        {cargandoConv ? (
+          <SpinnerInsideButton />
+        ) : (
+          <h4>{convocatoria.tituloConvocatoria}</h4>
+        )}
       </div>
 
       <table className="tabla-notificaciones">
@@ -144,25 +129,37 @@ const TablaNotificaciones = () => {
           </tr>
         </thead>
         <tbody>
-          {usuarios.map((usuario, index) => (
-            <tr key={usuario.idTutor} className={usuario.seleccionado ? 'seleccionado' : ''}>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={usuario.seleccionado}
-                  onChange={() => handleSeleccionarUsuario(index)}
-                />
+          {cargandoT ? (
+            <tr>
+              <td colSpan="2" style={{ textAlign: 'center' }}>
+                <FullScreenSpinner />
               </td>
-              <td>{usuario.correoTutor}</td>
             </tr>
-          ))}
+          ) : (
+            usuarios.map((usuario, index) => (
+              <tr key={usuario.idTutor} className={usuario.seleccionado ? 'seleccionado' : ''}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={usuario.seleccionado}
+                    onChange={() => handleSeleccionarUsuario(index)}
+                  />
+                </td>
+                <td>{usuario.correoTutor}</td>
+              </tr>
+            ))
+          )}
+
         </tbody>
       </table>
-
-      <button className="btn-enviar" onClick={handleEnviarNotificacion}>
-        Enviar Notificación
-      </button>
-      <button onClick={()=>navigate("/detalle-convocatoria")}>Salir</button>
+      <div className="botones-container">
+        <button className="btn-enviar" onClick={handleEnviarNotificacion} disabled={submitting}>
+          {submitting ? (<>Enviando <span><SpinnerInsideButton /></span></>) : 'Enviar Notificación'}
+        </button>
+        <button className="btn-salir" onClick={() => navigate("/detalle-convocatoria")} disabled={submitting}>
+          Salir
+        </button>
+      </div>
     </div>
   );
 };
