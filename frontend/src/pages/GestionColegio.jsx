@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "../components/styles/GestionColegios.css";
 import { Link, useNavigate } from "react-router-dom";
 
+import FullScreenSpinner from "../components/FullScreenSpinner";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const GestionColegios = () => {
@@ -11,11 +13,14 @@ const GestionColegios = () => {
   const [expandedId, setExpandedId] = useState(null);
   const itemsPerPage = 8;
 
+  const [cargando, setCargando] = useState(true);
+
   useEffect(() => {
     fetch(`${apiUrl}/getcolegio`)
       .then((response) => response.json())
       .then((data) => setColegios(data))
-      .catch((error) => console.error("Error al obtener colegios:", error));
+      .catch((error) => console.error("Error al obtener colegios:", error))
+      .finally(() => setCargando(false));    
   }, []);
 
   const startIndex = currentPage * itemsPerPage;
@@ -89,20 +94,22 @@ const GestionColegios = () => {
           ))}
         </div>
 
-        {colegios.length === 0 && <h3 className="no-data">NO HAY COLEGIOS REGISTRADOS AÚN...</h3>}
+        {cargando && <FullScreenSpinner />}
+
+        {colegios.length === 0 && !cargando && <h3 className="no-data">NO HAY COLEGIOS REGISTRADOS AÚN...</h3>}
 
         {colegios.length > itemsPerPage && (
-        <div className="botones-pag">
-            <button className="btn-pag-ant" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0}>
+          <div className="botones-pag">
+            <button className="btn-pag-ant" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0 || cargando}>
               Anterior</button>
             <span> Página {currentPage + 1} de {Math.ceil(colegios.length / itemsPerPage)} </span>
-            <button className="btn-pag-sig" onClick={() => setCurrentPage(currentPage + 1)} disabled={startIndex + itemsPerPage >= colegios.length} >
-             Siguiente </button>
-        </div>
+            <button className="btn-pag-sig" onClick={() => setCurrentPage(currentPage + 1)} disabled={startIndex + itemsPerPage >= colegios.length || cargando} >
+              Siguiente </button>
+          </div>
         )}
         <div className="botones-tabla-col">
-          <button type="button" className="btn-registrar-col" onClick={() => navigate("/registro-colegios")}>Registrar </button>
-          <button type="button" className="btn-cancelar-col"onClick={() => navigate("/")}>Cancelar</button>
+          <button type="button" className="btn-registrar-col" onClick={() => navigate("/registro-colegios")} disabled={cargando}>Registrar </button>
+          <button type="button" className="btn-cancelar-col" onClick={() => navigate("/")} disabled={cargando}>Cancelar</button>
         </div>
       </div>
       <hr className="separador" />
