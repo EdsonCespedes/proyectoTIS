@@ -114,15 +114,37 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if ((name === "nombrePost" || name === "apellidoPost") && value && !nombreApellidoRegex.test(value)) {
-      alert("El nombre y apellido solo pueden contener letras.");
-      return;
-    }
+   if (name === "nombrePost" || name === "apellidoPost") {
+  if (value && !nombreApellidoRegex.test(value)) {
+    alert("El nombre y apellido solo pueden contener letras.");
+    return;
+  }
 
-    if (name === "carnet" && value && !carnetRegex.test(value)) {
+  const palabras = value.trim().split(/\s+/);
+  if (palabras.length > 2) {
+    alert("Solo se permiten como máximo 2 palabras.");
+    return;
+  }
+
+  if (palabras.some(p => p.length > 10)) {
+    alert("Cada palabra debe tener como máximo 10 caracteres.");
+    return;
+  }
+  }
+
+
+      if (name === "carnet") {
+    if (value && !carnetRegex.test(value)) {
       alert("El carnet solo puede contener números.");
       return;
     }
+    if (value.length > 10) {
+      alert("El carnet no puede tener más de 10 dígitos.");
+      return;
+    }
+  }
+
+  
    
 
      if (name === "fechaNaciPost") {
@@ -231,6 +253,28 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       alert("Por favor completa todos los campos requeridos y selecciona al menos un área y una categoría.");
       return;
     }
+
+
+
+     // VALIDACIÓN DE CORREOS AL REGISTRAR
+  const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (form.correoPost && !correoRegex.test(form.correoPost)) {
+    alert("El correo del estudiante no tiene un formato válido.");
+    return;
+  }
+
+  if (form.tutor.correoTutor && !correoRegex.test(form.tutor.correoTutor)) {
+    alert("El correo del tutor no tiene un formato válido.");
+    return;
+  }
+
+  if ((form.correoPost && form.correoPost.length > 50) || (form.tutor.correoTutor && form.tutor.correoTutor.length > 50)) {
+    alert("El correo no debe superar los 50 caracteres.");
+    return;
+  }
+
+
 
     const colegioSeleccionadoId = Object.keys(colegiosDisponibles).find(
       key => colegiosDisponibles[key] === form.idColegio
