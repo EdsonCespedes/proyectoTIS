@@ -48,6 +48,17 @@ const Inicio = () => {
     }
   };
 
+   useEffect(() => {
+    // Cleanup al desmontar para evitar el error "removeChild"
+    return () => {
+      if (areasRef.current) {
+        areasRef.current.scrollTo({
+          left: areasRef.current.scrollLeft,
+          behavior: "auto",
+        });
+      }
+    };
+  }, []);
   return (
     <div className="inicio-container">
       <header className="banner">

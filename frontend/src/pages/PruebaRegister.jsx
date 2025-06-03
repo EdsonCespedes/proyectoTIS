@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
 import './styles/PruebaRegister.css';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -20,8 +22,8 @@ const PruebaRegister = () => {
 
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
-    const [mostrarContraseña, setMostrarContraseña] = useState(false); // Estado para controlar la visibilidad de la contraseña
-    const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false); // Estado para controlar la visibilidad de la confirmación de contraseña
+    const [mostrarContraseña, setMostrarContraseña] = useState(false);
+    const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -38,7 +40,6 @@ const PruebaRegister = () => {
         try {
             const response = await axios.post(`${apiUrl}/register`, formData);
             setSuccessMessage('Registro exitoso. Ahora puede iniciar sesión.');
-            console.log('Usuario registrado:', response.data.user);
 
             setFormData({
                 name: '',
@@ -75,48 +76,68 @@ const PruebaRegister = () => {
     return (
         <div className="register-page">
             <div className="register-box">
-                <h2>REGISTRO</h2>
+
+                <div className="titulo-box">
+                    <h2>REGISTRO</h2>
+                </div>
+
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="name">Nombre</label>
+                    <label htmlFor="name">Nombre *</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} />
                     {errors.name && <small className="error">{errors.name[0]}</small>}
 
-                    <label htmlFor="lastName">Apellido</label>
+                    <label htmlFor="lastName">Apellido *</label>
                     <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
                     {errors.lastName && <small className="error">{errors.lastName[0]}</small>}
 
-                    <label htmlFor="email">Correo electrónico</label>
+                    <label htmlFor="email">Correo electrónico *</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} />
                     {errors.email && <small className="error">{errors.email[0]}</small>}
 
-                    <label htmlFor="password">Contraseña</label>
-                    <input
-                        type={mostrarContraseña ? 'text' : 'password'}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
+                    <label htmlFor="password">Contraseña *</label>
+                    <div className="password-wrapper">
+                        <input
+                            type={mostrarContraseña ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
+                        <span
+                            className="eye-icon-inside"
+                            onClick={() => setMostrarContraseña(!mostrarContraseña)}
+                            title={mostrarContraseña ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                            {mostrarContraseña ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                     {errors.password && <small className="error">{errors.password[0]}</small>}
-                    <span onClick={() => setMostrarContraseña(!mostrarContraseña)}>{mostrarContraseña ? '👁️' : '👁️'}</span>
 
-                    <label htmlFor="password_confirmation">Confirmar contraseña</label>
-                    <input
-                        type={mostrarConfirmarContraseña ? 'text' : 'password'}
-                        name="password_confirmation"
-                        value={formData.password_confirmation}
-                        onChange={handleChange}
-                    />
-                    <span onClick={() => setMostrarConfirmarContraseña(!mostrarConfirmarContraseña)}>{mostrarConfirmarContraseña ? '👁️' : '👁️'}</span>
+                    <label htmlFor="password_confirmation">Confirmar contraseña *</label>
+                    <div className="password-wrapper">
+                        <input
+                            type={mostrarConfirmarContraseña ? 'text' : 'password'}
+                            name="password_confirmation"
+                            value={formData.password_confirmation}
+                            onChange={handleChange}
+                        />
+                        <span
+                            className="eye-icon-inside"
+                            onClick={() => setMostrarConfirmarContraseña(!mostrarConfirmarContraseña)}
+                            title={mostrarConfirmarContraseña ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                            {mostrarConfirmarContraseña ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                     {errors.password_confirmation && <small className="error">{errors.password_confirmation[0]}</small>}
 
-                    <label htmlFor="telefono">Teléfono</label>
+                    <label htmlFor="telefono">Teléfono *</label>
                     <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
                     {errors.telefono && <small className="error">{errors.telefono[0]}</small>}
 
                     <div className="form-group">
-                        <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
+                        <label htmlFor="fechaNacimiento">Fecha de nacimiento *</label>
                         <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} />
                         {errors.fechaNacimiento && <small className="error">{errors.fechaNacimiento[0]}</small>}
                     </div>

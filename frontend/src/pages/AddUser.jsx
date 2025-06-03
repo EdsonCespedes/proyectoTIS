@@ -124,9 +124,9 @@ const AddUser = () => {
         </div>
         <div className="form-buttons">
           <button className="btn-agregar-addusr" onClick={handleGuardar}>
-            {id ? "✏️" : "💾"}
+            {id ? "Editar" : "Guardar"}
           </button>
-          <button className="btn-cancelar-addusr" onClick={handleCancelar}>❌</button>
+          <button className="btn-cancelar-addusr" onClick={handleCancelar}>Cancelar</button>
         </div>
       </div>
     </div>

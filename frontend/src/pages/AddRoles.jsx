@@ -171,38 +171,42 @@ const AddRoles = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2 className="form-title">{modoEdicion ? "Editar Rol" : "Crear Rol"}</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="nombreRol">Nombre Rol:</label>
-        <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)}/>
-
-        <label>Funciones:</label>
-        <div className="funciones">
-          {/* {opcionesFunciones.map((funcion, index) => ( */}
-          {permisosDisponibles.map((funcion) => (
-            // <div key={index}>
-            <div key={funcion.id}>
-              <input
-                type="checkbox"
-                // id={`funcion-${index}`}
-                id={`funcion-${funcion.id}`}
-                // checked={funciones.includes(funcion)}
-                // onChange={() => handleCheckboxChange(funcion)}
-                checked={funciones.includes(funcion.name)}
-                onChange={() => handleCheckboxChange(funcion.name)}
-              />
-              {/* <label htmlFor={`funcion-${index}`}>{funcion}</label> */}
-              <label htmlFor={`funcion-${funcion.id}`}>{funcion.name}</label>
-            </div>
-          ))}
+    <div className="register-page">
+      <div className="register-box">
+        <div className="titulo-box">
+          <h2>{modoEdicion ? "Editar Rol" : "Crear Rol"}</h2>
         </div>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="nombreRol">Nombre Rol:</label>
+          <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)}/>
 
-        <div className="add-rol-buttons">
-          <button type="submit">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
-          <button type="button" onClick={handleCancel}>Cancelar</button>
-        </div>
-      </form>
+          <label>Funciones:</label>
+          <div className="funciones">
+            {/* {opcionesFunciones.map((funcion, index) => ( */}
+            {permisosDisponibles.map((funcion) => (
+              // <div key={index}>
+              <div key={funcion.id}>
+                <input
+                  type="checkbox"
+                  // id={`funcion-${index}`}
+                  id={`funcion-${funcion.id}`}
+                  // checked={funciones.includes(funcion)}
+                  // onChange={() => handleCheckboxChange(funcion)}
+                  checked={funciones.includes(funcion.name)}
+                  onChange={() => handleCheckboxChange(funcion.name)}
+                />
+                {/* <label htmlFor={`funcion-${index}`}>{funcion}</label> */}
+                <label htmlFor={`funcion-${funcion.id}`}>{funcion.name}</label>
+              </div>
+            ))}
+          </div>
+
+          <div className="button-container">
+            <button type="submit"className="btn-registrarse">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
+            <button type="button" className="btn-cancelar-register" onClick={handleCancel}>Cancelar</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

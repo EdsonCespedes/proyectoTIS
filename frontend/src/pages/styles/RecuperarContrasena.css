@@ -1,79 +1,74 @@
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
 .recuperar-container {
   max-width: 400px;
-  margin: 40px auto;
-  padding: 20px;
-  border-radius: 12px;
-  /* background: linear-gradient(to bottom, #e0f7f7, #c0e7e7); */
-  background-color: white;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  font-family: sans-serif;
-}
-.recuperar-container h2 {
-  margin: 0 0 16px 0; /* arriba, derecha, abajo, izquierda */
+  margin: 50px auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Para que el encabezado no tenga espacio arriba */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-
-
-@media (max-width: 768px) {
-    .recuperar-container{
-        width: 80%;
-    }
+/* ✅ Encabezado pegado arriba */
+.recuperar h2 {
+  background-color: #007fa3;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.3rem;
+  margin: 0; /* 🔥 Esto quita el espacio arriba y abajo */
+  border-radius: 16px 16px 0 0;
 }
 
+/* Estilo del formulario */
 .recuperar-form {
-  display: flex;
-  flex-direction: column;
+  padding: 1.5rem;
 }
 
 .recuperar-form label {
-  margin-bottom: 6px;
-  font-weight: bold;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .recuperar-form input {
-  padding: 10px;
-  margin-bottom: 16px;
+  width: 100%;
+  padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 8px;
+  margin-bottom: 1rem;
+  background-color: #f7f7f7;
+  transition: border-color 0.2s;
 }
 
+.recuperar-form input:focus {
+  border-color: #007fa3;
+  outline: none;
+}
+
+.recuperar-form p {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ✅ Centrar el botón "Enviar" */
 .recuperar-form button {
-  padding: 10px;
-  background-color: #007b9e;
+  background-color: #007fa3;
   color: white;
+  padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
+  display: block;       /* 🔥 Esto permite centrarlo */
+  margin: 0 auto;       /* 🔥 Centro horizontal */
 }
 
 .recuperar-form button:hover {
-  background-color: #007b9e;
+  background-color: #005f7f;
 }
 
-.input-con-icono {
-  display: flex;
-  align-items: center;
-}
 
-.input-con-icono input {
-  width: 100%;
-}
-
-.input-con-icono span {
-  margin-left: -35px;
-  margin-top: -15px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.button-restablecer-c{
-  width: 100%;
-  margin: 0;
-}

@@ -209,7 +209,7 @@ const AsignarRoles = () => {
     </div>
       <div className="roles-buttons">
         {!nombreNoEncontrado && (
-          <button className="btn-guardar" onClick={guardarDatos}>💾</button>
+          <button className="btn-guardar" onClick={guardarDatos}>Guardar</button>
         )}
         {nombreNoEncontrado && (
           <button className="btn-registrar">Registrar</button>
