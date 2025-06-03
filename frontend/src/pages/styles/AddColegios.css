@@ -129,7 +129,64 @@ select {
   }
 }
 
-/* --- RESPONSIVE TABLET Y MÓVIL --- */
+.calendar-icon {
+    position: absolute;
+    right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    width: 100%;
+}
+
+.boton-style {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0C3E92;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 5px
+}
+
+.btn-rechazo {
+    background-color: #B0C4D8;
+    color: white;
+}
+.btn-rechazo:hover {
+    background-color: #96AEC9;
+}
+
+.btn-rechazo:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-aceptacion {
+    background-color: #0099B3;
+}
+.btn-aceptacion:hover {
+    background-color: #007A8F;
+}
+
+.btn-aceptacion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Responsivo para pantallas menores a 768px (tablets y móviles) */
 @media (max-width: 768px) {
   .two-items {
     flex-direction: column;

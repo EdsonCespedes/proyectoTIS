@@ -39,6 +39,12 @@
   background-color: #007a96;
 }
 
+.btn-registrar-col:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
 .btn-cancelar-col {
   background-color: #6B7280;
   color: #ffffff;
@@ -46,6 +52,12 @@
 
 .btn-cancelar-col:hover {
   background-color: #4B5563;
+}
+
+.btn-cancelar-col:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 
 /* Botones de paginación */

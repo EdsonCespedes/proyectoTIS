@@ -68,9 +68,10 @@
 }
 
 .botones button:disabled {
-  background-color: #007A8F; 
+  opacity: 0.6;
   cursor: not-allowed;
-}
+  pointer-events: none;
+} 
 
 /* Estilo base para el botón Salir */
 .botones button:last-child {
