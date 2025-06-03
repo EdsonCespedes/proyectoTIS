@@ -26,9 +26,68 @@ const PruebaRegister = () => {
     const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
+        const newErrors = { ...errors };
+
+        if (name === "name" || name === "lastName") {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                newErrors[name] = [`El ${name === "name" ? "nombre" : "apellido"} solo debe contener letras.`];
+            } else {
+                const words = value.trim().split(/\s+/);
+                if (words.length > 2) {
+                    newErrors[name] = [`El ${name === "name" ? "nombre" : "apellido"} solo puede tener dos palabras.`];
+                    return;
+                } else if (words.some(w => w.length > 15)) {
+                    newErrors[name] = [`Cada palabra del ${name === "name" ? "nombre" : "apellido"} debe tener máximo 15 letras.`];
+                    return;
+                } else {
+                    delete newErrors[name];
+                }
+            }
+            if (value.length > 21) return;
+        }
+
+        if (name === "telefono") {
+            if (!/^\d*$/.test(value)) {
+                newErrors.telefono = ['Solo se permiten números.'];
+            } else if (value.length > 8) {
+                newErrors.telefono = ['Máximo 8 dígitos.'];
+            } else {
+                delete newErrors.telefono;
+            }
+        }
+
+        if (name === "email") {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                newErrors.email = ['Correo electrónico inválido.'];
+            } else {
+                delete newErrors.email;
+            }
+        }
+
+        if (name === "password") {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(value)) {
+                newErrors.password = ['La contraseña debe tener mínimo 8 caracteres, incluyendo mayúscula, minúscula y número.'];
+            } else {
+                delete newErrors.password;
+            }
+        }
+
+        if (name === "password_confirmation") {
+            if (value !== formData.password) {
+                newErrors.password_confirmation = ['Las contraseñas no coinciden.'];
+            } else {
+                delete newErrors.password_confirmation;
+            }
+        }
+
+        setErrors(newErrors);
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
     };
 
@@ -36,6 +95,50 @@ const PruebaRegister = () => {
         e.preventDefault();
         setErrors({});
         setSuccessMessage('');
+
+        const newErrors = {};
+
+        const validarNombreApellido = (campo, valor) => {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(valor)) {
+                return `El ${campo} solo debe contener letras.`;
+            }
+            const palabras = valor.trim().split(/\s+/);
+            if (palabras.length > 2) {
+                return `El ${campo} solo debe tener máximo dos palabras.`;
+            }
+            if (palabras.some(p => p.length > 8)) {
+                //return `Cada palabra del ${campo} debe tener máximo 8 letras.`;
+            }
+        };
+
+        const nombreError = validarNombreApellido('nombre', formData.name);
+        if (nombreError) newErrors.name = [nombreError];
+
+        const apellidoError = validarNombreApellido('apellido', formData.lastName);
+        if (apellidoError) newErrors.lastName = [apellidoError];
+
+        if (!/^\d{8}$/.test(formData.telefono)) {
+            newErrors.telefono = ['El teléfono debe contener exactamente 8 dígitos numéricos.'];
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            //newErrors.email = ['Correo electrónico inválido.'];
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(formData.password)) {
+            newErrors.password = ['La contraseña debe tener mínimo 8 caracteres, incluyendo mayúscula, minúscula y número.'];
+        }
+
+        if (formData.password !== formData.password_confirmation) {
+            newErrors.password_confirmation = ['Las contraseñas no coinciden.'];
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
 
         try {
             const response = await axios.post(`${apiUrl}/register`, formData);
@@ -153,5 +256,3 @@ const PruebaRegister = () => {
 };
 
 export default PruebaRegister;
-
-
