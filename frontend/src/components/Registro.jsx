@@ -45,7 +45,28 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     areas: estudiante?.areas || [],
     categorias: estudiante?.categorias || [],
   });
+// Función para validar formato y rango de fecha
+  function esFechaValida(fechaTexto) {
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = fechaTexto.match(dateRegex);
 
+    if (!match) return false;
+
+    const [_, dayStr, monthStr, yearStr] = match;
+    const day = parseInt(dayStr, 10);
+    const month = parseInt(monthStr, 10) - 1;
+    const year = parseInt(yearStr, 10);
+
+    const fecha = new Date(year, month, day);
+    return (
+      fecha.getDate() === day &&
+      fecha.getMonth() === month &&
+      fecha.getFullYear() === year &&
+      fecha >= new Date("2007-01-01") &&
+      fecha <= new Date("2019-12-31")
+    );
+  }
+  
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   useEffect(() => {
@@ -104,57 +125,59 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     }
    
 
-    if (name === "fechaNaciPost") {
-      // Permitir solo números y el separador "/"
-      const formattedValue = value.replace(/[^0-9/]/g, ""); // Elimina todo lo que no sea número o "/"
-      
+     if (name === "fechaNaciPost") {
+    // Solo permite números
+    const numericValue = value.replace(/\D/g, "");
 
-      // Actualizamos el estado con la entrada formateada
-      setForm((prevForm) => ({
-        ...prevForm,
-        [name]: formattedValue,
-      }));
-  
-      // Validación para que la fecha tenga el formato correcto
-      const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-      const match = formattedValue.match(dateRegex);
-  
-      if (match) {
-        const day = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10) - 1; // Los meses en JavaScript son de 0 a 11
-        const year = parseInt(match[3], 10);
-        
-        const selectedDate = new Date(year, month, day);
-        const minDate = new Date("2007-01-01");
-        const maxDate = new Date("2019-12-31");
-  
-        // Comprobamos si la fecha está dentro del rango
-        if (selectedDate < minDate || selectedDate > maxDate) {
-          alert("La fecha debe estar entre el 1 de enero de 1990 y el 31 de diciembre de 2019.");
+    // Inserta las barras automáticamente: DD/MM/AAAA
+    let formatted = "";
+    if (numericValue.length <= 2) {
+      formatted = numericValue;
+    } else if (numericValue.length <= 4) {
+      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+    } else {
+      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+    }
+
+    // Validación final cuando el largo sea 10 caracteres
+      if (formatted.length === 10) {
+        const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (match) {
+          const day = parseInt(match[1], 10);
+          const month = parseInt(match[2], 10) - 1;
+          const year = parseInt(match[3], 10);
+
+          const selectedDate = new Date(year, month, day);
+          const minDate = new Date("2007-01-01");
+          const maxDate = new Date("2019-12-31");
+
+          if (selectedDate < minDate || selectedDate > maxDate) {
+            alert("La fecha debe estar entre el 01/01/2007 y el 31/12/2019.");
+            return;
+          }
+
+          if (
+            selectedDate.getDate() !== day ||
+            selectedDate.getMonth() !== month ||
+            selectedDate.getFullYear() !== year
+          ) {
+            alert("Fecha inválida.");
+            return;
+          }
+        } else {
+          alert("Formato inválido. Usa DD/MM/AAAA");
           return;
         }
+        
       }
-    }
     
-
-    setForm((prevForm) => {
-      if (name.includes(".")) {
-        const [parent, child] = name.split(".");
-        return {
-          ...prevForm,
-          [parent]: {
-            ...prevForm[parent],
-            [child]: value,
-          },
-        };
-      }
-
-      return {
-        ...prevForm,
-        [name]: value,
-      };
-    });
-
+     setForm(prev => ({ ...prev, [name]: formatted }));
+  } else {
+    
+    setForm(prev => ({ ...prev, [name]: value }));
+  }
+  
+  
     if (name === "departamentoColegio") {
       fetch(`${apiUrl}/verprovincias/departamento/${value}`)
         .then(response => response.json())
@@ -180,6 +203,10 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   };
 
   const handleAceptar = () => {
+    if (!esFechaValida(form.fechaNaciPost)) {
+      alert("Fecha inválida o fuera de rango.");
+      return;
+    }
     console.log(form);
 
     const camposRequeridos = [
@@ -308,26 +335,8 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
             <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
             <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-              <DatePicker
-              selected={form.fechaNaciPost}
-              onChange={(date) =>
-                setForm((prevForm) => ({
-                  ...prevForm,
-                  fechaNaciPost: date,
-                }))
-              }
-              dateFormat="dd/MM/yyyy"
-              placeholderText="DD/MM/AAAA"
-              minDate={new Date("2007-01-01")}
-              maxDate={new Date("2019-12-31")}
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              locale={es}
-              calendarClassName="calendario-postulante"
-              dayClassName={date => "dia-calendario"}
-              formatWeekDay={nameOfDay => nameOfDay.substr(0, 2)} // corta a "lun", "mar", etc.
-            />
+            <input type="text" name="fechaNaciPost" placeholder="DD/MM/AAAA" value={form.fechaNaciPost} onChange={handleChange} />
+      
 
 
             <select name="idCurso" onChange={handleChange} value={form.idCurso}>
