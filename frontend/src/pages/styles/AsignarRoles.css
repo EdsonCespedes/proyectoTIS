@@ -102,6 +102,18 @@
   background-color: #007b9e; /* Hover effect para el botón registrar */
 }
 
+.btn-registrar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-cancelar:hover {
   background-color: #8e9ca9; /* Hover effect para el botón cancelar */
 }

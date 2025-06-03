@@ -68,6 +68,7 @@
   transition: background-color 0.2s, transform 0.1s;
 }
 
+
 .btn-agregar-addusr {
   background-color: #007a9e;
   color: #fff;
@@ -87,6 +88,7 @@
   background-color: #aaaaaa;
   transform: scale(1.02);
 }
+
 
 
 
