@@ -4,9 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use App\Models\Area;
+use App\Models\Curso;
+use App\Models\Categoria;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class Convocatoria extends Model
 {
+    use HasFactory, LogsActivity;
+
     protected $table = 'convocatoria';
     protected $primaryKey = 'idConvocatoria';
     public $timestamps = false;
@@ -25,7 +34,14 @@ class Convocatoria extends Model
         'eliminado'
     ];
 
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('convocatorias')
+            ->logOnly($this->fillable)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function eliminarConvocatoria()
     {

@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Facades\DB;
 
 class Colegio extends Model
 {
+    use HasFactory, LogsActivity;
     
     protected $table = 'colegio';
     protected $primaryKey = 'idColegio';
@@ -20,6 +24,31 @@ class Colegio extends Model
         'direccion',
         'fecha_creacion',
     ];
+
+     protected static $logName = 'colegio';
+    protected static $logAttributes = [
+        'nombreColegio',
+        'departamento',
+        'provincia',
+        'RUE',
+        'direccion',
+        'fecha_creacion',
+    ];
+    protected static $logOnlyDirty = true;
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "Colegio fue {$eventName}";
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('colegios')
+            ->logOnly($this->fillable)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public static function obtenerDatosColegio()
     {

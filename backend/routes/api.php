@@ -38,6 +38,9 @@ use App\Http\Controllers\ConvocatoriaRoleController;
 
 use App\Http\Controllers\ReportePostulantesController;
 
+use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\LogController;
+
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -330,7 +333,6 @@ Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrden
 
 Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
 
-<<<<<<< HEAD
 Route::prefix('convocatoria')->group(function(){
     Route::post('role',      [ConvocatoriaRoleController::class,'store']);
     Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
@@ -343,6 +345,30 @@ Route::prefix('user')->group(function(){
     // Roles y permisos de un usuario dentro de UNA convocatoria
     Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
 });
-=======
+
 Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
->>>>>>> 1a3fe98c15a6651b3cc83f0057cd42df7f31765b
+
+Route::middleware('auth:sanctum')->group(function() {
+    // ver todas las bitácoras
+    Route::get('/logs', [LogController::class, 'index']);
+
+    // Ver detalle de una bitácora
+    Route::get('/logs/{id}', [LogController::class, 'show']);
+
+    // Filtrar bitácoras
+    Route::get('/logs/filter', [LogController::class, 'filter']);
+});
+
+Route::middleware('auth:sanctum')->group(function() {
+    // Crear un nuevo backup
+    Route::post('/backups', [BackupController::class, 'create']);
+
+    // Listar backups existentes
+    Route::get('/backups', [BackupController::class, 'index']);
+
+    // Descargar un backup específico
+    Route::get('/backups/{filename}/download', [BackupController::class, 'download']);
+
+    // Restaurar base de datos desde backup
+    Route::post('/backups/restore', [BackupController::class, 'restore']);
+});

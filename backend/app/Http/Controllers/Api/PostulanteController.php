@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tutor;
 use App\Models\Postulante;
 use App\Models\Postulacion;
@@ -16,7 +17,7 @@ class PostulanteController extends Controller
 {
     public function register(Request $request)
     {
-        ////
+        
         if ($request->filled('idTutor')) {
             $request->request->remove('tutor');
         }
@@ -160,6 +161,12 @@ class PostulanteController extends Controller
                 $postulacionIds[] = $idPostulacion;
             }
 
+            activity()
+            ->causedBy(Auth::user())
+            ->performedOn($postulante)
+            ->withProperties(['attributes' => $postulante->toArray()])
+            ->log('created');
+
             DB::commit();
             return response()->json([
                 'message'   => 'Registro completado correctamente',
@@ -252,6 +259,15 @@ class PostulanteController extends Controller
             ]));
 
             $postulante->save();
+
+            activity()
+                ->causedBy(Auth::user())
+                ->performedOn($postulante)
+                ->withProperties([
+                    'old'        => array_intersect_key($oldData, $newData),
+                    'attributes' => array_intersect_key($newData, $newData),
+                ])
+                ->log('updated');
 
             DB::commit();
             return response()->json([

@@ -47,6 +47,8 @@ import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
 import ReportePostulantes from "./pages/ReportePostulantes";
 
+import LogsTablePrueba from "./pages/LogsTablePrueba";
+
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
   const navigate = useNavigate();
@@ -149,6 +151,8 @@ function AppRoutes() {
 
       {/* Reportes */}
       <Route path="/reportes" element={<ReportePostulantes />} />
+
+      <Route path="/logs" element={<LogsTablePrueba />} />
     </Routes>
   );
 }
