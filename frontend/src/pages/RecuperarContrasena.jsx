@@ -88,6 +88,7 @@ const RecuperarContrasena = () => {
             <h2>¿Has olvidado la contraseña?</h2>
           </div>
           <form onSubmit={handleVerificar} className="recuperar-form">
+            <h2>Ingresa el Email de registro  </h2>
             <label htmlFor="email">Email *</label>
             <input
               type="email"

@@ -126,8 +126,8 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     return;
   }
 
-  if (palabras.some(p => p.length > 10)) {
-    alert("Cada palabra debe tener como máximo 10 caracteres.");
+  if (palabras.some(p => p.length > 20)) {
+    alert("Cada palabra debe tener como máximo 20 caracteres.");
     return;
   }
   }
@@ -160,8 +160,6 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     } else {
       formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
     }
-
-    // Validación final cuando el largo sea 10 caracteres
       if (formatted.length === 10) {
         const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if (match) {
@@ -379,7 +377,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
             <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
             <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
             <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-            <input type="text" name="fechaNaciPost" placeholder="DD/MM/AAAA" value={form.fechaNaciPost} onChange={handleChange} />
+            <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} />
       
 
 
