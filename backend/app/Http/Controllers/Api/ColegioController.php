@@ -127,4 +127,24 @@ class ColegioController extends Controller
             'data' => $colegio
         ], 200);
     }
+
+    // Desabilitar colegio
+    public function deshabilitar($id)
+    {
+        $colegio = Colegio::find($id);
+
+        if (!$colegio) {
+            return response()->json(['message' => 'Colegio no encontrado'], 404);
+        }
+
+        if (!$colegio->estado) {
+            return response()->json(['message' => 'El colegio ya está deshabilitado'], 400);
+        }
+
+        $colegio->estado = false;
+        $colegio->save();
+
+        return response()->json(['message' => 'Colegio deshabilitado correctamente'], 200);
+    }
+
 }

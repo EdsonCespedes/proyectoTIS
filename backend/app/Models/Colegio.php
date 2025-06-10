@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Colegio extends Model
 {
-    
+
     protected $table = 'colegio';
     protected $primaryKey = 'idColegio';
     public $timestamps = false;
@@ -19,6 +19,7 @@ class Colegio extends Model
         'RUE',
         'direccion',
         'fecha_creacion',
+        'estado',
     ];
 
     public static function obtenerDatosColegio()

@@ -78,6 +78,7 @@ Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::cla
 Route::post('/colegios', [ColegioController::class, 'store']);
 Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 Route::put('/colegio/{id}', [ColegioController::class, 'update']);
+Route::put('/colegio/{id}/deshabilitar', [ColegioController::class, 'deshabilitar']);
 
 //Crear ordenPago
    // "montoTotal": ,
@@ -251,7 +252,7 @@ Route::put('/roles/{role}', function(Role $role, Request $req){
 
     // re-sincronizamos permisos
     $role->syncPermissions($data['permissions'] ?? []);
-    
+
     return response()->json($role->load('permissions'));
 });
 
@@ -263,7 +264,7 @@ Route::get('/roles/{role}', function(Role $role){
 //Actualiza el nombre del rol
 Route::put('/roles/{id}', function($id, Request $request) {
     $request->validate(['name' => 'required|string|unique:roles,name,' . $id]);
-    
+
     $rol = Role::findOrFail($id);
     $rol->name = $request->name;
     $rol->save();
@@ -299,7 +300,7 @@ Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
 //Actualiza los permisos del rol
 Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
     $request->validate(['permissions' => 'required|array']);
-    
+
     $rol = Role::findOrFail($id);
     $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
 
@@ -317,7 +318,7 @@ Route::get('/recibos/{id}', [ReciboController::class, 'show']);
 //envia correo de restablecimiento de contraseña
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
-//actualiza la contraseña 
+//actualiza la contraseña
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
