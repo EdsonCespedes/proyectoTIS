@@ -22,10 +22,7 @@ use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\TutorNotificationController;
 
-
-
 use App\Http\Controllers\UserController;
-
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
@@ -40,7 +37,6 @@ use App\Http\Controllers\ReportePostulantesController;
 
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\LogController;
-
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -371,4 +367,12 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Restaurar base de datos desde backup
     Route::post('/backups/restore', [BackupController::class, 'restore']);
+});
+
+Route::prefix('backups')->group(function () {
+    Route::get('/', [BackupController::class, 'index']);                 // Listar backups
+    Route::post('/', [BackupController::class, 'store']);                // Crear backup
+    Route::get('{filename}', [BackupController::class, 'download']);     // Descargar backup
+    Route::post('upload', [BackupController::class, 'upload']);          // Subir backup
+    Route::post('{filename}/restore', [BackupController::class, 'restore']); // Restaurar desde backup
 });
