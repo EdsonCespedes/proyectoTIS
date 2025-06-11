@@ -23,6 +23,8 @@ const PruebaLogin = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    const [cargando, setCargando] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -32,6 +34,8 @@ const PruebaLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setCargando(true);
+
         setError('');
         setSuccessMessage('');
 

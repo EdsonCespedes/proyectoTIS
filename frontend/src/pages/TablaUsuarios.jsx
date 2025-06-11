@@ -19,7 +19,7 @@ const TablaUsuarios = () => {
     fetch(`${apiUrl}/todosusers`)
       .then(response => response.json())
       .then(data => {
-        const withExpanded = data.map(u => ({ ...u, expanded: false }));
+        const withExpanded = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor').map(u => ({ ...u, expanded: false }));
         setUsuarios(withExpanded);
       })
       .catch(error => console.error("Error al obtener usuarios:", error))

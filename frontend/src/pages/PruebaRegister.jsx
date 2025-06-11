@@ -25,6 +25,7 @@ const PruebaRegister = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [mostrarContraseña, setMostrarContraseña] = useState(false);
     const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
+    const [cargando, setCargando] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
