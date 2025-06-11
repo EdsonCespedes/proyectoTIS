@@ -4,6 +4,8 @@ import "./styles/AddUser.css";
 import { sub } from "date-fns";
 import FullScreenSpinner from "../components/FullScreenSpinner";
 import SpinnerInsideButton from "../components/SpinnerInsideButton";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -17,8 +19,17 @@ const AddUser = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
+  const [mostrarContraseña, setMostrarContraseña] = useState(false);
+
   const [cargando, setCargando] = useState(false);
   const [subiendo, setSubiendo] = useState(false);
+  
+  
+const [errores, setErrores] = useState({
+    nombre: "",
+    apellido: ""
+  });
+
 
   useEffect(() => {
     if (id) {
@@ -49,6 +60,37 @@ const AddUser = () => {
     }
   }, [id]);
 
+
+   const handleNombreChange = (e) => {
+    const valor = e.target.value;
+    setNombre(valor);
+
+    const palabras = valor.trim().split(/\s+/);
+    if (palabras.length > 2) {
+      setErrores(prev => ({ ...prev, nombre: "Máximo en nombres." }));
+    } else if (!palabras.every(p => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/.test(p) && p.length <= 10)) {
+      setErrores(prev => ({ ...prev, nombre: "Solo letras y hasta 10 caracteres por palabra." }));
+    } else {
+      setErrores(prev => ({ ...prev, nombre: "" }));
+    }
+  };
+
+  const handleApellidoChange = (e) => {
+    const valor = e.target.value;
+    setApellidos(valor);
+
+    const palabras = valor.trim().split(/\s+/);
+    if (palabras.length > 2) {
+      setErrores(prev => ({ ...prev, apellido: "Máximo en apellidos." }));
+    } else if (!palabras.every(p => /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/.test(p) && p.length <= 10)) {
+      setErrores(prev => ({ ...prev, apellido: "Solo letras y hasta 10 caracteres por palabra." }));
+    } else {
+      setErrores(prev => ({ ...prev, apellido: "" }));
+    }
+  };
+
+
+
   const handleCancelar = () => {
     navigate("/tablaUsuarios");
   };
@@ -68,6 +110,15 @@ const AddUser = () => {
         return;
       }
     
+
+
+     if (errores.nombre || errores.apellido) {
+      alert("Corrige los errores antes de guardar.");
+      setSubiendo(false);
+      return;
+    }
+
+
 
     if (id) {
       const dataToSend = {
@@ -133,33 +184,68 @@ const AddUser = () => {
       <div className="form-body">
         {cargando ? <FullScreenSpinner /> : (
           <>
+
             <div className="form-group">
               <label>Nombre(s):</label>
-              <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} disabled={cargando || subiendo} />
+              <input
+                type="text"
+                value={nombre}
+                onChange={handleNombreChange}
+                disabled={cargando || subiendo}
+              />
+              {errores.nombre && <small className="error">{errores.nombre}</small>}
             </div>
+
+            
             <div className="form-group">
               <label>Apellidos</label>
-              <input type="text" value={apellido} onChange={(e) => setApellidos(e.target.value)} disabled={cargando || subiendo} />
+              <input
+                type="text"
+                value={apellido}
+                onChange={handleApellidoChange}
+                disabled={cargando || subiendo}
+              />
+              {errores.apellido && <small className="error">{errores.apellido}</small>}
             </div>
-            {!id && (
+
+
+             {!id && (
               <div className="form-group">
-                <label>password :</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={cargando || subiendo} />
+                <label htmlFor="password">Contraseña *</label>
+                <div className="password-wrapper">
+                  <input
+                    type={mostrarContraseña ? 'text' : 'password'}
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={cargando || subiendo}
+                  />
+                  <span
+                    className="eye-icon-inside"
+                    onClick={() => setMostrarContraseña(!mostrarContraseña)}
+                    title={mostrarContraseña ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    {mostrarContraseña ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
               </div>
             )}
+
+            
             <div className="form-group">
-              <label>email :</label>
+              <label>Email :</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={cargando || subiendo} />
             </div>
           </>
         )}
 
         <div className="form-buttons">
-          <button className="btn-agregar-addusr" onClick={handleGuardar} disabled={cargando || subiendo}>
-            {subiendo ? <span><SpinnerInsideButton /></span> : id ? "✏️" : "💾"}
 
+          <button className="btn-agregar-addusr" onClick={handleGuardar}>
+            {id ? "Editar" : "Guardar"}
           </button>
-          <button className="btn-cancelar-addusr" onClick={handleCancelar} disabled={cargando || subiendo}>❌</button>
+          <button className="btn-cancelar-addusr" onClick={handleCancelar}>Cancelar</button>
+
         </div>
       </div>
     </div>

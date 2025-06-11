@@ -236,7 +236,8 @@ const AsignarRoles = () => {
 
       <div className="roles-buttons">
         {!nombreNoEncontrado && (
-          <button className="btn-guardar" onClick={guardarDatos} disabled={cargando || subiendo}>{subiendo ? <SpinnerInsideButton /> : "💾"}</button>
+          <button className="btn-guardar" onClick={guardarDatos} disabled={cargando || subiendo}>{subiendo ? <SpinnerInsideButton /> : "Guardar"}</button>
+
         )}
         {nombreNoEncontrado && (
           <button className="btn-registrar" onClick={() => { navigate("/addUser") }} disabled={cargando || subiendo}>Registrar Usuario</button>

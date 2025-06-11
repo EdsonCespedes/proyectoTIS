@@ -45,7 +45,28 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     areas: estudiante?.areas || [],
     categorias: estudiante?.categorias || [],
   });
+// Función para validar formato y rango de fecha
+  function esFechaValida(fechaTexto) {
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = fechaTexto.match(dateRegex);
 
+    if (!match) return false;
+
+    const [_, dayStr, monthStr, yearStr] = match;
+    const day = parseInt(dayStr, 10);
+    const month = parseInt(monthStr, 10) - 1;
+    const year = parseInt(yearStr, 10);
+
+    const fecha = new Date(year, month, day);
+    return (
+      fecha.getDate() === day &&
+      fecha.getMonth() === month &&
+      fecha.getFullYear() === year &&
+      fecha >= new Date("2007-01-01") &&
+      fecha <= new Date("2019-12-31")
+    );
+  }
+  
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
   useEffect(() => {
@@ -101,68 +122,90 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if ((name === "nombrePost" || name === "apellidoPost") && value && !nombreApellidoRegex.test(value)) {
-      alert("El nombre y apellido solo pueden contener letras.");
-      return;
-    }
+   if (name === "nombrePost" || name === "apellidoPost") {
+  if (value && !nombreApellidoRegex.test(value)) {
+    alert("El nombre y apellido solo pueden contener letras.");
+    return;
+  }
 
-    if (name === "carnet" && value && !carnetRegex.test(value)) {
+  const palabras = value.trim().split(/\s+/);
+  if (palabras.length > 2) {
+    alert("Solo se permiten como máximo 2 palabras.");
+    return;
+  }
+
+  if (palabras.some(p => p.length > 20)) {
+    alert("Cada palabra debe tener como máximo 20 caracteres.");
+    return;
+  }
+  }
+
+
+      if (name === "carnet") {
+    if (value && !carnetRegex.test(value)) {
       alert("El carnet solo puede contener números.");
       return;
     }
+    if (value.length > 10) {
+      alert("El carnet no puede tener más de 10 dígitos.");
+      return;
+    }
+  }
 
+  
+   
 
-    if (name === "fechaNaciPost") {
-      // Permitir solo números y el separador "/"
-      const formattedValue = value.replace(/[^0-9/]/g, ""); // Elimina todo lo que no sea número o "/"
+     if (name === "fechaNaciPost") {
+    // Solo permite números
+    const numericValue = value.replace(/\D/g, "");
 
+    // Inserta las barras automáticamente: DD/MM/AAAA
+    let formatted = "";
+    if (numericValue.length <= 2) {
+      formatted = numericValue;
+    } else if (numericValue.length <= 4) {
+      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+    } else {
+      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+    }
+      if (formatted.length === 10) {
+        const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (match) {
+          const day = parseInt(match[1], 10);
+          const month = parseInt(match[2], 10) - 1;
+          const year = parseInt(match[3], 10);
 
-      // Actualizamos el estado con la entrada formateada
-      setForm((prevForm) => ({
-        ...prevForm,
-        [name]: formattedValue,
-      }));
+          const selectedDate = new Date(year, month, day);
+          const minDate = new Date("2007-01-01");
+          const maxDate = new Date("2019-12-31");
 
-      // Validación para que la fecha tenga el formato correcto
-      const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-      const match = formattedValue.match(dateRegex);
+          if (selectedDate < minDate || selectedDate > maxDate) {
+            alert("La fecha debe estar entre el 01/01/2007 y el 31/12/2019.");
+            return;
+          }
 
-      if (match) {
-        const day = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10) - 1; // Los meses en JavaScript son de 0 a 11
-        const year = parseInt(match[3], 10);
-
-        const selectedDate = new Date(year, month, day);
-        const minDate = new Date("2007-01-01");
-        const maxDate = new Date("2019-12-31");
-
-        // Comprobamos si la fecha está dentro del rango
-        if (selectedDate < minDate || selectedDate > maxDate) {
-          alert("La fecha debe estar entre el 1 de enero de 1990 y el 31 de diciembre de 2019.");
+          if (
+            selectedDate.getDate() !== day ||
+            selectedDate.getMonth() !== month ||
+            selectedDate.getFullYear() !== year
+          ) {
+            alert("Fecha inválida.");
+            return;
+          }
+        } else {
+          alert("Formato inválido. Usa DD/MM/AAAA");
           return;
         }
+        
       }
-    }
-
-
-    setForm((prevForm) => {
-      if (name.includes(".")) {
-        const [parent, child] = name.split(".");
-        return {
-          ...prevForm,
-          [parent]: {
-            ...prevForm[parent],
-            [child]: value,
-          },
-        };
-      }
-
-      return {
-        ...prevForm,
-        [name]: value,
-      };
-    });
-
+    
+     setForm(prev => ({ ...prev, [name]: formatted }));
+  } else {
+    
+    setForm(prev => ({ ...prev, [name]: value }));
+  }
+  
+  
     if (name === "departamentoColegio") {
       fetch(`${apiUrl}/verprovincias/departamento/${value}`)
         .then(response => response.json())
@@ -188,6 +231,10 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   };
 
   const handleAceptar = () => {
+    if (!esFechaValida(form.fechaNaciPost)) {
+      alert("Fecha inválida o fuera de rango.");
+      return;
+    }
     console.log(form);
 
     const camposRequeridos = [
@@ -212,6 +259,28 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       alert("Por favor completa todos los campos requeridos y selecciona al menos un área y una categoría.");
       return;
     }
+
+
+
+     // VALIDACIÓN DE CORREOS AL REGISTRAR
+  const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (form.correoPost && !correoRegex.test(form.correoPost)) {
+    alert("El correo del estudiante no tiene un formato válido.");
+    return;
+  }
+
+  if (form.tutor.correoTutor && !correoRegex.test(form.tutor.correoTutor)) {
+    alert("El correo del tutor no tiene un formato válido.");
+    return;
+  }
+
+  if ((form.correoPost && form.correoPost.length > 50) || (form.tutor.correoTutor && form.tutor.correoTutor.length > 50)) {
+    alert("El correo no debe superar los 50 caracteres.");
+    return;
+  }
+
+
 
     const colegioSeleccionadoId = Object.keys(colegiosDisponibles).find(
       key => colegiosDisponibles[key] === form.idColegio
@@ -309,33 +378,15 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
   return (
     <div className="registro-container">
-      <div className="seccion-container">
-        <div className="encabezado-postulante">Postulante</div>
-        <div className="grid-container postulante-scroll">
-          <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
-          <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
-          <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
-          <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-          <DatePicker
-            selected={form.fechaNaciPost}
-            onChange={(date) =>
-              setForm((prevForm) => ({
-                ...prevForm,
-                fechaNaciPost: date,
-              }))
-            }
-            dateFormat="dd/MM/yyyy"
-            placeholderText="DD/MM/AAAA"
-            minDate={new Date("2007-01-01")}
-            maxDate={new Date("2019-12-31")}
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            locale={es}
-            calendarClassName="calendario-postulante"
-            dayClassName={date => "dia-calendario"}
-            formatWeekDay={nameOfDay => nameOfDay.substr(0, 2)} // corta a "lun", "mar", etc.
-          />
+      <div className="seccion-container">        
+          <div className="encabezado-postulante">Postulante</div>
+            <div className="grid-container postulante-scroll">
+            <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
+            <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
+            <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
+            <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
+            <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} />
+      
 
 
           <select name="idCurso" onChange={handleChange} value={form.idCurso}>

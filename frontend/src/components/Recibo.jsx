@@ -218,14 +218,6 @@ const Recibo = () => {
 
       {procesandoOCR && <p>🔄 Procesando imagen con OCR...</p>}
 
-      {textoExtraido && (
-        <div className="texto-extraido">
-          <p><strong>Texto extraído de la imagen:</strong></p>
-          <pre>{textoExtraido}</pre>
-        </div>
-      )}
-
-
       <button className="btn-importar" onClick={handleImportar}>
         Enviar
       </button>

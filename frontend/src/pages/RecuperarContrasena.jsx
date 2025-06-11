@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './styles/RecuperarContrasena.css';
 import SpinnerInsideButton from '../components/SpinnerInsideButton';
 
@@ -10,9 +11,8 @@ const RecuperarContrasena = () => {
   const [token, setToken] = useState('');
   const [nueva, setNueva] = useState('');
   const [confirmar, setConfirmar] = useState('');
-  const [mostrar, setMostrar] = useState(false);
-
-  const [cargando, setCargando] = useState(false);
+  const [mostrarNueva, setMostrarNueva] = useState(false);
+  const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
 
   // Enviar correo para reset
   const handleVerificar = async (e) => {
@@ -93,8 +93,11 @@ const RecuperarContrasena = () => {
     <div className="recuperar-container">
       {!verificado ? (
         <>
-          <h2>¿Has olvidado la contraseña?</h2>
+          <div className="recuperar">
+            <h2>¿Has olvidado la contraseña?</h2>
+          </div>
           <form onSubmit={handleVerificar} className="recuperar-form">
+            <h2>Ingresa el Email de registro  </h2>
             <label htmlFor="email">Email *</label>
             <input
               type="email"
@@ -110,8 +113,10 @@ const RecuperarContrasena = () => {
         </>
       ) : (
         <>
+        <div className="recuperar">
           <h2>Restablecer contraseña</h2>
-          <form onSubmit={handleCambio} className={cargando ? "recuperar-form divDeshabilitado" : "recuperar-form"}>
+          </div>
+          <form onSubmit={handleCambio} className="recuperar-form">
             <label>Token recibido por correo *</label>
             <input
               type="text"
@@ -129,28 +134,41 @@ const RecuperarContrasena = () => {
             />
 
             <label>Nueva contraseña *</label>
-            <div className="input-con-icono">
+            <div className="password-wrapper">
               <input
-                type={mostrar ? 'text' : 'password'}
+                type={mostrarNueva ? 'text' : 'password'}
                 required
                 value={nueva}
                 onChange={(e) => setNueva(e.target.value)}
               />
-              <span onClick={() => setMostrar(!mostrar)}>👁️</span>
+              <span
+                className="eye-icon-inside"
+                onClick={() => setMostrarNueva(!mostrarNueva)}
+                title={mostrarNueva ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {mostrarNueva ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
             <label>Confirmar nueva contraseña *</label>
-            <div className="input-con-icono">
+            <div className="password-wrapper">
               <input
-                type={mostrar ? 'text' : 'password'}
+                type={mostrarConfirmar ? 'text' : 'password'}
                 required
                 value={confirmar}
                 onChange={(e) => setConfirmar(e.target.value)}
               />
-              <span onClick={() => setMostrar(!mostrar)}>👁️</span>
+              <span
+                className="eye-icon-inside"
+                onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
+                title={mostrarConfirmar ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {mostrarConfirmar ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
-
-            <button type="submit" className='button-restablecer-c'>Restablecer contraseña  {cargando ? <span><SpinnerInsideButton /></span> : ""}</button>
+      
+            <button type="submit" className='button-restablecer-c'>Restablecer </button>
+            
           </form>
         </>
       )}
@@ -159,3 +177,4 @@ const RecuperarContrasena = () => {
 };
 
 export default RecuperarContrasena;
+
