@@ -8,29 +8,25 @@
 }
 
 /* --- Contenedor general --- */
-.container-detalleConv,
-.lista-usuarios {
-  background-color: #adc5cd;
-  padding: 20px;
+.container-detalleConv {
+  background-color: #fff;
   border-radius: 10px;
-  font-family: Arial, sans-serif;
   text-align: center;
-  margin: auto;
+  margin: 20px auto;
   width: 90%;
   max-width: 1200px;
   box-sizing: border-box;
 }
 
-.title-detalleConv {
-  width: 100%;
-  font-size: 24px;
+.title-detalleConv h2 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 2rem;
   margin-bottom: 20px;
   background-color: #007290;
-  color: white;
-  text-align: center;
-  border-radius: 4px;
-  padding: 20px;
-  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 10px 10px 0px 0; 
 }
 
 /* --- Tabla en escritorio --- */
@@ -241,11 +237,6 @@
     display: block;
   }
 
-  .title-detalleConv {
-    font-size: 20px;
-    padding: 15px;
-  }
-
   .user-header,
   .user-details p {
     font-size: 14px;
@@ -266,10 +257,6 @@
 }
 
 @media (max-width: 480px) {
-  .title-detalleConv {
-    font-size: 18px;
-    padding: 10px;
-  }
 
   .user-header,
   .user-details p {

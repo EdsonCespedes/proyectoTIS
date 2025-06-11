@@ -68,9 +68,9 @@ const TablaUsuarios = () => {
   };
 
   return (
-    <div>
-      <div className="titulo-tabla">
-        <h2>Lista de Usuarios</h2>
+    <div className="contenedor-tabla-usuarios">
+      <div className="titulo-tabla-usuarios">
+      <h2>Lista de Usuarios</h2>
       </div>
       {cargando ? (
         <FullScreenSpinner />

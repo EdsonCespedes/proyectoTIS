@@ -8,30 +8,31 @@
   display: none;
 }
 
-.titulo-tabla {
+.titulo-tabla-usuarios h2 {
   text-align: center;
-}
-
-/* --- Contenedor general --- */
-.lista-usuarios {
-  background-color: #d4ebf2;
-  padding: 20px;
-  border-radius: 10px;
-  font-family: Arial, sans-serif;
-}
-
-.lista-usuarios h2 {
+  color: #ffffff;
+  font-size: 2rem;
   margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
+  background-color: #007290;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 10px 10px 0px 0; 
 }
 
+/* --- Contenedor visual --- */
+.contenedor-tabla-usuarios {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 90%;
+}
 /* --- Botones superiores --- */
 .acciones-superiores {
   display: flex;
   justify-content: center;
   align-items: center;
-   margin-top: 20px;
+  margin-top: 20px;
   margin-bottom: 0; /* Elimina separación inferior */
 }
 
