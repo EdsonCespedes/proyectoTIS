@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
 
+import SpinnerInsideButton from "./SpinnerInsideButton";
 
 
 const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
@@ -45,7 +46,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     areas: estudiante?.areas || [],
     categorias: estudiante?.categorias || [],
   });
-// Función para validar formato y rango de fecha
+  // Función para validar formato y rango de fecha
   function esFechaValida(fechaTexto) {
     const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = fechaTexto.match(dateRegex);
@@ -66,8 +67,10 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       fecha <= new Date("2019-12-31")
     );
   }
-  
+
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
+
+  const [areasCargando, setAreasCargando] = useState(false);
 
   useEffect(() => {
     console.log(areasSeleccionadas);
@@ -122,52 +125,52 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-   if (name === "nombrePost" || name === "apellidoPost") {
-  if (value && !nombreApellidoRegex.test(value)) {
-    alert("El nombre y apellido solo pueden contener letras.");
-    return;
-  }
+    if (name === "nombrePost" || name === "apellidoPost") {
+      if (value && !nombreApellidoRegex.test(value)) {
+        alert("El nombre y apellido solo pueden contener letras.");
+        return;
+      }
 
-  const palabras = value.trim().split(/\s+/);
-  if (palabras.length > 2) {
-    alert("Solo se permiten como máximo 2 palabras.");
-    return;
-  }
+      const palabras = value.trim().split(/\s+/);
+      if (palabras.length > 2) {
+        alert("Solo se permiten como máximo 2 palabras.");
+        return;
+      }
 
-  if (palabras.some(p => p.length > 20)) {
-    alert("Cada palabra debe tener como máximo 20 caracteres.");
-    return;
-  }
-  }
-
-
-      if (name === "carnet") {
-    if (value && !carnetRegex.test(value)) {
-      alert("El carnet solo puede contener números.");
-      return;
+      if (palabras.some(p => p.length > 20)) {
+        alert("Cada palabra debe tener como máximo 20 caracteres.");
+        return;
+      }
     }
-    if (value.length > 10) {
-      alert("El carnet no puede tener más de 10 dígitos.");
-      return;
+
+
+    if (name === "carnet") {
+      if (value && !carnetRegex.test(value)) {
+        alert("El carnet solo puede contener números.");
+        return;
+      }
+      if (value.length > 10) {
+        alert("El carnet no puede tener más de 10 dígitos.");
+        return;
+      }
     }
-  }
 
-  
-   
 
-     if (name === "fechaNaciPost") {
-    // Solo permite números
-    const numericValue = value.replace(/\D/g, "");
 
-    // Inserta las barras automáticamente: DD/MM/AAAA
-    let formatted = "";
-    if (numericValue.length <= 2) {
-      formatted = numericValue;
-    } else if (numericValue.length <= 4) {
-      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
-    } else {
-      formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
-    }
+
+    if (name === "fechaNaciPost") {
+      // Solo permite números
+      const numericValue = value.replace(/\D/g, "");
+
+      // Inserta las barras automáticamente: DD/MM/AAAA
+      let formatted = "";
+      if (numericValue.length <= 2) {
+        formatted = numericValue;
+      } else if (numericValue.length <= 4) {
+        formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+      } else {
+        formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+      }
       if (formatted.length === 10) {
         const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if (match) {
@@ -196,16 +199,16 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
           alert("Formato inválido. Usa DD/MM/AAAA");
           return;
         }
-        
+
       }
-    
-     setForm(prev => ({ ...prev, [name]: formatted }));
-  } else {
-    
-    setForm(prev => ({ ...prev, [name]: value }));
-  }
-  
-  
+
+      setForm(prev => ({ ...prev, [name]: formatted }));
+    } else {
+
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
+
+
     if (name === "departamentoColegio") {
       fetch(`${apiUrl}/verprovincias/departamento/${value}`)
         .then(response => response.json())
@@ -262,23 +265,23 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
 
 
-     // VALIDACIÓN DE CORREOS AL REGISTRAR
-  const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // VALIDACIÓN DE CORREOS AL REGISTRAR
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (form.correoPost && !correoRegex.test(form.correoPost)) {
-    alert("El correo del estudiante no tiene un formato válido.");
-    return;
-  }
+    if (form.correoPost && !correoRegex.test(form.correoPost)) {
+      alert("El correo del estudiante no tiene un formato válido.");
+      return;
+    }
 
-  if (form.tutor.correoTutor && !correoRegex.test(form.tutor.correoTutor)) {
-    alert("El correo del tutor no tiene un formato válido.");
-    return;
-  }
+    if (form.tutor.correoTutor && !correoRegex.test(form.tutor.correoTutor)) {
+      alert("El correo del tutor no tiene un formato válido.");
+      return;
+    }
 
-  if ((form.correoPost && form.correoPost.length > 50) || (form.tutor.correoTutor && form.tutor.correoTutor.length > 50)) {
-    alert("El correo no debe superar los 50 caracteres.");
-    return;
-  }
+    if ((form.correoPost && form.correoPost.length > 50) || (form.tutor.correoTutor && form.tutor.correoTutor.length > 50)) {
+      alert("El correo no debe superar los 50 caracteres.");
+      return;
+    }
 
 
 
@@ -303,13 +306,17 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   const showModal = () => {
     const cursoSeleccionado = cursos.find((curso) => curso.Curso == form.idCurso);
 
+    setAreasCargando(true);
+
     if (!idConvocatoria) {
       console.error("El parámetro 'id' es undefined.");
+      setAreasCargando(false);
       return;
     }
 
     if (!form.idCurso) {
       alert("Debes seleccionar un curso antes de continuar.");
+      setAreasCargando(false);
       return;
     }
 
@@ -328,7 +335,8 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
         }));
         setAreas(areasTransformadas);
       })
-      .catch(error => console.error("Error al obtener cursos:", error));
+      .catch(error => console.error("Error al obtener cursos:", error))
+      .finally(()=>setAreasCargando(false));
 
     setMostrarArea(!mostrarArea);
   }
@@ -378,15 +386,15 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
   return (
     <div className="registro-container">
-      <div className="seccion-container">        
-          <div className="encabezado-postulante">Postulante</div>
-            <div className="grid-container postulante-scroll">
-            <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
-            <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
-            <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
-            <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-            <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} />
-      
+      <div className="seccion-container">
+        <div className="encabezado-postulante">Postulante</div>
+        <div className="grid-container postulante-scroll">
+          <input type="text" placeholder="Nombre(s)" name="nombrePost" onChange={handleChange} value={form.nombrePost} />
+          <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
+          <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
+          <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
+          <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} />
+
 
 
           <select name="idCurso" onChange={handleChange} value={form.idCurso}>
@@ -463,45 +471,56 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       </button>
 
       {mostrarArea && (
-        <div className="seccion-container">
-          <div className="competencias">
-            {areas.map((area) => (
-              <div key={area.id}>
-                <label className="checkbox-derecho area-checkbox">
-                  <span>{area.nombre}</span>
-                  <input type="checkbox"
-                    checked={areasSeleccionadas.some((a) => a.id === area.id)}
-                    onChange={() => handleCheckboxChange(area)}
-                    disabled={areasSeleccionadas.length === 2 && !areasSeleccionadas.some((a) => a.id === area.id)}
-                  />
-
-                </label>
-                {areasSeleccionadas.some((a) => a.id === area.id) && (
-                  <div>
-                    {area.categorias.map((categoria) => (
-                      <label className="checkbox-derecho categoria-checkbox" key={categoria.id}>
-                        <span>{categoria.nombre}</span>
-                        <input
-                          type="checkbox"
-                          checked={categoriasSeleccionadas.some((a) => a.id === categoria.id)}
-                          onChange={() => handleCategoriaChange(categoria, area)}
-                          disabled={
-                            area.categorias.some((c) =>
-                              categoriasSeleccionadas.some((a) => a.id === c.id && a.id !== categoria.id)
-                            ) ||
-                            (categoriasSeleccionadas.length === 2 &&
-                              !categoriasSeleccionadas.some((a) => a.id === categoria.id))
-                          }
-                        />
-
-                      </label>
-                    ))}
+        <>
+          {areasCargando ? (
+            <div className="seccion-container">
+              <SpinnerInsideButton /> Cargando...
+            </div>
+          ) : areas.length == 0 ? (
+            <div className="seccion-container">
+              <h1>No hay categorias disponibles para el curso seleccionado en esta convocatoria</h1>
+            </div>            
+          ) : (
+            <div className="seccion-container">
+              <div className="competencias">
+                {areas.map((area) => (
+                  <div key={area.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={areasSeleccionadas.some((a) => a.id === area.id)}
+                        onChange={() => handleCheckboxChange(area)}
+                        disabled={areasSeleccionadas.length === 2 && !areasSeleccionadas.some((a) => a.id === area.id)}
+                      />
+                      {area.nombre}
+                    </label>
+                    {areasSeleccionadas.some((a) => a.id === area.id) && (
+                      <div>
+                        {area.categorias.map((categoria) => (
+                          <label key={categoria.id}>
+                            <input
+                              type="checkbox"
+                              checked={categoriasSeleccionadas.some((a) => a.id === categoria.id)}
+                              onChange={() => handleCategoriaChange(categoria, area)}
+                              disabled={
+                                area.categorias.some((c) =>
+                                  categoriasSeleccionadas.some((a) => a.id === c.id && a.id !== categoria.id)
+                                ) ||
+                                (categoriasSeleccionadas.length === 2 &&
+                                  !categoriasSeleccionadas.some((a) => a.id === categoria.id))
+                              }
+                            />
+                            {categoria.nombre}
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          )}
+        </>
       )}
 
       <div className="botones">
