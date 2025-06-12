@@ -58,6 +58,9 @@ const Historial = () => {
         <div className="formulario-header">
           Ordenes de Pago
         </div>
+        <div className="formulario-subtitulo" >
+          Revisa tus órdenes de pago pendientes y sube el recibo para validarlas.
+          </div>
 
         {cargando ? (
           <FullScreenSpinner/>
