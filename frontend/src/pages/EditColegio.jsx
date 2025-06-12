@@ -127,6 +127,10 @@ const EditColegios = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleCancelar = () => {
+    navigate("/colegios");
+    };
+
     return (
         <div className="contenedor-add-colegio">
             <h3 className="title-add-colegio">UNIDAD EDUCATIVA</h3>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './styles/RecuperarContrasena.css';
+import SpinnerInsideButton from '../components/SpinnerInsideButton';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,7 @@ const RecuperarContrasena = () => {
   // Enviar correo para reset
   const handleVerificar = async (e) => {
     e.preventDefault();
+    setCargando(true);
     try {
       const response = await fetch(`${apiUrl}/forgot-password`, {
         method: 'POST',
@@ -36,14 +38,19 @@ const RecuperarContrasena = () => {
     } catch (error) {
       console.error('Error en la verificación:', error);
       alert('Error al enviar el correo. Intenta nuevamente.');
+    } finally {
+      setCargando(false);
     }
   };
 
   // Restablecer contraseña
   const handleCambio = async (e) => {
     e.preventDefault();
+    setCargando(true);
+
     if (nueva !== confirmar) {
       alert('Las contraseñas no coinciden');
+      setCargando(false);
       return;
     }
 
@@ -77,6 +84,8 @@ const RecuperarContrasena = () => {
     } catch (error) {
       console.error('Error en el cambio de contraseña:', error);
       alert('Error al actualizar la contraseña. Intenta nuevamente.');
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -96,9 +105,10 @@ const RecuperarContrasena = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={cargando}
             />
             <p>Se enviará un enlace de restablecimiento a este email</p>
-            <button type="submit">Enviar</button>
+            <button type="submit" disabled={cargando}>Enviar  {cargando ? <span><SpinnerInsideButton /></span> : ""}</button>
           </form>
         </>
       ) : (

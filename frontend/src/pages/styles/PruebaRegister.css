@@ -139,3 +139,7 @@ form input:focus {
   }
 }
 
+.divDeshabilitado {
+  pointer-events: none; /* Evita clicks, focus, etc */
+  opacity: 0.5;         /* Visualmente indica deshabilitado */
+}

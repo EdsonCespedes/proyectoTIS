@@ -36,12 +36,18 @@ const AsignarRoles = () => {
     try {
       fetch(`${apiUrl}/todosusers`)
         .then((res) => res.json())
-        .then((data) => setPersonas(data))
+        .then((data) => {
+          const users = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor')
+          setPersonas(users)
+        })
         .catch(error => console.error("Error al obtener usuarios:", error));
 
       fetch(`${apiUrl}/roles`)
         .then((res) => res.json())
-        .then((data) => setRoles(data))
+        .then((data) => {
+          const roles = data.filter(r => r.name.toLowerCase() != 'admin' && r.name.toLowerCase() != 'tutor')
+          setRoles(roles)
+        })
         .catch(error => console.error("Error al obtener roles:", error));
 
       fetch(`${apiUrl}/todasconvocatorias`)

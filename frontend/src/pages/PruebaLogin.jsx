@@ -6,6 +6,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import "./styles/PruebaLogin.css";
 import { useAuth } from '../context/AuthContext';
 
+import SpinnerInsideButton from '../components/SpinnerInsideButton';
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const PruebaLogin = () => {
@@ -21,6 +23,8 @@ const PruebaLogin = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    const [cargando, setCargando] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -30,6 +34,8 @@ const PruebaLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setCargando(true);
+
         setError('');
         setSuccessMessage('');
 
@@ -47,6 +53,8 @@ const PruebaLogin = () => {
             } else {
                 setError('Error de conexión.');
             }
+        } finally {
+            setCargando(false)
         }
     };
 
@@ -58,7 +66,7 @@ const PruebaLogin = () => {
                 {successMessage && <div className="success-message">{successMessage}</div>}
                 {error && <div className="error-message">{error}</div>}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className={cargando ? "divDeshabilitado" : ""}>
                     <label>Email:</label>
                     <input
                         type="email"
@@ -87,7 +95,7 @@ const PruebaLogin = () => {
                     </div>
 
                     <div className="button-container">
-                        <button type="submit" className="btn-iniciar">INICIAR</button>
+                        <button type="submit" className="btn-iniciar">INICIAR  {cargando ? <span><SpinnerInsideButton/></span> : ""}</button>
                     </div>
 
                     <p>

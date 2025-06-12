@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import './styles/PruebaRegister.css';
+import SpinnerInsideButton from '../components/SpinnerInsideButton';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -24,6 +25,7 @@ const PruebaRegister = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [mostrarContraseña, setMostrarContraseña] = useState(false);
     const [mostrarConfirmarContraseña, setMostrarConfirmarContraseña] = useState(false);
+    const [cargando, setCargando] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -93,6 +95,8 @@ const PruebaRegister = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setCargando(true);
+
         setErrors({});
         setSuccessMessage('');
 
@@ -159,6 +163,8 @@ const PruebaRegister = () => {
             } else {
                 console.error('Error desconocido', error);
             }
+        } finally {
+            setCargando(false);
         }
     };
 
@@ -246,8 +252,8 @@ const PruebaRegister = () => {
                     </div>
 
                     <div className="button-container">
-                        <button type="submit" className="btn-registrarse">REGISTRARSE</button>
-                        <button type="button" className="btn-cancelar-register" onClick={handleCancel}>CANCELAR</button>
+                        <button type="submit" className="btn-registrarse" disabled={cargando}>REGISTRARSE  {cargando ? <span><SpinnerInsideButton /></span> : ""}</button>
+                        <button type="button" className="btn-cancelar-register" onClick={handleCancel} disabled={cargando}>CANCELAR</button>
                     </div>
                 </form>
             </div>
