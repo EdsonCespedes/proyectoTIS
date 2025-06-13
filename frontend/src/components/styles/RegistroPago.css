@@ -38,14 +38,14 @@
 }
 .formulario-subtitulo {
   font-size: 18px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 100;
+  color: #000;
   margin-bottom: 16px;
-  background-color: #f0f4f8;
+  background-color: #f5f5f5;
   padding: 12px 20px;
-  border-left: 5px solid #007d99;
+  
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 
