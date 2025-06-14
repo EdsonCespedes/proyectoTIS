@@ -149,11 +149,13 @@ export const CrearConvForm = () => {
             value={formData.fechaInicioInscripcion}
             onChange={handleChange}
             className="input-field"
+            max={formData.fechaInicioOlimpiada || undefined} // No permitir fecha posterior al inicio de la olimpiada
           />
           <input
             type="date"
             name="fechaCierreInscripcion"
-            min={today}
+            min={formData.fechaInicioInscripcion || today}
+            max={formData.fechaInicioOlimpiada || undefined}
             value={formData.fechaCierreInscripcion}
             onChange={handleChange}
             className="input-field"
@@ -165,7 +167,7 @@ export const CrearConvForm = () => {
           <input
             type="date"
             name="fechaInicioOlimpiada"
-            min={today}
+            min={formData.fechaCierreInscripcion || today}
             value={formData.fechaInicioOlimpiada}
             onChange={handleChange}
             className="input-field"
@@ -173,7 +175,7 @@ export const CrearConvForm = () => {
           <input
             type="date"
             name="fechaFinOlimpiada"
-            min={today}
+            min={formData.fechaInicioOlimpiada || today}
             value={formData.fechaFinOlimpiada}
             onChange={handleChange}
             className="input-field"

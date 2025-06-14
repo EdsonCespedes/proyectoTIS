@@ -46,6 +46,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
 import ReportePostulantes from "./pages/ReportePostulantes";
+import Footer from "./layout/footer";
 
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
@@ -159,9 +160,13 @@ function App() {
   return (
     //<BrowserRouter>
     <ConvocatoriaProvider>
-      <Header/>
-      {/*user && user.rol !== 'tutor' && <Header />*/}
-      <AppRoutes />
+      <div className="app-container">
+        <Header />
+        <div className="content-wrap">
+          <AppRoutes />
+        </div>
+        <Footer />
+      </div>
     </ConvocatoriaProvider>
     //</BrowserRouter>
   );

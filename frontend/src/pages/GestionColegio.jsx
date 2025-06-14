@@ -45,7 +45,7 @@ const GestionColegios = () => {
         <h2 className="titulo-colegios">Unidades Educativas</h2>
 
         {/* Vista escritorio */}
-        <div className="tabla-contenedor desktop">
+        <div className="tabla-contenedor-col desktop">
           <table>
             <thead>
               <tr>
@@ -62,8 +62,10 @@ const GestionColegios = () => {
                   <td>{colegio.idColegio}</td>
                   <td>{colegio.nombreColegio}</td>
                   <td>
-                    <button onClick={() => handleModificar(colegio)}>✏️</button>
-                    <button onClick={() => handleRetirar(colegio)}>❌</button>
+                    <div className="btn-groupdetconv">
+                    <button className="edit-btndetconv" onClick={() => handleModificar(colegio)}>✏️</button>
+                    <button className="delete-btndetconv" onClick={() => handleRetirar(colegio)}>❌</button>
+                    </div>
                   </td>
                 </tr>
               ))}
