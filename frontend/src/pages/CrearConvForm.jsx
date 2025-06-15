@@ -73,16 +73,21 @@ export const CrearConvForm = () => {
     }
     setError("");
 
+    const fechaFinInsc = `${formData.fechaCierreInscripcion} 23:59:59`;
+    const fechaFinOlimp = `${formData.fechaFinOlimpiada} 23:59:59`;
+
     const newformData = new FormData();
     newformData.append('titulo', formData.titulo);
     newformData.append('descripcion', formData.descripcion);
     newformData.append('fechaPublicacion', new Date().toISOString().split("T")[0]);
     newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
-    newformData.append('fechaFinInsc', formData.fechaCierreInscripcion);
+    newformData.append('fechaFinInsc', fechaFinInsc);
+
     newformData.append('portada', formData.imagenPortada); // <-- tu imagen
     newformData.append('habilitada', '1');
     newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
-    newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
+    newformData.append('fechaFinOlimp', fechaFinOlimp);
+
     newformData.append('maximoPostPorArea', formData.maxConcursantes);
 
     try {

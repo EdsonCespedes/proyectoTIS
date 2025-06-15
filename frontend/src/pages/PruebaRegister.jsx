@@ -11,6 +11,11 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const PruebaRegister = () => {
     const navigate = useNavigate();
 
+    const hoy = new Date();
+    const fechaMax = new Date(hoy.setFullYear(hoy.getFullYear() - 18)).toISOString().split("T")[0];
+    const fechaMin = new Date(new Date().setFullYear(new Date().getFullYear() - 65)).toISOString().split("T")[0];
+
+
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -85,6 +90,7 @@ const PruebaRegister = () => {
             }
         }
 
+
         setErrors(newErrors);
 
         setFormData({
@@ -142,6 +148,24 @@ const PruebaRegister = () => {
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
+        }
+
+        if (formData.fechaNacimiento) {
+            const fechaNac = new Date(formData.fechaNacimiento);
+            const hoy = new Date();
+
+            const edad = hoy.getFullYear() - fechaNac.getFullYear();
+            const mes = hoy.getMonth() - fechaNac.getMonth();
+            const dia = hoy.getDate() - fechaNac.getDate();
+
+            const esMenor = edad < 18 || (edad === 18 && (mes < 0 || (mes === 0 && dia < 0)));
+            const esMayor = edad > 65 || (edad === 65 && (mes < 0 || (mes === 0 && dia < 0)));
+
+            if (esMenor) {
+                newErrors.fechaNacimiento = ['Debe tener al menos 18 años para registrarse.'];
+            }else if (esMayor) {
+                newErrors.fechaNacimiento = ['Debe tener menos de 65 años para registrarse.'];
+            }
         }
 
         try {
@@ -247,7 +271,14 @@ const PruebaRegister = () => {
 
                     <div className="form-group">
                         <label htmlFor="fechaNacimiento">Fecha de nacimiento *</label>
-                        <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} />
+                        <input
+                            type="date"
+                            name="fechaNacimiento"
+                            value={formData.fechaNacimiento}
+                            onChange={handleChange}
+                            min={fechaMin}
+                            max={fechaMax}
+                        />
                         {errors.fechaNacimiento && <small className="error">{errors.fechaNacimiento[0]}</small>}
                     </div>
 

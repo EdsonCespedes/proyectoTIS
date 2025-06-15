@@ -46,7 +46,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
 import ReportePostulantes from "./pages/ReportePostulantes";
-import Footer from "./layout/footer";
+import Footer from "./layout/Footer";
 
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
