@@ -1,7 +1,3 @@
-/* ✅ Reset general */
-* {
-  box-sizing: border-box;
-}
 
 html,
 body {
@@ -12,7 +8,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* ✅ Formulario centralizado */
+
 .form-container {
   width: 100%;
   max-width: 500px;
@@ -24,7 +20,7 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ Título centrado */
+
 .form-title {
 background-color: #007b9e;
   color: white;
@@ -36,7 +32,7 @@ background-color: #007b9e;
   border-top-right-radius: 5px;
 }
 
-/* ✅ Campos del formulario */
+
 input,
 select,
 textarea {
@@ -46,7 +42,7 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* ✅ Sección de funciones */
+
 .funciones {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -54,7 +50,7 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* ✅ Botones */
+
 .form-buttons {
   display: flex;
   justify-content: center;
@@ -86,39 +82,136 @@ form button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  background-color: #e6f7fb;
+  padding: 1rem;
 }
 
+.register-box {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.titulo-box h2 {
+  background-color: #007fa3;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
+  font-size: 1.5rem;
+  border-radius: 16px 16px 0 0;
+}
+
+form {
+  padding: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+form input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #007fa3;
+}
+
+.funciones {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.funciones div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-registrarse,
+.btn-cancelar-register {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  min-width: 130px;
+  text-align: center;
+}
+
+.btn-registrarse {
+  background-color: #007fa3;
+  color: white;
+}
+
+.btn-registrarse:hover {
+  background-color: #005f7f;
+}
+
+.btn-cancelar-register {
+  background-color: #007fa3;
+  color: white;
+}
+
+.btn-cancelar-register:hover {
+  background-color: #005f7f;
+}
+
+/* Responsive Mejorado */
 @media (max-width: 600px) {
-  .form-container {
-    max-width: 100%;
-    margin: 10px;
-    padding: 15px;
+  .register-box {
+    border-radius: 12px;
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .titulo-box h2 {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+    border-radius: 12px 12px 0 0;
+  }
+
+  form {
+    padding: 1rem;
   }
 
   .funciones {
     grid-template-columns: 1fr;
-    /* ya lo tienes, ok */
   }
 
-  form button {
-    width: 50%;
-    /* ya lo tienes */
-  }
-
-  .form-buttons {
+  .button-container {
     flex-direction: column;
-    /* ya lo tienes */
     align-items: stretch;
+    gap: 0.2rem;
   }
 
-  .add-rol-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .add-rol-buttons button{
+  .btn-registrarse,
+  .btn-cancelar-register {
     width: 100%;
   }
 }

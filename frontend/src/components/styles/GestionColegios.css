@@ -7,19 +7,6 @@
   display: none;
 }
 
-/* --- Contenedor general --- */
-.lista-usuarios {
-  background-color: #d4ebf2;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.lista-usuarios h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
-}
-
 /* --- Contenedor de botones inferior --- */
 .botones-tabla-col {
   display: flex;
@@ -44,12 +31,12 @@
 }
 
 .btn-registrar-col {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .btn-registrar-col:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 
 .btn-registrar-col:disabled {
@@ -97,12 +84,12 @@
 }
 
 .btn-pag-ant {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .btn-pag-ant:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 
 .btn-pag-sig {
@@ -122,60 +109,48 @@
   cursor: not-allowed;
 }
 
-/* Separador visual */
-.separador {
-  border-top: 1px solid #ccc;
-  margin: 20px 0;
-}
-
 /* --- Tabla en escritorio --- */
-.tabla-contenedor table {
+.tabla-contenedor-col table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.tabla-contenedor th,
-.tabla-contenedor td {
+.tabla-contenedor-col th,
+.tabla-contenedor-col td {
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 8px;
   text-align: left;
 }
 
-.tabla-contenedor th {
-  background-color: #007290;
-  color: white;
-}
-
-.tabla-contenedor td button {
-  margin-right: 5px;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #0099b3;
-  color: white;
+.tabla-contenedor-col th {
+  background-color: #F0F0F0;
+  color: #000;
+  text-align: center;
 }
 
 /* --- Título de sección --- */
 .titulo-colegios {
-  background-color: #0099b3;
+  background-color: #007290;
   color: white;
   padding: 15px;
   text-align: center;
-  border-radius: 8px 8px 0 0;
-  margin: 0;
-  font-size: 24px;
+  font-size: 20px;
+  font-weight: bold;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 /* --- Contenedor visual --- */
 .contenedor-blanco {
   background-color: white;
-  border-radius: 10px;
-  padding: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
-  width: 90%;
+  max-width: 700px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 5px;
 }
+
 
 /* --- Estilos para móviles --- */
 @media (max-width: 768px) {
@@ -222,7 +197,7 @@
   }
 
   .card-actions button:nth-child(1) {
-    background-color: #0099b3;
+    background-color: #0099B3;
   }
 
   .card-actions button:nth-child(2) {

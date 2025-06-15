@@ -8,7 +8,7 @@
 }
 
 .table-container {
-  background-color: #007b9e;
+  background-color: #007290;
   color: white;
   padding: 15px;
   text-align: center;
@@ -47,20 +47,20 @@ button {
 }
 
 button:hover {
-  background-color: #007b9a;
+  background-color: #007290;
   color: white;
 }
 
 .btn {
   margin: 10px 5px;
-  background-color: #009fc2;
+  background-color: #0099B3;
   color: white;
   border: none;
   border-radius: 5px;
 }
 
 .btn:hover {
-  background-color: #007b9e;
+  background-color: #007290;
 }
 
 /* Desktop visible por defecto */
@@ -106,7 +106,7 @@ button:hover {
   }
 
   .role-summary {
-    background-color: #007b9a;
+    background-color: #007290;
     color: white;
     padding: 15px;
     font-weight: bold;
@@ -143,7 +143,7 @@ button:hover {
   }
 
   .edit-btn {
-    background-color: #00a9c9;
+    background-color: #0099B3;
   }
 
   .delete-btn {

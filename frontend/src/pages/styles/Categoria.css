@@ -271,12 +271,12 @@
 }
 
 .siguiente-cat {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .siguiente-cat:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 
 .siguiente-cat:disabled {
@@ -301,12 +301,12 @@
 }
 
 .area-cat {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .area-cat:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 
 .area-cat:disabled {
@@ -316,12 +316,12 @@
 }
 
 .cat-cat {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .cat-cat:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 /* Versión móvil */
 @media (max-width: 600px) {

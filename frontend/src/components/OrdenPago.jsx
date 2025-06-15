@@ -18,9 +18,32 @@ const OrdenPago = () => {
   const tutor = JSON.parse(localStorage.getItem("tutor"));
 
   const location = useLocation();
-  const estudiantes = location.state?.estudiantes;
+
+  const estudiantesOriginales = location.state?.estudiantes || [];
+
+// Detectar y eliminar duplicados por carnet o correo
+  const carnetVistos = new Set();
+  const correoVistos = new Set();
+  const duplicados = [];
+
+const estudiantesUnicos = estudiantesOriginales.filter((est) => {
+  const carnetDuplicado = carnetVistos.has(est.carnet);
+  const correoDuplicado = correoVistos.has(est.correoPost);
+
+  if (carnetDuplicado || correoDuplicado) {
+    duplicados.push(est);
+    return false;
+  } else {
+    carnetVistos.add(est.carnet);
+    correoVistos.add(est.correoPost);
+    return true;
+  }
+});
+
+
+  
   const from = location.state?.from || "default";
-  console.log(estudiantes);
+  console.log(estudiantesUnicos);
 
   const [expandedIds, setExpandedIds] = useState([]);
 
@@ -51,12 +74,19 @@ const OrdenPago = () => {
       } finally {
         setCargando(false);
       }
+      if (duplicados.length > 0) {
+    const mensaje = duplicados
+      .map((dup) => `- ${dup.nombrePost} ${dup.apellidoPost} (CI: ${dup.carnet}, Correo: ${dup.correoPost})`)
+      .join("\n");
+    alert(`⚠️ Estudiantes duplicados eliminados:\n\n${mensaje}`);
+    }
     };
+    
 
     obtenerConvocatoria();
   }, [idConvocatoria]);
 
-  const montoTotal = estudiantes
+  const montoTotal = estudiantesUnicos
     .reduce((total, est) => {
       const sumaCategorias = est.categorias?.reduce(
         (sum, cat) => sum + (parseFloat(cat.monto) || 0),
@@ -108,7 +138,7 @@ const OrdenPago = () => {
     doc.line(10, 95, 200, 95);
 
     let yPosition = 100;
-    estudiantes.forEach((est) => {
+    estudiantesUnicos.forEach((est) => {
       doc.text(est.nombrePost + " " + est.apellidoPost, 20, yPosition);
       doc.text(
         est.categorias
@@ -138,7 +168,7 @@ const OrdenPago = () => {
 
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    if (!estudiantes || estudiantes.length === 0) {
+    if (!estudiantesUnicos || estudiantesUnicos.length === 0) {
       alert("No hay estudiantes para registrar.");
       setSubiendo(false);
       return;
@@ -147,8 +177,8 @@ const OrdenPago = () => {
     let hayErrores = false;
     let listaDePostulantes = [];
 
-    for (let i = 0; i < estudiantes.length; i++) {
-      const estudianteOriginal = estudiantes[i];
+    for (let i = 0; i < estudiantesUnicos.length; i++) {
+      const estudianteOriginal = estudiantesUnicos[i];
 
       const camposRequeridos = [
         "nombrePost",
@@ -283,19 +313,14 @@ const OrdenPago = () => {
   };
 
   const handleCancelar = () => {
-    if (from === "Manual") {
-      navigate(`/convocatoria/${idConvocatoria}/inscripcion-manual`, {
-        state: { estudiantes },
-      });
-    } else if (from === "Excel") {
-      navigate(`/convocatoria/${idConvocatoria}/inscripcion-excel`, {
-        state: { estudiantes },
-      });
-    } else {
-      navigate(-1);
-    }
-  };
+    const ruta = from === "Manual"
+      ? `/convocatoria/${idConvocatoria}/inscripcion-manual`
+      : from === "Excel"
+      ? `/convocatoria/${idConvocatoria}/inscripcion-excel`
+      : -1;
 
+    navigate(ruta, { state: { estudiantes: estudiantesUnicos } });
+  };
   const handleSalir = () => {
     navigate("/");
   };
@@ -319,7 +344,7 @@ const OrdenPago = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {estudiantes.map((est, index) => (
+                  {estudiantesUnicos.map((est, index) => (
                     <tr key={index}>
                       <td>
                         <input value={est.nombrePost} readOnly />
@@ -353,7 +378,7 @@ const OrdenPago = () => {
 
             {/* Vista móvil */}
             <div className="mobile-cards mobile-view">
-              {estudiantes.map((estudiante, index) => {
+              {estudiantesUnicos.map((estudiante, index) => {
                 const isExpanded = expandedIds.includes(estudiante.id || index);
                 return (
                   <div className="user-card" key={estudiante.id || index}>

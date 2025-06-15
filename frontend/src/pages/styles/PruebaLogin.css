@@ -1,12 +1,14 @@
 /* Fondo general */
 .login-page {
-    background-color: #d7edf1;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
+  max-width: 700px;
+  margin: 50px auto;
+  border-radius: 16px;
+  overflow: hidden; /* Para que el encabezado no tenga espacio arriba */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Caja del login (más grande) */
@@ -18,6 +20,33 @@
     width: 520px;        /* Aumentado */
     text-align: center;
 }
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* espacio derecho para el ícono */
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.eye-icon-inside {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+}
+
+
+.eye-icon-inside:hover {
+  color: #007bff;
+}
+
 
 @media (max-width: 768px) {
     .login-box{
@@ -44,4 +73,26 @@
     font-weight: bold;
 }
 
+.btn-iniciar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+}
 
+.btn-iniciar:hover{
+    background-color: #0099B3;
+}
+
+.btn-iniciar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+} 
+
+.divDeshabilitado {
+  pointer-events: none; /* Evita clicks, focus, etc */
+  opacity: 0.5;         /* Visualmente indica deshabilitado */
+}

@@ -19,7 +19,7 @@ const TablaUsuarios = () => {
     fetch(`${apiUrl}/todosusers`)
       .then(response => response.json())
       .then(data => {
-        const withExpanded = data.map(u => ({ ...u, expanded: false }));
+        const withExpanded = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor').map(u => ({ ...u, expanded: false }));
         setUsuarios(withExpanded);
       })
       .catch(error => console.error("Error al obtener usuarios:", error))
@@ -68,10 +68,8 @@ const TablaUsuarios = () => {
   };
 
   return (
-    <div>
-      <div className="titulo-tabla">
-        <h2>Lista de Usuarios</h2>
-      </div>
+    <div className="contenedor-tabla-usuarios">
+      <div className="titulo-tabla-usuarios">Lista de Usuarios </div>
       {cargando ? (
         <FullScreenSpinner />
       ) : (
@@ -125,9 +123,9 @@ const TablaUsuarios = () => {
           </div>
         </>
       )}
-      <div className="acciones-superiores">
-        <button className="btn-registrar" onClick={handleRegistrar} disabled={cargando}>Agregar +</button>
-        <button className="btn-cancelar" onClick={() => navigate("/")} disabled={cargando}>Cancelar</button>
+      <div className="botones-tu">
+        <button className="btn-tu-agregar" onClick={handleRegistrar} disabled={cargando}>Agregar +</button>
+        <button className="btn-tu-cancelar" onClick={() => navigate("/")} disabled={cargando}>Cancelar</button>
       </div>
     </div>
   );

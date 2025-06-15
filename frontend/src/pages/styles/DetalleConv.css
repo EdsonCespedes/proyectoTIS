@@ -8,29 +8,25 @@
 }
 
 /* --- Contenedor general --- */
-.container-detalleConv,
-.lista-usuarios {
-  background-color: #adc5cd;
-  padding: 20px;
+.container-detalleConv {
+  background-color: #fff;
   border-radius: 10px;
-  font-family: Arial, sans-serif;
   text-align: center;
-  margin: auto;
+  margin: 20px auto;
   width: 90%;
   max-width: 1200px;
   box-sizing: border-box;
 }
 
 .title-detalleConv {
-  width: 100%;
-  font-size: 24px;
-  margin-bottom: 20px;
   background-color: #007290;
   color: white;
+  padding: 15px;
   text-align: center;
-  border-radius: 4px;
-  padding: 20px;
-  box-sizing: border-box;
+  font-size: 20px;
+  font-weight: bold;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 /* --- Tabla en escritorio --- */
@@ -51,9 +47,10 @@
   font-size: 14px;
 }
 
-.convocatoria-table th {
+.convocatoria-table- th {
   background-color: #007290;
   color: white;
+  text-align: left;
 }
 
 /* Estado activo/inactivo */
@@ -90,15 +87,15 @@
 }
 
 .edit-btndetconv {
-  background-color: #5a7bbf; /* azul claro */
+  background-color: #0099B3; /* azul claro */
 }
 
 .edit-btndetconv:hover {
-  background-color: #4665a3;
+  background-color: #007290;
 }
 
 .delete-btndetconv {
-  background-color: #dc3545; /* rojo */
+  background-color: #d9534f; /* rojo */
 }
 
 .delete-btndetconv:hover {
@@ -136,12 +133,12 @@
 }
 
 .btn-agregar-detconv {
-  background-color: #0093B3;
+  background-color: #0099B3;
   color: #ffffff;
 }
 
 .btn-agregar-detconv:hover {
-  background-color: #007a96;
+  background-color: #007290;
 }
 
 .btn-salir-detconv {
@@ -216,11 +213,11 @@
 
 /* Botones editar y eliminar móviles */
 .card-actionsdetconv .edit-btndetconv {
-  background-color: #5a7bbf;
+  background-color: #0099B3;
 }
 
 .card-actionsdetconv .edit-btndetconv:hover {
-  background-color: #4665a3;
+  background-color: #007290;
 }
 
 .card-actionsdetconv .delete-btndetconv {
@@ -239,11 +236,6 @@
 
   .mobile-cards {
     display: block;
-  }
-
-  .title-detalleConv {
-    font-size: 20px;
-    padding: 15px;
   }
 
   .user-header,
@@ -266,10 +258,6 @@
 }
 
 @media (max-width: 480px) {
-  .title-detalleConv {
-    font-size: 18px;
-    padding: 10px;
-  }
 
   .user-header,
   .user-details p {

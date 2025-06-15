@@ -105,20 +105,26 @@ export const EditConvForm = () => {
     }
     setError("");
 
+    const fechaFinInsc = `${formData.fechaCierreInscripcion} 23:59:59`;
+    const fechaFinOlimp = `${formData.fechaFinOlimpiada} 23:59:59`;
+
+
     const newformData = new FormData();
     newformData.append('_method', 'PUT');
     newformData.append('tituloConvocatoria', formData.titulo);
     newformData.append('descripcion', formData.descripcion);
     newformData.append('fechaPublicacion', convocatoria.fechaPublicacion.split(' ')[0]);
     newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
-    newformData.append('fechaFinInsc', formData.fechaCierreInscripcion);
+    newformData.append('fechaFinInsc', fechaFinInsc);
+
     //newformData.append('portada', formData.imagenPortada); // <-- tu imagen
     if (formData.imagenPortada instanceof File) {
       newformData.append('portada', formData.imagenPortada);
     }
     newformData.append('habilitada', '1');
     newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
-    newformData.append('fechaFinOlimp', formData.fechaFinOlimpiada);
+    newformData.append('fechaFinOlimp', fechaFinOlimp);
+
     newformData.append('maximoPostPorArea', formData.maxConcursantes);
     newformData.append('eliminado', convocatoria.eliminado);
 

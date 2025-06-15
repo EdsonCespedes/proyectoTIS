@@ -17,7 +17,7 @@ const RolesTable = () => {
         const res = await fetch(`${apiUrl}/roles`);
         if (!res.ok) throw new Error("Error al obtener roles");
         const data = await res.json();
-        const dataWithExpanded = data.map(role => ({ ...role, expanded: false }));
+        const dataWithExpanded = data.filter(r => r.name.toLowerCase() != 'admin' && r.name.toLowerCase() != 'tutor').map(role => ({ ...role, expanded: false }));
         setRoles(dataWithExpanded);
       } catch (error) {
         console.error("Error cargando permisos:", error);

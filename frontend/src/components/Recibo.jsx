@@ -21,6 +21,12 @@ const Recibo = () => {
   const [imagenSubida, setImagenSubida] = useState(false);
 
 
+
+  const validarIdRecibo = (id) => {
+    const regex = /^\d{6}$/;
+    return regex.test(id);
+  };
+
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -86,6 +92,10 @@ const Recibo = () => {
       alert('Por favor, ingresa un ID de recibo y sube una imagen.');
       return;
     }
+    if (!validarIdRecibo(idRecibo)) {
+      alert('El ID debe tener exactamente 6 dígitos numéricos.');
+      return;
+    }
     console.log('Importando recibo con ID:', idRecibo, 'y archivo:', imagen);
 
     const formData = new FormData();
@@ -145,17 +155,21 @@ const Recibo = () => {
 
   return (
     <div className="recibo-container">
-      <h2 className="recibo-titulo">RECIBO</h2>
+      
+        <h2 className="titulo">RECIBO</h2>
+      <div className="formulario-subtitulo" >
+         Por favor, suba una foto visible del recibo proporcionad por Caja Facultativa e ingrese el ID Recibo (numérico de 6 dígitos) .
+      
+      </div>
 
-      <label className="recibo-label">ID del Recibo:</label>
+      <label className="recibo-label">ID del Recibo:
+    
 
-      <input
-        type="text"
-        value={idRecibo}
-        onChange={(e) => setIdRecibo(e.target.value)}
-        className="recibo-input"
+      <input type="text" value={idRecibo} onChange={(e) => setIdRecibo(e.target.value)} className="recibo-input" maxLength={6}
+        pattern="\d{6}"
+        title="Debe ser un número de 6 dígitos"
       />
-
+      </label>
       {mensajeCoincidencia && (
         <p style={{
           marginTop: '5px',
@@ -217,14 +231,6 @@ const Recibo = () => {
       )}
 
       {procesandoOCR && <p>🔄 Procesando imagen con OCR...</p>}
-
-      {textoExtraido && (
-        <div className="texto-extraido">
-          <p><strong>Texto extraído de la imagen:</strong></p>
-          <pre>{textoExtraido}</pre>
-        </div>
-      )}
-
 
       <button className="btn-importar" onClick={handleImportar}>
         Enviar

@@ -46,6 +46,7 @@ import NoAutorizado from "./pages/NoAutorizado";
 import EditConvForm from "./pages/EditConvForm";
 import CategoriaEdit from "./pages/CategoriaEdit";
 import ReportePostulantes from "./pages/ReportePostulantes";
+import Footer from "./layout/Footer";
 
 import LogsTablePrueba from "./pages/LogsTablePrueba";
 
@@ -61,18 +62,18 @@ function AppRoutes() {
       <Route path="/" element={<Inicio />} />
 
       {/* Gestión de colegios libre */}
-      <Route path="/colegios" element={<GestionColegios />} />
-      <Route path="/registro-colegios" element={<AddColegios />} />
-      <Route path="/edit-colegios" element={<EditColegios />} />
+      <Route path="/colegios" element={<PrivateRoute allowedRoles={["admin"]}><GestionColegios /></PrivateRoute>} />
+      <Route path="/registro-colegios" element={<PrivateRoute allowedRoles={["admin"]}><AddColegios /></PrivateRoute>} />
+      <Route path="/edit-colegios" element={<PrivateRoute allowedRoles={["admin"]}><EditColegios /></PrivateRoute>} />
 
       {/* Convocatorias */}
-      <Route path="/crear-convocatoria" element={<CrearConvForm />} />
-      <Route path="/editar-convocatoria/:id" element={<EditConvForm />} />
-      <Route path="/detalle-convocatoria" element={<DetalleConv />} />
-      <Route path="/area" element={<Categoria />} />
-      <Route path="/editar-convocatoria/:id/edit-area" element={<CategoriaEdit />} />
-      <Route path="/crear-convocatoria/:id/tablaNotif" element={<TablaNotificaciones />} />
-      <Route path="/editar-convocatoria/:id/tablaNotif" element={<TablaNotificaciones />} />
+      <Route path="/crear-convocatoria" element={<PrivateRoute allowedRoles={["admin"]}><CrearConvForm /></PrivateRoute>} />
+      <Route path="/editar-convocatoria/:id" element={<PrivateRoute allowedRoles={["admin"]}><EditConvForm /></PrivateRoute>} />
+      <Route path="/detalle-convocatoria" element={<PrivateRoute allowedRoles={["admin"]}><DetalleConv /></PrivateRoute>} />
+      <Route path="/area" element={<PrivateRoute allowedRoles={["admin"]}><Categoria /></PrivateRoute>} />
+      <Route path="/editar-convocatoria/:id/edit-area" element={<PrivateRoute allowedRoles={["admin"]}><CategoriaEdit /></PrivateRoute>} />
+      <Route path="/crear-convocatoria/:id/tablaNotif" element={<PrivateRoute allowedRoles={["admin"]}><TablaNotificaciones /></PrivateRoute>} />
+      <Route path="/editar-convocatoria/:id/tablaNotif" element={<PrivateRoute allowedRoles={["admin"]}><TablaNotificaciones /></PrivateRoute>} />
 
       {/* Rutas con rol tutor|admin */}
       <Route
@@ -88,8 +89,8 @@ function AppRoutes() {
       {RutasInscripcion()}
 
       {/* Recibos y pagos */}
-      <Route path="/Recibo" element={<Recibo />} />
-      <Route path="/RegistroPago" element={<RegistroPago />} />
+      <Route path="/Recibo" element={<PrivateRoute allowedRoles={["tutor", "admin"]}><Recibo /></PrivateRoute>} />
+      <Route path="/RegistroPago" element={<PrivateRoute allowedRoles={["admin"]}><RegistroPago /></PrivateRoute>} />
       <Route
         path="/ordenes-pago"
         element={
@@ -129,16 +130,16 @@ function AppRoutes() {
       <Route path="/registro-colegio" element={<RegistrarColegio />} />
 
       {/* Roles dinámicos */}
-      <Route path="/addRoles" element={<AddRoles />} />
-      <Route path="/editRoles/:id" element={<AddRoles />} />
-      <Route path="/tablaRoles" element={<RolesTable />} />
+      <Route path="/addRoles" element={<PrivateRoute allowedRoles={["admin"]}><AddRoles /></PrivateRoute>} />
+      <Route path="/editRoles/:id" element={<PrivateRoute allowedRoles={["admin"]}><AddRoles /></PrivateRoute>} />
+      <Route path="/tablaRoles" element={<PrivateRoute allowedRoles={["admin"]}><RolesTable /></PrivateRoute>} />
 
       {/* Usuarios */}
-      <Route path="/addUser" element={<AddUser />} />
-      <Route path="/addUser/:id" element={<AddUser />} />
-      <Route path="/tablaUsuarios" element={<TablaUsuarios />} />
-      <Route path="/asignarRoles" element={<AsignarRoles />} />
-      <Route path="/listaRoles" element={<ListaRoles />} />
+      <Route path="/addUser" element={<PrivateRoute allowedRoles={["admin"]}><AddUser /></PrivateRoute>} />
+      <Route path="/addUser/:id" element={<PrivateRoute allowedRoles={["admin"]}><AddUser /></PrivateRoute>} />
+      <Route path="/tablaUsuarios" element={<PrivateRoute allowedRoles={["admin"]}><TablaUsuarios /></PrivateRoute>} />
+      <Route path="/asignarRoles" element={<PrivateRoute allowedRoles={["admin"]}><AsignarRoles /></PrivateRoute>} />
+      <Route path="/listaRoles" element={<PrivateRoute allowedRoles={["admin"]}><ListaRoles /></PrivateRoute>} />
 
       {/* Recuperación y notificaciones */}
       <Route path="/recuperacionC" element={<RecuperarContrasena />} />
@@ -150,9 +151,10 @@ function AppRoutes() {
       <Route path="*" element={<NoAutorizado />} />
 
       {/* Reportes */}
-      <Route path="/reportes" element={<ReportePostulantes />} />
+      
 
       <Route path="/logs" element={<LogsTablePrueba />} />
+      <Route path="/reportes" element={<PrivateRoute allowedRoles={["admin"]}><ReportePostulantes /></PrivateRoute>} />
     </Routes>
   );
 }
@@ -163,9 +165,13 @@ function App() {
   return (
     //<BrowserRouter>
     <ConvocatoriaProvider>
-      <Header/>
-      {/*user && user.rol !== 'tutor' && <Header />*/}
-      <AppRoutes />
+      <div className="app-container">
+        <Header />
+        <div className="content-wrap">
+          <AppRoutes />
+        </div>
+        <Footer />
+      </div>
     </ConvocatoriaProvider>
     //</BrowserRouter>
   );

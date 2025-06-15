@@ -57,9 +57,7 @@ const ListaRoles = () => {
 
   return (
     <div className="lista-container">
-      <div className="lista-titulo">
-        <h2>Lista de Roles Asignados</h2>
-      </div>
+      <div className="lista-titulo-roles"> Lista de Roles Asignados </div>
       {cargando ? (
         <FullScreenSpinner />
       ) : (
@@ -125,7 +123,7 @@ const ListaRoles = () => {
         </>
       )}
 
-      <div className="botones-container-tu">
+      <div className="botones-lr">
         <button className="btn-agregar-lr" onClick={irASignarRoles}>Agregar +</button>
         <button className="btn-cancelar-lr" onClick={irACancelar}>Cancelar</button>
       </div>

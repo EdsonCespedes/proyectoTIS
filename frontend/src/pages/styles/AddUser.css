@@ -1,39 +1,96 @@
-/* Título del formulario */
-.form-title {
-  background-color: #007b9e;
-  margin: 0 0 16px 0; 
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+.form-container {
+  max-width: 450px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Contenedor principal del formulario */
-.form-container {
-  width: 90%;
-  max-width: 500px;
-  margin: 50px auto;
-  border: 1px solid #ccc;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.form-title {
+  background-color: #007a9e;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px 0;
+  border-radius: 8px 8px 0 0;
+  margin: -25px -30px 20px -30px;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #007a9e;
+  outline: none;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .btn-agregar-addusr,
 .btn-cancelar-addusr {
-  background-color: #007290;
+  flex: 1;
+  padding: 10px;
+  margin: 0 5px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
-.btn-agregar-addusr:disabled, .btn-cancelar-addusr:disabled{
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
+
+.btn-agregar-addusr {
+  background-color: #007a9e;
+  color: #fff;
 }
 
-/* ... (el resto de tus estilos se mantiene igual) ... */
+.btn-agregar-addusr:hover {
+  background-color: #005f7f;
+  transform: scale(1.02);
+}
+
+.btn-cancelar-addusr {
+  background-color: #cccccc;
+  color: #333;
+}
+
+.btn-cancelar-addusr:hover {
+  background-color: #aaaaaa;
+  transform: scale(1.02);
+}
+
+
+
 
 /* Media Query para pantallas pequeñas */
 @media (max-width: 600px) {

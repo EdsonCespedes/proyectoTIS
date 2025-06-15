@@ -41,12 +41,11 @@ const GestionColegios = () => {
   };
 
   return (
-    <div className="contenedor-gestion-col">
       <div className="contenedor-blanco">
         <h2 className="titulo-colegios">Unidades Educativas</h2>
 
         {/* Vista escritorio */}
-        <div className="tabla-contenedor desktop">
+        <div className="tabla-contenedor-col desktop">
           <table>
             <thead>
               <tr>
@@ -63,8 +62,10 @@ const GestionColegios = () => {
                   <td>{colegio.idColegio}</td>
                   <td>{colegio.nombreColegio}</td>
                   <td>
-                    <button onClick={() => handleModificar(colegio)}>✏️</button>
-                    <button onClick={() => handleRetirar(colegio)}>❌</button>
+                    <div className="btn-groupdetconv">
+                    <button className="edit-btndetconv" onClick={() => handleModificar(colegio)}>✏️</button>
+                    <button className="delete-btndetconv" onClick={() => handleRetirar(colegio)}>❌</button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -112,8 +113,6 @@ const GestionColegios = () => {
           <button type="button" className="btn-cancelar-col" onClick={() => navigate("/")} disabled={cargando}>Cancelar</button>
         </div>
       </div>
-      <hr className="separador" />
-    </div>
   );
 };
 

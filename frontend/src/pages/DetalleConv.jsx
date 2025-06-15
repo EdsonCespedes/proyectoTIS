@@ -13,6 +13,9 @@ const DetalleConv = () => {
 
   const [cargando, setCargando] = useState(true);
 
+  console.log(convocatorias);
+  
+
   useEffect(() => {
     fetch(`${apiUrl}/convocatorias/activas`)
       .then((response) => response.json())
@@ -88,14 +91,14 @@ const DetalleConv = () => {
         <>
           {/* Vista escritorio */}
           <div className="desktop tabla-contenedor">
-            <table className="convocatoria-table">
+            <table className="convocatoria-table-">
               <thead>
                 <tr>
-                  <th>TÍTULO</th>
-                  <th>FECHA DE INSCRIPCIONES</th>
-                  <th>FECHA DE OLIMPIADAS</th>
-                  <th>ESTADO</th>
-                  <th>ACCIÓN</th>
+                  <th>Título</th>
+                  <th>Fecha de inscripciones</th>
+                  <th>Fecha de olimpiadas</th>
+                  <th>Estado</th>
+                  <th>Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -103,10 +106,10 @@ const DetalleConv = () => {
                   <tr key={convocatoria.idConvocatoria}>
                     <td>{convocatoria.tituloConvocatoria}</td>
                     <td>
-                      {convocatoria.fechaInicioInsc} - {convocatoria.fechaFinInsc}
+                      {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
                     </td>
                     <td>
-                      {convocatoria.fechaInicioOlimp} - {convocatoria.fechaFinOlimp}
+                      {convocatoria.fechaInicioOlimp.split(' ')[0]} - {convocatoria.fechaFinOlimp.split(' ')[0]}
                     </td>
                     <td>
                       <span
@@ -144,11 +147,11 @@ const DetalleConv = () => {
                 <div className="user-details">
                   <p>
                     <strong>Inscripciones:</strong>{" "}
-                    {convocatoria.fechaInicioInsc} - {convocatoria.fechaFinInsc}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
                   </p>
                   <p>
                     <strong>Olimpiadas:</strong>{" "}
-                    {convocatoria.fechaInicioOlimp} - {convocatoria.fechaFinOlimp}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
                   </p>
                   <div className="card-actionsdetconv">
                     <button
