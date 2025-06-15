@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tutor;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Models\Tutor;
 
 class TutorController extends Controller
 {
@@ -54,6 +57,12 @@ class TutorController extends Controller
             'telefonoTutor',
             'fechaNaciTutor'
         ]));
+
+        activity()
+                ->causedBy(Auth::user())
+                ->performedOn($tutor)
+                ->withProperties(['attributes' => $tutor->toArray()])
+                ->log('created');
 
         return response()->json([
             'message' => 'Tutor creado correctamente',

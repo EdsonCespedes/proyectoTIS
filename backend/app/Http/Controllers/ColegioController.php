@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Colegio;
+use Illuminate\Support\Facades\DB;
 
 class ColegioController extends Controller
 {
@@ -25,6 +29,12 @@ class ColegioController extends Controller
         ]);
     
         $colegio = Colegio::create($validated);
+
+        activity()
+                ->causedBy(Auth::user())
+                ->performedOn($colegio)
+                ->withProperties(['attributes' => $colegio->toArray()])
+                ->log('created');
     
         return response()->json([
             'message' => 'Colegio registrado correctamente',
