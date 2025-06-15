@@ -5,6 +5,10 @@
   border-radius: 16px;
   overflow: hidden; /* Para que el encabezado no tenga espacio arriba */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Caja del login (más grande) */
