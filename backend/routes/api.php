@@ -370,9 +370,16 @@ Route::middleware('auth:sanctum')->group(function() {
 });
 
 Route::prefix('backups')->group(function () {
-    Route::get('/', [BackupController::class, 'index']);                 // Listar backups
-    Route::post('/', [BackupController::class, 'store']);                // Crear backup
-    Route::get('{filename}', [BackupController::class, 'download']);     // Descargar backup
-    Route::post('upload', [BackupController::class, 'upload']);          // Subir backup
-    Route::post('{filename}/restore', [BackupController::class, 'restore']); // Restaurar desde backup
+    Route::get('/',                   [BackupController::class, 'index'])
+        ->name('api.backups.index');
+    Route::post('/',                  [BackupController::class, 'store'])
+        ->name('api.backups.store');
+    Route::post('upload',            [BackupController::class, 'upload'])
+        ->name('api.backups.upload');
+    Route::post('{filename}/restore', [BackupController::class, 'restore'])
+        ->name('api.backups.restore');
+    Route::get('{filename}',          [BackupController::class, 'download'])
+        ->name('api.backups.download');
+    Route::delete('{filename}',       [BackupController::class, 'destroy'])
+        ->name('api.backups.destroy');
 });
