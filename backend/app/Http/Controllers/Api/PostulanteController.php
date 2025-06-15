@@ -67,7 +67,7 @@ class PostulanteController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1) Crear o asignar Tutor
+            // crear Tutor
             if (! $request->filled('idTutor') && $request->has('tutor')) {
                 $tutorData = $request->input('tutor');
                 $tutor = Tutor::create($tutorData);
@@ -76,11 +76,11 @@ class PostulanteController extends Controller
                 $idTutor = $request->input('idTutor');
             }
 
-            // 2) Colegio y Curso
+            // Colegio y Curso
             $colegioId = $this->buscarOCrearColegio($request->input('idColegio'));
             $cursoId   = $this->buscarOCrearCurso($request->input('idCurso'));
 
-            // 3) Crear o actualizar Postulante
+            // crear o actualizar Postulante
             $postulante = Postulante::firstOrCreate(
                 [
                     'carnet'     => $request->input('carnet'),
@@ -100,9 +100,8 @@ class PostulanteController extends Controller
                 ]
             );
 
-            // 4) Áreas (tabla pivot convocatoria_area)
+            // Áreas
             foreach ($request->input('areas') as $area) {
-                // 4.1) Actualiza/crea la definición del área (sin idConvocatoria)
                 DB::table('area')->updateOrInsert(
                     ['idArea' => $area['idArea']],
                     [
@@ -112,17 +111,16 @@ class PostulanteController extends Controller
                     ]
                 );
 
-                // 4.2) Enlaza esa área con la convocatoria en la tabla pivote
                 DB::table('convocatoria_area')->updateOrInsert(
                     [
                         'idConvocatoria' => $area['idConvocatoria'],
                         'idArea'         => $area['idArea']
                     ],
-                    [] // no hay campos extra en la pivote
+                    []
                 );
             }
 
-            // 5) Categorías + Postulaciones
+            // Categoras + Postulaciones
             $postulacionIds = [];
             foreach ($request->input('categorias') as $cat) {
                 DB::table('categoria')->updateOrInsert(
@@ -142,7 +140,7 @@ class PostulanteController extends Controller
                 ]);
             }
 
-            // 6) Log de actividad
+            // Log de actividad
             activity()
                 ->causedBy(Auth::user())
                 ->performedOn($postulante)
