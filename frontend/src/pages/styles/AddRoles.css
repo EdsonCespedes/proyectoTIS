@@ -8,7 +8,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* ✅ Formulario centralizado */
+
 .form-container {
   width: 100%;
   max-width: 500px;
@@ -20,7 +20,7 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ Título centrado */
+
 .form-title {
 background-color: #007b9e;
   color: white;
@@ -32,7 +32,7 @@ background-color: #007b9e;
   border-top-right-radius: 5px;
 }
 
-/* ✅ Campos del formulario */
+
 input,
 select,
 textarea {
@@ -42,7 +42,7 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* ✅ Sección de funciones */
+
 .funciones {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -50,7 +50,7 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* ✅ Botones */
+
 .form-buttons {
   display: flex;
   justify-content: center;
@@ -182,7 +182,7 @@ form input:focus {
   background-color: #005f7f;
 }
 
-/* ✅ Responsive Mejorado */
+/* Responsive Mejorado */
 @media (max-width: 600px) {
   .register-box {
     border-radius: 12px;

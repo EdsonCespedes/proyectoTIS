@@ -156,57 +156,65 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     }
 
 
-
-
     if (name === "fechaNaciPost") {
-      // Solo permite números
-      const numericValue = value.replace(/\D/g, "");
+  // Solo permite números
+  const numericValue = value.replace(/\D/g, "");
 
-      // Inserta las barras automáticamente: DD/MM/AAAA
-      let formatted = "";
-      if (numericValue.length <= 2) {
-        formatted = numericValue;
-      } else if (numericValue.length <= 4) {
-        formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
-      } else {
-        formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
-      }
-      if (formatted.length === 10) {
-        const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-        if (match) {
-          const day = parseInt(match[1], 10);
-          const month = parseInt(match[2], 10) - 1;
-          const year = parseInt(match[3], 10);
+  // Inserta las barras automáticamente: DD/MM/AAAA
+  let formatted = "";
+  if (numericValue.length <= 2) {
+    formatted = numericValue;
+  } else if (numericValue.length <= 4) {
+    formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+  } else {
+    formatted = `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+  }
 
-          const selectedDate = new Date(year, month, day);
-          const minDate = new Date("2007-01-01");
-          const maxDate = new Date("2019-12-31");
+  // Si ya tiene el largo completo
+  if (formatted.length === 10) {
+    const match = formatted.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
 
-          if (selectedDate < minDate || selectedDate > maxDate) {
-            alert("La fecha debe estar entre el 01/01/2007 y el 31/12/2019.");
-            return;
-          }
+    if (match) {
+      const day = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1; 
+      const year = parseInt(match[3], 10);
+      const selectedDate = new Date(year, month, day);
 
-          if (
-            selectedDate.getDate() !== day ||
-            selectedDate.getMonth() !== month ||
-            selectedDate.getFullYear() !== year
-          ) {
-            alert("Fecha inválida.");
-            return;
-          }
-        } else {
-          alert("Formato inválido. Usa DD/MM/AAAA");
-          return;
-        }
+      //  Rango de edades dinámico
+      const edadMin = 6;
+      const edadMax = 18;
+      const today = new Date();
+      const currentYear = today.getFullYear();
 
+      const minDate = new Date(currentYear - edadMax, 0, 1);    
+      const maxDate = new Date(currentYear - edadMin, 11, 31);  
+
+      // Verifica que esté dentro del rango
+      if (selectedDate < minDate || selectedDate > maxDate) {
+        alert(`La fecha debe estar entre ${minDate.toLocaleDateString()} y ${maxDate.toLocaleDateString()}.`);
+        return;
       }
 
-      setForm(prev => ({ ...prev, [name]: formatted }));
+      if (
+        selectedDate.getDate() !== day ||
+        selectedDate.getMonth() !== month ||
+        selectedDate.getFullYear() !== year
+      ) {
+        alert("Fecha inválida.");
+        return;
+      }
+
     } else {
-
-      setForm(prev => ({ ...prev, [name]: value }));
+      alert("Formato inválido. Usa DD/MM/AAAA");
+      return;
     }
+  }
+  setForm(prev => ({ ...prev, [name]: formatted }));
+
+} else {
+  setForm(prev => ({ ...prev, [name]: value }));
+}
+
 
 
     if (name === "departamentoColegio") {
@@ -393,7 +401,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
           <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
           <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
           <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-          <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} />
+          <input type="text" name="fechaNaciPost" placeholder="año/mes/dia" value={form.fechaNaciPost} onChange={handleChange} maxLength={10}/>
 
 
 
