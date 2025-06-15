@@ -26,7 +26,7 @@ export default function Ac() {
   const [newDescription, setNewDescription] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [formCategory, setFormCategory] = useState({ name: "", options: [], monto: 0, areaId: null });
+  const [formCategory, setFormCategory] = useState({ name: "", options: [], monto: "", areaId: null });
   const [expandedAreas, setExpandedAreas] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState([]);
 
@@ -133,7 +133,9 @@ export default function Ac() {
   };
 
   const handleSaveCategory = () => {
-    if (!formCategory.name.trim() || selectedCategories.length === 0 || !formCategory.monto) {
+  const montoNum = Number(formCategory.monto);
+    if (!formCategory.name.trim() || selectedCategories.length === 0 || isNaN(montoNum) || montoNum <= 0) {
+
       alert("Debe llenar todos los campos y seleccionar al menos una opción");
       return;
     }
@@ -141,7 +143,7 @@ export default function Ac() {
       id: editingCategory ? editingCategory.id : Date.now(),
       name: formCategory.name,
       options: selectedCategories,
-      monto: formCategory.monto,
+      monto: montoNum,
     };
     const updatedAreas = areas.map((area) => {
       if (area.id === formCategory.areaId) {
@@ -298,25 +300,53 @@ export default function Ac() {
         </div>
       )}
 
-      {/* MODAL CATEGORÍA */}
-      {showCategoryModal && (
-        <div className="modal-cat">
-          <div className="modal-content-cat">
-            <span className="close-modal-cat" onClick={() => setShowCategoryModal(false)}>❌</span>
-            <h3>{editingCategory ? "Editar Categoría" : "Agregar Categoría"}</h3>
-            <input placeholder="Nombre categoría" value={formCategory.name} onChange={(e) => setFormCategory({ ...formCategory, name: e.target.value })} />
-            <input type="number" placeholder="Monto" value={formCategory.monto} onChange={(e) => setFormCategory({ ...formCategory, monto: Number(e.target.value) })} />
-            <p>Opciones:</p>
-            {categoryOptions.map((opt) => (
-              <div key={opt}>
-                <input type="checkbox" checked={selectedCategories.includes(opt)} onChange={() => handleCheckboxChange(opt)} />
-                <label>{opt}</label>
-              </div>
-            ))}
-            <button onClick={handleSaveCategory}>Guardar Categoría</button>
-          </div>
-        </div>
-      )}
+{/* MODAL CATEGORÍA */}
+{showCategoryModal && (
+  <div className="modal-cat">
+    <div className="modal-content-cat">
+      <span className="close-modal-cat" onClick={() => setShowCategoryModal(false)}>❌</span>
+      <h3>{editingCategory ? "Editar Categoría" : "Agregar Categoría"}</h3>
+
+      <input
+        placeholder="Nombre categoría"
+        value={formCategory.name}
+        onChange={(e) => setFormCategory({ ...formCategory, name: e.target.value })}
+      />
+
+      <input
+        type="number"
+        placeholder="Monto"
+        min="1"
+        step="1"
+        value={formCategory.monto}
+        onChange={(e) => {
+          const val = e.target.value;
+          // Permite vacío o solo números enteros positivos mayores a 0
+          if (val === "" || (/^\d+$/.test(val) && Number(val) >= 1)) {
+            setFormCategory({ ...formCategory, monto: val });
+          }
+        }}
+      />
+
+      <p>Opciones:</p>
+      <div className="checkbox-grid">
+        {categoryOptions.map((opt) => (
+          <label className="checkbox-item" key={opt}>
+            <input
+              type="checkbox"
+              checked={selectedCategories.includes(opt)}
+              onChange={() => handleCheckboxChange(opt)}
+            />
+            <span>{opt}</span>
+          </label>
+        ))}
+      </div>
+
+      <button onClick={handleSaveCategory}>Guardar Categoría</button>
+    </div>
+  </div>
+)}
+
       <div className="botones-cat">
         <button onClick={handlePublicar} className="siguiente-cat" disabled={cargando || selectedAreas.length == 0 || areas.every(area => area.categories.length === 0)}>Siguiente {cargando && (<span><SpinnerInsideButton/></span>)}</button>
       </div>
