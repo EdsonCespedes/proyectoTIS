@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./styles/Inicio.css";
 
 const datosAreas = [
@@ -34,7 +35,8 @@ const datosAreas = [
 
 const Inicio = () => {
   const areasRef = useRef(null);
-  const cardWidth = 140; // 120px + 20px gap
+  const navigate = useNavigate();  
+  const cardWidth = 140; 
 
   const moverDerecha = () => {
     if (areasRef.current) {
@@ -48,8 +50,11 @@ const Inicio = () => {
     }
   };
 
-   useEffect(() => {
-    // Cleanup al desmontar para evitar el error "removeChild"
+  const irAInscripcion = () => {
+    navigate('/convocatorias');  
+  };
+
+  useEffect(() => {
     return () => {
       if (areasRef.current) {
         areasRef.current.scrollTo({
@@ -59,6 +64,7 @@ const Inicio = () => {
       }
     };
   }, []);
+
   return (
     <div className="inicio-container">
       <header className="banner">
@@ -73,7 +79,12 @@ const Inicio = () => {
 
         <div className="areas" ref={areasRef}>
           {datosAreas.map((area, i) => (
-            <div className="area-card" key={i}>
+            <div
+              className="area-card"
+              key={i}
+              style={{ cursor: "pointer" }}
+              onClick={irAInscripcion}  // <-- agregar onClick aquí
+            >
               <img src={area.imagen} alt={area.nombre} />
               <p>{area.nombre}</p>
             </div>
@@ -85,6 +96,5 @@ const Inicio = () => {
     </div>
   );
 };
+
 export default Inicio;
-
-

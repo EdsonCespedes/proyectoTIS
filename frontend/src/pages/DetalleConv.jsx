@@ -13,6 +13,9 @@ const DetalleConv = () => {
 
   const [cargando, setCargando] = useState(true);
 
+  console.log(convocatorias);
+  
+
   useEffect(() => {
     fetch(`${apiUrl}/convocatorias/activas`)
       .then((response) => response.json())

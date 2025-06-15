@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import * as XLSX from "xlsx";
 
 import ExcelDownload from "../components/ExcelDownload";
+import PanfletoButton from "../components/PanfletoButton";
+
 import "../components/styles/ImageUpload.css"
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import "./styles/InscripcionExcel.css";
@@ -37,6 +39,26 @@ const InscripcionExcel = () => {
     const [cargandoProv, setCargandoProv] = useState(true);
     const [cargandoCol, setCargandoCol] = useState(true);
 
+    const [convocatoria, setConvocatoria] = useState({});
+    const [cargandoConv, setCargandoConv] = useState(true);
+
+    useEffect(() => {
+        const fetchConv = async () => {
+            try {
+                const res = await fetch(`${apiUrl}/veridconvocatorias/${idConvocatoria}`);
+                if (!res.ok) throw new Error("Error al obtener la convocatoria");
+                const data = await res.json();
+                console.log(data);
+                setConvocatoria(data);
+            } catch (error) {
+                console.error("Error cargando permisos:", error);
+            } finally {
+                setCargandoConv(false);
+            }
+        };
+        fetchConv();
+    }, []);
+
     useEffect(() => {
         fetch(`${apiUrl}/vercursos`)
             .then(res => res.json())
@@ -45,13 +67,13 @@ const InscripcionExcel = () => {
                 setCursosDisponibles(data); // o data.cursos si aplica
             })
             .catch(err => console.error("Error cargando cursos:", err))
-            .finally(()=>setCargandoCursos(false));
+            .finally(() => setCargandoCursos(false));
 
         fetch(`${apiUrl}/verdepartamentos`)
             .then(response => response.json())
             .then(data => setDepartamentos(data))
             .catch(error => console.error("Error al obtener departamentos:", error))
-            .finally(()=>setCargandoDpto(false));
+            .finally(() => setCargandoDpto(false));
     }, []);
 
     useEffect(() => {
@@ -60,7 +82,7 @@ const InscripcionExcel = () => {
                 .then(res => res.json())
                 .then(data => setProvinciasColegio(data))
                 .catch(error => console.error("Error al obtener provincias:", error))
-                .finally(()=>setCargandoProv(false));
+                .finally(() => setCargandoProv(false));
         }
     }, [departamentoColegio]);
 
@@ -70,7 +92,7 @@ const InscripcionExcel = () => {
                 .then(res => res.json())
                 .then(data => setColegiosDisponibles(data))
                 .catch(error => console.error("Error al obtener colegios:", error))
-                .finally(()=>setCargandoCol(false));
+                .finally(() => setCargandoCol(false));
         }
     }, [departamentoColegio, provinciaColegio]);
 
@@ -200,7 +222,7 @@ const InscripcionExcel = () => {
                         habilitada: area.habilitada ?? true, // por defecto true si no existe
                         idConvocatoria: area.idConvocatoria || idConvocatoria, // si se tiene disponible
                     }));
-                    
+
                     // Ahora, para cada categoría, asignamos correctamente el idArea
                     const categoriasFormateadas = categoriasConfirmadas.flat().map((categoria) => {
                         // Buscar el área que contiene esta categoría por el idCategoria
@@ -307,7 +329,7 @@ const InscripcionExcel = () => {
             alert("Por favor, complete todos los campos del colegio antes de continuar.");
             return;
         }
-    
+
         if (estudiantes.length === 0) {
             alert("Debe subir un archivo válido con al menos un estudiante.");
             return;
@@ -338,7 +360,7 @@ const InscripcionExcel = () => {
                 .then(response => response.json())
                 .then(data => setProvinciasColegio(data))
                 .catch(error => console.error("Error al obtener provincias:", error))
-                .finally(()=>setCargandoProv(false));
+                .finally(() => setCargandoProv(false));
             setColegiosDisponibles([]);
         }
 
@@ -350,7 +372,7 @@ const InscripcionExcel = () => {
                 .then(response => response.json())
                 .then(data => setColegiosDisponibles(data))
                 .catch(error => console.error("Error al obtener colegios:", error))
-                .finally(()=>setCargandoCol(false));
+                .finally(() => setCargandoCol(false));
         }
 
         if (name === "idColegio") {
@@ -366,7 +388,16 @@ const InscripcionExcel = () => {
             <div className="excel-title">
                 <h2>TODOS LOS POSTULANTES DEBEN PERTENECER AL MISMO COLEGIO Y TENER EL MISMO TUTOR</h2>
                 <h2>Descargue la plantilla aqui y suba el archivo .xlsx con el formato dado</h2>
-                <ExcelDownload />
+                {cargandoCursos || cargandoConv ? (
+                    <>
+                        Cargando... <span><SpinnerInsideButton /></span>
+                    </>
+                ) : (
+                    <div>
+                        <ExcelDownload />
+                        <PanfletoButton convocatoria={convocatoria} />
+                    </div>
+                )}
             </div>
 
             <div
@@ -384,9 +415,9 @@ const InscripcionExcel = () => {
                             <span className="upload-icon">📄</span>
                             <p>Archivo cargado: <strong>{archivoNombre}</strong></p>
                         </div>
-                    ) : cargandoCursos ? (
+                    ) : cargandoCursos || cargandoConv ? (
                         <>
-                            Cargando... <span><SpinnerInsideButton/></span>
+                            Cargando... <span><SpinnerInsideButton /></span>
                         </>
                     ) : (
                         <div className="upload-placeholder">
