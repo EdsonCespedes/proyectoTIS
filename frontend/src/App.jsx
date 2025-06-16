@@ -48,6 +48,8 @@ import CategoriaEdit from "./pages/CategoriaEdit";
 import ReportePostulantes from "./pages/ReportePostulantes";
 import Footer from "./layout/Footer";
 
+import LogsTablePrueba from "./pages/LogsTablePrueba";
+
 function SeleccionConvocatoria() {
   const { cambiarConvocatoria } = useContext(ConvocatoriaContext);
   const navigate = useNavigate();
@@ -149,6 +151,9 @@ function AppRoutes() {
       <Route path="*" element={<NoAutorizado />} />
 
       {/* Reportes */}
+      
+
+      <Route path="/logs" element={<LogsTablePrueba />} />
       <Route path="/reportes" element={<PrivateRoute allowedRoles={["admin"]}><ReportePostulantes /></PrivateRoute>} />
     </Routes>
   );

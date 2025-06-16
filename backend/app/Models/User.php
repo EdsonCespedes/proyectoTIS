@@ -13,6 +13,7 @@ use App\Models\Convocatoria;
 use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -21,13 +22,24 @@ use App\Notifications\CustomResetPasswordNotification; // Agregar la importació
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+
+    protected static $logAttributes = ['name', 'apellido', 'email'];
+    protected static $logName       = 'user_log';
+    protected static $logOnlyDirty  = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "Usuario fue {$eventName}";
+    }
+
     protected $fillable = [
         'name',
         'apellido',

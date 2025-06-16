@@ -22,10 +22,7 @@ use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\TutorNotificationController;
 
-
-
 use App\Http\Controllers\UserController;
-
 
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
@@ -38,6 +35,8 @@ use App\Http\Controllers\ConvocatoriaRoleController;
 
 use App\Http\Controllers\ReportePostulantesController;
 
+use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\LogController;
 
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
@@ -330,4 +329,57 @@ Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrden
 
 Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
 
+Route::prefix('convocatoria')->group(function(){
+    Route::post('role',      [ConvocatoriaRoleController::class,'store']);
+    Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
+    Route::get('roles/all',  [ConvocatoriaRoleController::class,'all']);
+});
+
+Route::prefix('user')->group(function(){
+    // .todos los roles y permisos de un usuario en todas las convocatorias
+    Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
+    // Roles y permisos de un usuario dentro de UNA convocatoria
+    Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
+});
+
 Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    // ver todas las bitácoras
+    Route::get('/logs', [LogController::class, 'index']);
+
+    // Ver detalle de una bitácora
+    Route::get('/logs/{id}', [LogController::class, 'show']);
+
+    // Filtrar bitácoras
+    Route::get('/logs/filter', [LogController::class, 'filter']);
+});
+
+Route::middleware('auth:sanctum')->group(function() {
+    // Crear un nuevo backup
+    Route::post('/backups', [BackupController::class, 'create']);
+
+    // Listar backups existentes
+    Route::get('/backups', [BackupController::class, 'index']);
+
+    // Descargar un backup específico
+    Route::get('/backups/{filename}/download', [BackupController::class, 'download']);
+
+    // Restaurar base de datos desde backup
+    Route::post('/backups/restore', [BackupController::class, 'restore']);
+});
+
+Route::prefix('backups')->group(function () {
+    Route::get('/',                   [BackupController::class, 'index'])
+        ->name('api.backups.index');
+    Route::post('/',                  [BackupController::class, 'store'])
+        ->name('api.backups.store');
+    Route::post('upload',            [BackupController::class, 'upload'])
+        ->name('api.backups.upload');
+    Route::post('{filename}/restore', [BackupController::class, 'restore'])
+        ->name('api.backups.restore');
+    Route::get('{filename}',          [BackupController::class, 'download'])
+        ->name('api.backups.download');
+    Route::delete('{filename}',       [BackupController::class, 'destroy'])
+        ->name('api.backups.destroy');
+});
