@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class OrdenPago extends Model
 {
     protected $table = 'ordenpago';
-    protected $primaryKey = 'idordenPago';
+    protected $primaryKey = 'idOrdenPago';
     public $timestamps = false;
     protected $fillable = ['idTutor','montoTotal','cancelado','vigencia','recibido'];
 
     public function tutor()
     {
-        return $this->belongsTo(Tutor::class, 'idTutor', 'idTutor');
+        return $this->belongsTo(Tutor::class, 'idTutor');
     }
 }

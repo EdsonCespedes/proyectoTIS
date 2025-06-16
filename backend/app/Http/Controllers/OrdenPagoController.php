@@ -4,6 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
+use App\Models\OrdenPago;
+use App\Notifications\OrdenPagoCorrecto;
+use App\Notifications\OrdenPagoDenegado;
+
+
+use Illuminate\Support\Facades\Notification;
+
+use Illuminate\Support\Facades\DB;
+
 
 class OrdenPagoController extends Controller
 {
@@ -114,40 +123,81 @@ class OrdenPagoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $idOrdenPago)
-    {
-        // Validar los datos que vas a recibir
-        $request->validate([
-            'montoTotal' => 'required|numeric',
-            'cancelado' => 'required|boolean',
-            'vigencia' => 'required|date',
-            'recibido' => 'required|boolean',
-            'idTutor' => 'required|exists:tutor,idTutor',
-        ]);
+ public function update(Request $request, $idOrdenPago)
+{
+    $request->validate([
+        'montoTotal' => 'required|numeric',
+        'cancelado' => 'required|boolean',
+        'vigencia' => 'required|date',
+        'recibido' => 'required|boolean',
+        'idTutor' => 'required|exists:tutor,idTutor',
+    ]);
 
-        // Buscar la orden de pago por su ID
-        $orden = OrdenPago::where('idOrdenPago', $idOrdenPago)->first();
+    $orden = OrdenPago::where('idOrdenPago', $idOrdenPago)->first();
 
-        if (!$orden) {
-            return response()->json(['message' => 'Orden de pago no encontrada'], 404);
+    if (!$orden) {
+        return response()->json(['message' => 'Orden de pago no encontrada'], 404);
+    }
+
+    // Actualiza los campos
+    $orden->montoTotal = $request->montoTotal;
+    $orden->cancelado = $request->cancelado;
+    $orden->vigencia = $request->vigencia;
+    $orden->recibido = $request->recibido;
+    $orden->idTutor = $request->idTutor;
+    $orden->save();
+
+    // Buscar postulante relacionado
+    $postulante = DB::table('ordenpago')
+        ->join('pagodetalle', 'ordenpago.idOrdenPago', '=', 'pagodetalle.idOrdenPago')
+        ->join('postulacion', 'pagodetalle.idPostulacion', '=', 'postulacion.idPostulacion')
+        ->join('postulante', 'postulacion.idPostulante', '=', 'postulante.idPostulante')
+        ->where('ordenpago.idOrdenPago', $orden->idOrdenPago)
+        ->select('postulante.idPostulante')
+        ->first();
+
+    $tutor = $orden->tutor;
+
+    if ($orden->recibido && $orden->cancelado) {
+        // Aprobado: habilitar y enviar correo
+        if ($postulante) {
+            DB::table('postulante')
+                ->where('idPostulante', $postulante->idPostulante)
+                ->update(['habilitado' => 1]);
         }
 
-        // Actualizar los campos
-        $orden->montoTotal = $request->montoTotal;
-        $orden->cancelado = $request->cancelado;
-        $orden->vigencia = $request->vigencia;
-        $orden->recibido = $request->recibido;
-        $orden->idTutor = $request->idTutor;
+        if ($tutor && !empty($tutor->correoTutor)) {
+            try {
+                $tutor->notify(new OrdenPagoCorrecto());
+            } catch (\Exception $e) {
+                \Log::error('Error al enviar correo correcto: ' . $e->getMessage());
+            }
+        }
 
-        // Guardar
-        $orden->save();
+    } elseif (!$orden->recibido && !$orden->cancelado) {
+        // Denegado: deshabilitar y enviar correo
+        if ($postulante) {
+            DB::table('postulante')
+                ->where('idPostulante', $postulante->idPostulante)
+                ->update(['habilitado' => 0]);
+        }
 
-        return response()->json([
-            'message' => 'Orden de pago actualizada con éxito',
-            'orden' => $orden
-        ], 200);
-    
+        if ($tutor && !empty($tutor->correoTutor)) {
+            try {
+                $tutor->notify(new OrdenPagoDenegado());
+            } catch (\Exception $e) {
+                \Log::error('Error al enviar correo denegado: ' . $e->getMessage());
+            }
+        }
     }
+
+    return response()->json([
+        'message' => 'Orden de pago actualizada correctamente',
+        'orden' => $orden
+    ]);
+}
+
+
     /**
      * Remove the specified resource from storage.
      *
