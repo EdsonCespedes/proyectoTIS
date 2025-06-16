@@ -14,7 +14,7 @@ class OrdenPago extends Model
 
     public function tutor()
     {
-        return $this->belongsTo(Tutor::class, 'idTutor', 'idTutor');
+        return $this->belongsTo(Tutor::class, 'idTutor');
     }
 
     public function recibo()
