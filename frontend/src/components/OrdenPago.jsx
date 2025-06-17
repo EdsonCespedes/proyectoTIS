@@ -21,27 +21,25 @@ const OrdenPago = () => {
 
   const estudiantesOriginales = location.state?.estudiantes || [];
 
-// Detectar y eliminar duplicados por carnet o correo
+  // Detectar y eliminar duplicados por carnet o correo
   const carnetVistos = new Set();
   const correoVistos = new Set();
   const duplicados = [];
 
-const estudiantesUnicos = estudiantesOriginales.filter((est) => {
-  const carnetDuplicado = carnetVistos.has(est.carnet);
-  const correoDuplicado = correoVistos.has(est.correoPost);
+  const estudiantesUnicos = estudiantesOriginales.filter((est) => {
+    const carnetDuplicado = carnetVistos.has(est.carnet);
+    const correoDuplicado = correoVistos.has(est.correoPost);
 
-  if (carnetDuplicado || correoDuplicado) {
-    duplicados.push(est);
-    return false;
-  } else {
-    carnetVistos.add(est.carnet);
-    correoVistos.add(est.correoPost);
-    return true;
-  }
-});
+    if (carnetDuplicado || correoDuplicado) {
+      duplicados.push(est);
+      return false;
+    } else {
+      carnetVistos.add(est.carnet);
+      correoVistos.add(est.correoPost);
+      return true;
+    }
+  });
 
-
-  
   const from = location.state?.from || "default";
   console.log(estudiantesUnicos);
 
@@ -75,13 +73,15 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
         setCargando(false);
       }
       if (duplicados.length > 0) {
-    const mensaje = duplicados
-      .map((dup) => `- ${dup.nombrePost} ${dup.apellidoPost} (CI: ${dup.carnet}, Correo: ${dup.correoPost})`)
-      .join("\n");
-    alert(`⚠️ Estudiantes duplicados eliminados:\n\n${mensaje}`);
-    }
+        const mensaje = duplicados
+          .map(
+            (dup) =>
+              `- ${dup.nombrePost} ${dup.apellidoPost} (CI: ${dup.carnet}, Correo: ${dup.correoPost})`
+          )
+          .join("\n");
+        alert(`⚠️ Estudiantes duplicados eliminados:\n\n${mensaje}`);
+      }
     };
-    
 
     obtenerConvocatoria();
   }, [idConvocatoria]);
@@ -97,10 +97,16 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
     .toFixed(2)
     .replace(".", ",");
 
-  const handleAceptar = async() => {
-    await handleSubmit();
-    setMostrarDescargar(true);
-    setMostrarBotones(false);
+  // --- MODIFICACIÓN: handleAceptar espera el resultado de handleSubmit ---
+  const handleAceptar = async () => {
+    const exito = await handleSubmit();
+    if (exito) {
+      setMostrarDescargar(true);
+      setMostrarBotones(false);
+    } else {
+      setMostrarDescargar(false);
+      setMostrarBotones(true);
+    }
   };
 
   const handleDescargarPDF = () => {
@@ -117,11 +123,11 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
     if (tutor) {
       doc.text(
         "Tutor: " +
-        tutor.nombreTutor +
-        " " +
-        tutor.apellidoTutor +
-        "  ID Tutor: " +
-        tutor.idTutor,
+          tutor.nombreTutor +
+          " " +
+          tutor.apellidoTutor +
+          "  ID Tutor: " +
+          tutor.idTutor,
         20,
         55
       );
@@ -163,15 +169,16 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
     setSalirActivo(true);
   };
 
+  // --- MODIFICACIÓN: handleSubmit devuelve true/false segun éxito ---
   const handleSubmit = async () => {
     setSubiendo(true);
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     if (!estudiantesUnicos || estudiantesUnicos.length === 0) {
       alert("No hay estudiantes para registrar.");
       setSubiendo(false);
-      return;
+      return false;
     }
 
     let hayErrores = false;
@@ -223,7 +230,7 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
         telefonoPost: String(estudiante.telefonoPost ?? ""),
         idCurso: String(estudiante.idCurso ?? ""),
         idColegio: String(estudiante.idColegio ?? ""),
-        fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split('T')[0],
+        fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split("T")[0],
         idTutor: tutor.idTutor,
         tutor: tutor,
       };
@@ -270,7 +277,7 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
         "Algunos estudiantes no se pudieron registrar. Revisa la consola para más detalles."
       );
       setSubiendo(false);
-      return;
+      return false;
     } else {
       alert("Todos los estudiantes fueron registrados correctamente.");
     }
@@ -301,23 +308,23 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
         console.error(`Error al registrar la orden de pago:`, errorText);
         hayErrores = true;
       }
-
-      // setMostrarBotones(false);
-      // setMostrarDescargar(true);
     } catch (error) {
       console.error(`Error al registrar la orden de pago:`, error);
       hayErrores = true;
     } finally {
       setSubiendo(false);
     }
+
+    return !hayErrores;
   };
 
   const handleCancelar = () => {
-    const ruta = from === "Manual"
-      ? `/convocatoria/${idConvocatoria}/inscripcion-manual`
-      : from === "Excel"
-      ? `/convocatoria/${idConvocatoria}/inscripcion-excel`
-      : -1;
+    const ruta =
+      from === "Manual"
+        ? `/convocatoria/${idConvocatoria}/inscripcion-manual`
+        : from === "Excel"
+        ? `/convocatoria/${idConvocatoria}/inscripcion-excel`
+        : -1;
 
     navigate(ruta, { state: { estudiantes: estudiantesUnicos } });
   };
@@ -418,14 +425,21 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
           </>
         )}
 
-
         <div className="botones">
           {mostrarBotones && (
             <>
-              <button className="btn-descargar" onClick={handleAceptar} disabled={cargando || subiendo}>
+              <button
+                className="btn-descargar"
+                onClick={handleAceptar}
+                disabled={cargando || subiendo}
+              >
                 Aceptar {subiendo ? <span><SpinnerInsideButton/></span> : ""}
               </button>
-              <button className="btn-cancelar" onClick={handleCancelar} disabled={cargando || subiendo}>
+              <button
+                className="btn-cancelar"
+                onClick={handleCancelar}
+                disabled={cargando || subiendo}
+              >
                 Cancelar
               </button>
             </>
@@ -449,3 +463,4 @@ const estudiantesUnicos = estudiantesOriginales.filter((est) => {
 };
 
 export default OrdenPago;
+
