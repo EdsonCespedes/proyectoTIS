@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./styles/Convocatoria.css";
 import ImageUpload from "../components/ImageUpload";
 import { useNavigate } from "react-router-dom";
-
-import { useContext } from "react";
 import { ConvocatoriaContext } from "../context/ConvocatoriaContext";
-
 import SpinnerInsideButton from "../components/SpinnerInsideButton";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -19,20 +16,13 @@ export const CrearConvForm = () => {
     fechaInicioOlimpiada: "",
     fechaFinOlimpiada: "",
     imagenPortada: null,
-    // maxConcursantes: [],
     maxConcursantes: 0,
-    maxArea: [],
   });
 
-  const [newArea, setNewArea] = useState("");
-  const [newMax, setNewMax] = useState("");
-  const [newMaxConcursantes, setNewMaxConcursantes] = useState("");
-  const [error, setError] = useState(""); // Estado para mostrar errores
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
   const today = new Date().toISOString().split("T")[0];
   const navigate = useNavigate();
-
-  const [cargando, setCargando] = useState(false);
-
   const { agregarConvocatoria } = useContext(ConvocatoriaContext);
 
   const handleChange = (e) => {
@@ -43,84 +33,151 @@ export const CrearConvForm = () => {
     setFormData({ ...formData, imagenPortada: file });
   };
 
-  const addAreaMaxConcursantes = () => {
-    if (newArea) {
-      setFormData({
-        ...formData,
-        maxConcursantes: [...formData.maxConcursantes, { area: newArea, max: newMaxConcursantes || "Sin límite" }],
-      });
-      setNewArea("");
-      setNewMaxConcursantes("");
-    }
+  const isValidDateFormat = (dateStr) => {
+    // Requiere formato YYYY-MM-DD y asegura que sea una fecha válida
+    return /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(new Date(dateStr).getTime());
+  };
+
+  const convertToMDY = (dateStr) => {
+    const [y, m, d] = dateStr.split("-");
+    return `${m}-${d}-${y}`;
+  };
+
+  const getYear = (dateStr) => {
+    const year = dateStr.split("-")[0];
+    return /^\d{4}$/.test(year) ? parseInt(year) : null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCargando(true);
+    setError("");
 
+    const {
+      titulo,
+      descripcion,
+      fechaInicioInscripcion,
+      fechaCierreInscripcion,
+      fechaInicioOlimpiada,
+      fechaFinOlimpiada,
+      imagenPortada,
+      maxConcursantes,
+    } = formData;
+
+    // 1. Campos obligatorios
     if (
-      !formData.titulo ||
-      !formData.descripcion ||
-      !formData.fechaInicioInscripcion ||
-      !formData.fechaCierreInscripcion ||
-      !formData.fechaInicioOlimpiada ||
-      !formData.fechaFinOlimpiada ||
-      !formData.imagenPortada
+      !titulo ||
+      !descripcion ||
+      !fechaInicioInscripcion ||
+      !fechaCierreInscripcion ||
+      !fechaInicioOlimpiada ||
+      !fechaFinOlimpiada ||
+      !imagenPortada
     ) {
       setError("Por favor, complete todos los campos obligatorios.");
       setCargando(false);
       return;
     }
-    setError("");
 
-    const fechaFinInsc = `${formData.fechaCierreInscripcion} 23:59:59`;
-    const fechaFinOlimp = `${formData.fechaFinOlimpiada} 23:59:59`;
+    // 2. Validación de formato de fecha y año (YYYY-MM-DD, 4 dígitos)
+    const fechas = [
+      fechaInicioInscripcion,
+      fechaCierreInscripcion,
+      fechaInicioOlimpiada,
+      fechaFinOlimpiada,
+    ];
+    for (let fecha of fechas) {
+      if (!isValidDateFormat(fecha)) {
+        setError("Formato de fecha incorrecto. Debe ser YYYY-MM-DD.");
+        setCargando(false);
+        return;
+      }
+      const year = getYear(fecha);
+      if (!year || year < new Date().getFullYear()) {
+        setError("El año debe tener 4 dígitos y no ser menor al actual.");
+        setCargando(false);
+        return;
+      }
+    }
+
+    // 3. Validación de fechas lógicas
+    if (new Date(fechaInicioInscripcion) >= new Date(fechaCierreInscripcion)) {
+      setError("La fecha de cierre de inscripción debe ser posterior al inicio.");
+      setCargando(false);
+      return;
+    }
+
+    if (new Date(fechaCierreInscripcion) >= new Date(fechaInicioOlimpiada)) {
+      setError("El inicio de olimpiada debe ser posterior al cierre de inscripción.");
+      setCargando(false);
+      return;
+    }
+
+    if (new Date(fechaInicioOlimpiada) > new Date(fechaFinOlimpiada)) {
+      setError("La fecha de fin de olimpiada debe ser posterior al inicio.");
+      setCargando(false);
+      return;
+    }
+
+    // 4. No permitir coincidencia entre inscripción y olimpiada
+    if (
+      fechaInicioInscripcion === fechaInicioOlimpiada ||
+      fechaCierreInscripcion === fechaInicioOlimpiada
+    ) {
+      setError("Las fechas de inscripción no deben coincidir con el inicio de la olimpiada.");
+      setCargando(false);
+      return;
+    }
+
+    // 5. Validar concursantes
+    if (isNaN(maxConcursantes) || parseInt(maxConcursantes) < 0) {
+      setError("El número máximo de concursantes debe ser un número positivo.");
+      setCargando(false);
+      return;
+    }
+
+    // Enviar formulario
+    const fechaFinInsc = `${fechaCierreInscripcion} 23:59:59`;
+    const fechaFinOlimp = `${fechaFinOlimpiada} 23:59:59`;
 
     const newformData = new FormData();
-    newformData.append('titulo', formData.titulo);
-    newformData.append('descripcion', formData.descripcion);
-    newformData.append('fechaPublicacion', new Date().toISOString().split("T")[0]);
-    newformData.append('fechaInicioInsc', formData.fechaInicioInscripcion);
-    newformData.append('fechaFinInsc', fechaFinInsc);
-
-    newformData.append('portada', formData.imagenPortada); // <-- tu imagen
-    newformData.append('habilitada', '1');
-    newformData.append('fechaInicioOlimp', formData.fechaInicioOlimpiada);
-    newformData.append('fechaFinOlimp', fechaFinOlimp);
-
-    newformData.append('maximoPostPorArea', formData.maxConcursantes);
+    newformData.append("titulo", titulo);
+    newformData.append("descripcion", descripcion);
+    newformData.append("fechaPublicacion", new Date().toISOString().split("T")[0]);
+    newformData.append("fechaInicioInsc", fechaInicioInscripcion);
+    newformData.append("fechaFinInsc", fechaFinInsc);
+    newformData.append("portada", imagenPortada);
+    newformData.append("habilitada", "1");
+    newformData.append("fechaInicioOlimp", fechaInicioOlimpiada);
+    newformData.append("fechaFinOlimp", fechaFinOlimp);
+    newformData.append("maximoPostPorArea", maxConcursantes);
 
     try {
       const response = await fetch(`${apiUrl}/solo-convocatoria`, {
-        method: 'POST',
+        method: "POST",
         body: newformData,
       });
 
       const text = await response.text();
       if (!response.ok) {
-        console.error('Error del servidor:', text); // en vez de tratar de hacer response.json() directamente
+        console.error("Error del servidor:", text);
         setCargando(false);
         return;
       }
 
       const data = JSON.parse(text);
-      console.log('ID de la convocatoria creada:', data.idConvocatoria);
-
       navigate(`/area`, {
         state: { idConvocatoria: data.idConvocatoria },
       });
     } catch (error) {
-      console.error('Error al guardar la convocatoria:', error);
+      console.error("Error al guardar la convocatoria:", error);
       setCargando(false);
     }
-
   };
-
 
   const handleCancelar = () => {
     navigate("/detalle-convocatoria");
   };
-
 
   return (
     <div className="container-formconv">
@@ -154,13 +211,11 @@ export const CrearConvForm = () => {
             value={formData.fechaInicioInscripcion}
             onChange={handleChange}
             className="input-field"
-            max={formData.fechaInicioOlimpiada || undefined} // No permitir fecha posterior al inicio de la olimpiada
           />
           <input
             type="date"
             name="fechaCierreInscripcion"
             min={formData.fechaInicioInscripcion || today}
-            max={formData.fechaInicioOlimpiada || undefined}
             value={formData.fechaCierreInscripcion}
             onChange={handleChange}
             className="input-field"
@@ -187,32 +242,46 @@ export const CrearConvForm = () => {
           />
         </div>
 
-        <label>Máximo de inscripción por categoría{/*área*/}:</label>
+        <label>Máximo de inscripción por categoría:</label>
         <input
           type="number"
           name="maxConcursantes"
+          min="0"
           value={formData.maxConcursantes}
-          onChange={handleChange}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            if (value >= 0 || e.target.value === "") {
+              handleChange(e);
+            }
+          }}
           className="input-field"
         />
+
         <label>Imagen de portada:</label>
         <ImageUpload onFileSelect={handleFileChange} />
 
         {error && <p className="error-message">{error}</p>}
-
-
       </form>
+
       <div className="button-crearconv">
-        <button type="submit" className="siguiente-crearconv" onClick={handleSubmit} disabled={cargando}>
-          Siguiente {cargando && (<span><SpinnerInsideButton/></span>)}
+        <button
+          type="submit"
+          className="siguiente-crearconv"
+          onClick={handleSubmit}
+          disabled={cargando}
+        >
+          Siguiente {cargando && <span><SpinnerInsideButton /></span>}
         </button>
-        <button type="button" className="cancelar-crearconv" onClick={handleCancelar} disabled={cargando}>
+        <button
+          type="button"
+          className="cancelar-crearconv"
+          onClick={handleCancelar}
+          disabled={cargando}
+        >
           Cancelar
         </button>
       </div>
     </div>
-
-
   );
 };
 
