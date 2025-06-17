@@ -233,7 +233,10 @@ const OrdenPago = () => {
         fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split("T")[0],
         idTutor: tutor.idTutor,
         tutor: tutor,
+        
       };
+      console.log("Fecha nacimiento:", estudiante.fechaNaciPost);
+
 
       console.log(postulante);
 
