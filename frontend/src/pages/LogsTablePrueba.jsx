@@ -12,6 +12,9 @@ const LogsTablePrueba = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedIds, setExpandedIds] = useState([]);
+  const [filterUser, setFilterUser] = useState('');
+  const [filterAction, setFilterAction] = useState('');
+  const [selectedLog, setSelectedLog] = useState(null);
 
   const token = localStorage.getItem('token');
 
@@ -45,6 +48,63 @@ const LogsTablePrueba = () => {
     }
   };
 
+  const fetchFilteredLogs = async () => {
+    setLoading(true);
+    setError(null);
+
+    const query = new URLSearchParams();
+    if (filterUser) query.append('user', filterUser);
+    if (filterAction) query.append('action', filterAction);
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/logs/filter?${query.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+
+      const json = await res.json();
+      setLogs(json.data);
+      setPagination({
+        current_page: json.current_page,
+        last_page: json.last_page,
+        next_page_url: json.next_page_url,
+        prev_page_url: json.prev_page_url,
+      });
+    } catch (e) {
+      console.error(e);
+      setError('No se pudo cargar la lista filtrada.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchLogDetail = async (id) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/logs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+
+      const data = await res.json();
+      setSelectedLog(data);
+    } catch (e) {
+      console.error(e);
+      alert('No se pudo cargar el detalle de la bitácora.');
+    }
+  };
+
   useEffect(() => {
     fetchLogs();
   }, []);
@@ -72,6 +132,24 @@ const LogsTablePrueba = () => {
       <div className="Titulo">
         <h2>Historial de Actividad (activity_log)</h2>
       </div>
+
+      {/* Filtros */}
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Filtrar por usuario"
+          value={filterUser}
+          onChange={(e) => setFilterUser(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Filtrar por acción"
+          value={filterAction}
+          onChange={(e) => setFilterAction(e.target.value)}
+        />
+        <button onClick={fetchFilteredLogs}>Buscar</button>
+      </div>
+
       {loading && <p>Cargando...</p>}
       {error && <p className="error">{error}</p>}
       {!loading && !error && logs.length === 0 && (
@@ -89,6 +167,7 @@ const LogsTablePrueba = () => {
                 <th>Modelo</th>
                 <th>Identificación</th>
                 <th>Detalle</th>
+                <th>Ver</th>
               </tr>
             </thead>
             <tbody>
@@ -118,6 +197,9 @@ const LogsTablePrueba = () => {
                     <td>{modelName}</td>
                     <td>{log.subject_id}</td>
                     <td className="detalle-col">{detalle}</td>
+                    <td>
+                      <button onClick={() => fetchLogDetail(log.id)}>Ver Detalle</button>
+                    </td>
                   </tr>
                 );
               })}
@@ -157,6 +239,7 @@ const LogsTablePrueba = () => {
                       <p><strong>Modelo:</strong> {modelName}</p>
                       <p><strong>ID:</strong> {log.subject_id}</p>
                       <p><strong>Detalle:</strong> {detalle}</p>
+                      <button onClick={() => fetchLogDetail(log.id)}>Ver Detalle</button>
                     </div>
                   )}
                 </div>
@@ -184,6 +267,22 @@ const LogsTablePrueba = () => {
             </button>
           </div>
         </>
+      )}
+
+      {/* Modal de Detalle */}
+      {selectedLog && (
+        <div className="modal-overlay" onClick={() => setSelectedLog(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Detalle de Bitácora #{selectedLog.id}</h3>
+            <p><strong>Usuario:</strong> {selectedLog.causer?.name || 'Sistema'}</p>
+            <p><strong>Acción:</strong> {selectedLog.description}</p>
+            <p><strong>Fecha:</strong> {new Date(selectedLog.created_at).toLocaleString()}</p>
+            <p><strong>Modelo:</strong> {selectedLog.subject_type?.split('\\').pop()}</p>
+            <p><strong>ID:</strong> {selectedLog.subject_id}</p>
+            <pre>{JSON.stringify(selectedLog.properties, null, 2)}</pre>
+            <button onClick={() => setSelectedLog(null)}>Cerrar</button>
+          </div>
+        </div>
       )}
     </div>
   );
