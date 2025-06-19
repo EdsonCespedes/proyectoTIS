@@ -408,14 +408,9 @@ const RegistroPago = () => {
               )}
 
               <div className="formulario-botones">
-                <button className="guardar-btn" onClick={(e) => handleSubmit(e)}>Guardar</button>
-                <button className="cancelar-btn" onClick={() => {
-                    setSearchText('');
-                    setTutoresEncontrados([]);
-                    setMensaje('');
-                    setVerificaciones({});
-                  }}>Cancelar</button>
-                <button className="cancelar-btn" onClick={(e) => navigate("/")}>Salir</button>
+                <button className="guardar-btn" onClick={(e) => handleSubmit(e)}>Aceptar</button>
+                <button className="cancelar-btn" onClick={() => { }}>Rechazar</button>
+                <button className="Salir-btn" onClick={(e) => navigate("/")}>Salir</button>
               </div>
 
               {imagenSeleccionada && (

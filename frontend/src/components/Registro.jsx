@@ -46,27 +46,37 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     areas: estudiante?.areas || [],
     categorias: estudiante?.categorias || [],
   });
-  // Función para validar formato y rango de fecha
-  function esFechaValida(fechaTexto) {
-    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = fechaTexto.match(dateRegex);
 
-    if (!match) return false;
 
-    const [_, dayStr, monthStr, yearStr] = match;
-    const day = parseInt(dayStr, 10);
-    const month = parseInt(monthStr, 10) - 1;
-    const year = parseInt(yearStr, 10);
+ function esFechaValida(fechaStr) {
+  // Validar formato DD/MM/YYYY
+  const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = fechaStr.match(regex);
+  if (!match) return false;
 
-    const fecha = new Date(year, month, day);
-    return (
-      fecha.getDate() === day &&
-      fecha.getMonth() === month &&
-      fecha.getFullYear() === year &&
-      fecha >= new Date("2007-01-01") &&
-      fecha <= new Date("2019-12-31")
-    );
-  }
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10) - 1; 
+  const year = parseInt(match[3], 10);
+
+  const fecha = new Date(year, month, day);
+  
+  if (
+    fecha.getFullYear() !== year ||
+    fecha.getMonth() !== month ||
+    fecha.getDate() !== day
+  ) return false;
+
+  // Validar rango de edad entre 6 y 35 años
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  const minDate = new Date(currentYear - 35, 0, 1);   
+  const maxDate = new Date(currentYear - 6, 11, 31);  
+
+  if (fecha < minDate || fecha > maxDate) return false;
+
+  return true;
+}
 
   const [colegiosDisponibles, setColegiosDisponibles] = useState([]);
 
@@ -182,15 +192,19 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
 
       //  Rango de edades dinámico
       const edadMin = 6;
-      const edadMax = 18;
+      const edadMax = 35;
       const today = new Date();
       const currentYear = today.getFullYear();
 
-      const minDate = new Date(currentYear - edadMax, 0, 1);    
-      const maxDate = new Date(currentYear - edadMin, 11, 31);  
+      const minDate = new Date(currentYear - edadMax, 0, 1);    // 1 de enero hace 35 años
+      const maxDate = new Date(currentYear - edadMin, 11, 31);  // 31 de diciembre hace 6 años
+
+      const selectedTime = selectedDate.getTime();
+      const minTime = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()).getTime();
+      const maxTime = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()).getTime();
 
       // Verifica que esté dentro del rango
-      if (selectedDate < minDate || selectedDate > maxDate) {
+      if (selectedTime < minTime || selectedTime > maxTime) {
         alert(`La fecha debe estar entre ${minDate.toLocaleDateString()} y ${maxDate.toLocaleDateString()}.`);
         return;
       }
@@ -401,7 +415,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
           <input type="text" placeholder="Apellido(s)" name="apellidoPost" onChange={handleChange} value={form.apellidoPost} />
           <input type="text" placeholder="Carnet de Identidad" name="carnet" onChange={handleChange} value={form.carnet} />
           <input type="email" placeholder="Correo Electrónico" name="correoPost" onChange={handleChange} value={form.correoPost} />
-          <input type="text" name="fechaNaciPost" placeholder="año/mes/dia" value={form.fechaNaciPost} onChange={handleChange} maxLength={10}/>
+          <input type="text" name="fechaNaciPost" placeholder="dia/mes/año" value={form.fechaNaciPost} onChange={handleChange} maxLength={10}/>
 
 
 

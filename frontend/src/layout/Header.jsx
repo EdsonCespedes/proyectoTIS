@@ -58,8 +58,9 @@ const Header = () => {
                             <Link to="/tablaRoles" onClick={closeMenu}>Gestionar Roles</Link>
                             <Link to="/tablaUsuarios" onClick={closeMenu}>Lista de Usuarios</Link>
                             <Link to="/listaRoles" onClick={closeMenu}>Lista de Roles</Link>
-                            <Link to="/registroPago" onClick={closeMenu}>Ordenes de pago</Link>
+                            <Link to="/registroPago" onClick={closeMenu}>Registro de pago</Link>
                             <Link to="/reportes" onClick={closeMenu}>Reportes</Link>
+                            <Link to="/logs" onClick={closeMenu}>Historial de Actividades</Link>
                         </div>
                     </div>
                 )}
