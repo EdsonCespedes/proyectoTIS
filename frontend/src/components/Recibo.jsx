@@ -3,6 +3,8 @@ import Tesseract from 'tesseract.js';
 import './styles/Recibo.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import SpinnerInsideButton from './SpinnerInsideButton';
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Recibo = () => {
@@ -18,6 +20,8 @@ const Recibo = () => {
   const [mensajeCoincidencia, setMensajeCoincidencia] = useState('');
   const inputCamaraRef = useRef(null);
   const [imagenSubida, setImagenSubida] = useState(false);
+
+  const [subiendo, setSubiendo] = useState(false);
 
   const validarIdRecibo = (id) => /^\d{6}$/.test(id);
 
@@ -70,12 +74,16 @@ const Recibo = () => {
   }, [idRecibo, textoExtraido]);
 
   const handleImportar = async () => {
+    setSubiendo(true);
+
     if (!idRecibo || !imagen) {
       alert('Por favor, ingresa un ID de recibo y sube una imagen.');
+      setSubiendo(false);
       return;
     }
     if (!validarIdRecibo(idRecibo)) {
       alert('El ID debe tener exactamente 6 dígitos numéricos.');
+      setSubiendo(false);
       return;
     }
 
@@ -95,6 +103,7 @@ const Recibo = () => {
         if (!response.ok) {
           const errorText = await response.text();
           console.error(`Error al registrar el recibo:`, errorText);
+          setSubiendo(false);
           return;
         }
       } else {
@@ -107,6 +116,7 @@ const Recibo = () => {
           .then(data => console.log("Recibo actualizado:", data))
           .catch(err => {
             console.error("Error al actualizar:", err)
+            setSubiendo(false);
             return;
           });
 
@@ -134,11 +144,15 @@ const Recibo = () => {
       } catch (error) {
         console.error('Error:', error.message);
         alert('Hubo un problema al actualizar la orden de pago');
+        setSubiendo(false);
       }
 
       navigate("/ordenes-pago");
     } catch (error) {
       console.error(`Error al registrar el recibo:`, error);
+      setSubiendo(false);
+    } finally {
+      setSubiendo(false);
     }
   };
 
@@ -227,7 +241,7 @@ const Recibo = () => {
       {procesandoOCR && <p>🔄 Procesando imagen con OCR...</p>}
 
       <button className="btn-importar" onClick={handleImportar}>
-        Enviar
+        Enviar {subiendo && <span><SpinnerInsideButton /></span>}
       </button>
     </div>
   );
