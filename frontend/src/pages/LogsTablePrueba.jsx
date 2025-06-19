@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './styles/LogsTablePrueba.css';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const LogsTablePrueba = () => {
   const [logs, setLogs] = useState([]);
   const [pagination, setPagination] = useState({
@@ -18,7 +20,7 @@ const LogsTablePrueba = () => {
 
   const token = localStorage.getItem('token');
 
-  const fetchLogs = async (url = `http://127.0.0.1:8000/api/logs?page=1`) => {
+  const fetchLogs = async (url = `${apiUrl}/logs?page=1`) => {
     setLoading(true);
     setError(null);
 
