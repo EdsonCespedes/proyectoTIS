@@ -38,6 +38,8 @@ use App\Http\Controllers\ReportePostulantesController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\LogController;
 
+use App\Http\Controllers\UserRoleController;
+
 Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
 
