@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import ModalImagen from './ModalImage';
 
 import FullScreenSpinner from './FullScreenSpinner';
+import SpinnerInsideButton from './SpinnerInsideButton';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -23,6 +24,9 @@ const RegistroPago = () => {
   const [tutores, setTutores] = useState([]);
 
   const [cargando, setCargando] = useState(false);
+
+  const [aceptando, setAceptando] = useState(false);
+  const [rechazando, setRechazando] = useState(false);
 
   useEffect(() => {
     const obtenerRecibosAsociados = async (ordenes) => {
@@ -148,6 +152,7 @@ const RegistroPago = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setAceptando(true);
 
     const ordenesVerificadas = tutores
       .flatMap(tutor => tutor.ordenes_pago) // aplanamos todas las órdenes de todos los tutores
@@ -235,11 +240,14 @@ const RegistroPago = () => {
     } catch (error) {
       console.error('Error:', error.message);
       alert('Hubo un problema al actualizar una o más órdenes de pago');
+    } finally {
+      setAceptando(false);
     }
   }
 
   const handleRechazar = async (e) => {
     e.preventDefault();
+    setRechazando(true);
 
     const ordenesVerificadas = tutores
       .flatMap(tutor => tutor.ordenes_pago) // aplanamos todas las órdenes de todos los tutores
@@ -327,6 +335,8 @@ const RegistroPago = () => {
     } catch (error) {
       console.error('Error:', error.message);
       alert('Hubo un problema al actualizar una o más órdenes de pago');
+    } finally {
+      setRechazando(false);
     }
   }
 
@@ -336,7 +346,7 @@ const RegistroPago = () => {
         !cargando ? (
           <FullScreenSpinner />
         ) : (
-          <div className="formulario-pago-container">
+          <div className={aceptando || rechazando ? "formulario-pago-container divDeshabilitado" : "formulario-pago-container"}>
             <div className="formulario-card">
               <div className="formulario-header">Formulario de Registro de Pago</div>
 
@@ -500,8 +510,8 @@ const RegistroPago = () => {
               )}
 
               <div className="formulario-botones">
-                <button className="guardar-btn" onClick={(e) => handleSubmit(e)}>Aceptar</button>
-                <button className="cancelar-btn" onClick={(e) => handleRechazar(e)}>Rechazar</button>
+                <button className="guardar-btn" onClick={(e) => handleSubmit(e)}>Aceptar {aceptando && <span><SpinnerInsideButton /></span>}</button>
+                <button className="cancelar-btn" onClick={(e) => handleRechazar(e)}>Rechazar {rechazando && <span><SpinnerInsideButton /></span>}</button>
                 <button className="Salir-btn" onClick={(e) => navigate("/")}>Salir</button>
               </div>
 
