@@ -123,11 +123,11 @@ const OrdenPago = () => {
     if (tutor) {
       doc.text(
         "Tutor: " +
-          tutor.nombreTutor +
-          " " +
-          tutor.apellidoTutor +
-          "  ID Tutor: " +
-          tutor.idTutor,
+        tutor.nombreTutor +
+        " " +
+        tutor.apellidoTutor +
+        "  ID Tutor: " +
+        tutor.idTutor,
         20,
         55
       );
@@ -233,7 +233,15 @@ const OrdenPago = () => {
         fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split("T")[0],
         idTutor: tutor.idTutor,
         tutor: tutor,
-        
+        areas: estudiante.areas.map(area => ({
+          ...area,
+          descArea: area.tituloArea || "Área sin nombre",
+          activo: area.habilitada ?? true,
+        })),
+        categorias: estudiante.categorias.map(cat => ({
+          ...cat,
+          idConvocatoria: idConvocatoria,
+        })),
       };
       console.log("Fecha nacimiento:", estudiante.fechaNaciPost);
 
@@ -255,7 +263,10 @@ const OrdenPago = () => {
           hayErrores = true;
         } else {
           const data = await response.json();
-          const idsPostulacion = data.idPostulacion;
+          console.log(data);
+          
+          //const idsPostulacion = data.idPostulacion;
+          const idsPostulacion = data.postulaciones;
           const postulanteRegistrado = data.postulante;
           console.log(`Estudiante ${i + 1} registrado con éxito.`);
           console.log("IDs de postulación:", idsPostulacion);
@@ -326,8 +337,8 @@ const OrdenPago = () => {
       from === "Manual"
         ? `/convocatoria/${idConvocatoria}/inscripcion-manual`
         : from === "Excel"
-        ? `/convocatoria/${idConvocatoria}/inscripcion-excel`
-        : -1;
+          ? `/convocatoria/${idConvocatoria}/inscripcion-excel`
+          : -1;
 
     navigate(ruta, { state: { estudiantes: estudiantesUnicos } });
   };
@@ -436,7 +447,7 @@ const OrdenPago = () => {
                 onClick={handleAceptar}
                 disabled={cargando || subiendo}
               >
-                Aceptar {subiendo ? <span><SpinnerInsideButton/></span> : ""}
+                Aceptar {subiendo ? <span><SpinnerInsideButton /></span> : ""}
               </button>
               <button
                 className="btn-cancelar"
