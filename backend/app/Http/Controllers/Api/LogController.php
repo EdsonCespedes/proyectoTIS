@@ -67,7 +67,6 @@ class LogController extends Controller
 
     public function index(Request $request)
     {
-        // Por ejemplo, paginamos de 25 en 25:
         $perPage = 25;
         $logs = Activity::with(['causer'])->orderBy('created_at', 'desc')->paginate($perPage);
 

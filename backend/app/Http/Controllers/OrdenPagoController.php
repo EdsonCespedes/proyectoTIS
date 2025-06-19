@@ -87,6 +87,15 @@ class OrdenPagoController extends Controller
 
             DB::commit();
 
+            activity()
+            ->causedBy(Auth::user())
+            ->performedOn($orden)
+            ->withProperties([
+                'orden'   => $orden->toArray(),
+                'detalles'=> $detallesCreados->map->toArray()
+            ])
+            ->log('orden_pago_created');
+
             return response()->json([
                 'idOrdenPago' => $orden->idOrdenPago,
                 //'idPago'      => $pago->idPago,
@@ -144,6 +153,12 @@ class OrdenPagoController extends Controller
 
         // Guardar
         $orden->save();
+
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($orden)
+        ->withProperties(['attributes' => $orden->getChanges()])
+        ->log('orden_pago_updated');
 
         return response()->json([
             'message' => 'Orden de pago actualizada con éxito',

@@ -34,6 +34,12 @@ class ColegioController extends Controller
             'fecha_creacion'
         ]));
 
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($colegio)
+        ->withProperties($colegio->toArray())
+        ->log('colegio_created');
+
         return response()->json([
             'message' => 'Colegio creado correctamente',
             'colegio' => $colegio
@@ -121,6 +127,12 @@ class ColegioController extends Controller
         }
 
         $colegio->update($validator->validated());
+
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($colegio)
+        ->withProperties(['attributes' => $colegio->getChanges()])
+        ->log('colegio_updated');
 
         return response()->json([
             'message' => 'Colegio actualizado con éxito',

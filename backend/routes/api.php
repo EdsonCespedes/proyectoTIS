@@ -38,40 +38,21 @@ use App\Http\Controllers\ReportePostulantesController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\LogController;
 
-Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
-
-
+// -------------------------------------------------
+// RUTAS PÚBLICAS (sin autenticación)
+// -------------------------------------------------
 
 Route::get('/vercursos', [CursoController::class, 'index']); //obtiene los cursos
-
 
 Route::get('/verdepartamentos', [DepartamentoController::class, 'index']); //obtiene departamentos para la direccion d postulante
 Route::get('/verprovincias/departamento/{nombre}', [ProvinciaController::class, 'getProvinciasPorNombreDepartamento']);//obtiene las provincias de la direccion d postulante
 
-
-
-Route::get('/getcolegio', [ColegioController::class, 'index']); //obtiene todo los datos del colegio
 //Route::post('/colegio', [ColegioController::class, 'store']);     //guarda colegios
 Route::get('/departamentos',[ColegioController::class,'getDepartamentos']); //rruta para obtener los departamentos
 Route::get('/departamentos/{departamento}/provincias',[ColegioController::class,'getProvincias']); //rruta para obtener provincias
 Route::get('/departamentos/{departamento}/provincias/{provincia}/colegios',[ColegioController::class,'getColegios']); //rruta para obtener colegios
 Route::get('/areas', [AreaController::class, 'index']);
 Route::get('/categorias', [CategoriaController::class, 'index']);
-
-
-// Ruta de usuario autenticado (por defecto de laravel) NO BORRAR
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
-
-// Rutas para registrar/insertar entidades
-
-//Registrar un postulante
-Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
-Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::class, 'updatePostulante']);
-
 
 // Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
@@ -84,30 +65,12 @@ Route::put('/colegio/{id}', [ColegioController::class, 'update']);
  //   "vigencia": ,
 //    "recibido": ,
 //    "idTutor":
-Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
 
 //Crear Curso
 Route::post('/cursos', [CursoController::class, 'store']);
 
-//Crear Convocatoria
-//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
-
-//crear orden de pago
-Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
-
 //Crear Área
 Route::post('/areas', [AreaController::class, 'store']);
-
-//crear solo en tabla convocatoria
-Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
-
-//Crear Categoría
-//Route::post('/categorias', [CategoriaController::class, 'store']);
-
-//crear solo en tabla convocatoria
-Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
-
-Route::get('/postulantes', [PostulanteController::class, 'index']);
 
 //obtiene todo los datos de la tabla area
 
@@ -116,7 +79,6 @@ Route::get('/todasAreas', [AreaController::class, 'index']);
 //obtiene los datos de un colegio por su id
 
 Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegioconid']);
-
 
 // obtener areas y categorias de los cursos habilitados mediante el nombre del curso
 Route::get('/convocatoria/{idConvocatoria}/curso/{Curso}', [EstructuraConvocatoriaController::class, 'obtenerEstructuraPorConvocatoriaYCurso']);
@@ -127,29 +89,8 @@ Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 //obtiene los datos de una convocatoria activa mediante su id
 Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
 
-
 //obtiene todas las convocatorias activas
 Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
-
-
-//buscador por nombre e id al tutor o nombre
-Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
-
-//guarda areas y todo lo demas d convocatoria
-
-Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
-
-//guarda Convocatoria junto con todos su datos
-//Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
-
-//obtiene todas las convocatorias activas
-Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
-
-//eliminar convocatoria mediante id convocatoria
-Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
-
-//actualiza los datos de orden pago mediante id convocatoria
-Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
 
 //edita solo convocatorias
 // Para editar solo la convocatoria
@@ -171,159 +112,14 @@ Route::post('/register', [AuthController::class, 'registrarTutor']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
-// guarda los datos de un usuario
-Route::post('/guardausers', [UserController::class, 'store']);
-
-//actualiza los datos de un usuario mediante su id
-Route::put('/editausers/{id}', [UserController::class, 'update']);
-
-//elimina un usuario mediante su id
-Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
-
-
-// muestra todos los usuarios
-Route::get('/todosusers', [UserController::class, 'index']);
-
-// muestra los datos de un usuario mediante su id
-Route::get('/especificousers/{id}', [UserController::class, 'show']);
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
-    //recuperar al tutor
-    Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
-});
-
-Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
-Route::get('/convocatoria/{id}/roles', [ConvocatoriaRoleController::class,'index']);
-Route::get('/convocatorias-roles', [ConvocatoriaRoleController::class, 'all']);
-
-
-//Route::get('/convocatorias/{convocatoria}/gestion-estudiantes',
-//    [GestionController::class, 'index']
-//)->middleware('auth', 'role.in.convocatoria:Tutor');
-
-//Route::post('/convocatoria/role',      [ConvocatoriaRoleController::class,'store']);
-Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
-
-// Listar roles
-Route::get('/roles', function(){
-    $roles = Role::with('permissions')->get(); // Carga los permisos de cada rol
-    // return response()->json(Role::all());
-    return response()->json($roles);
-});
-
-// Crear rol + permisos
-Route::post('/roles', function(Request $req){
-    // validamos nombre y un arreglo de permisos (opcionalmente vacío)
-    $data = $req->validate([
-      'name'        => 'required|string|unique:roles,name',
-      'permissions' => 'sometimes|array',
-      'permissions.*' => 'string|exists:permissions,name'
-    ]);
-
-     // 1) crear rol
-    $role = Role::create([
-      'name'       => $data['name'],
-      'guard_name' => 'sanctum',
-    ]);
-
-    // 2) asignar permisos (si vienen)
-    if (!empty($data['permissions'])) {
-      $role->syncPermissions($data['permissions']);
-    }
-
-    return response()->json($role->load('permissions'), 201);
-});
-
-// Actualizar rol (nombre y permisos)
-Route::put('/roles/{role}', function(Role $role, Request $req){
-    $data = $req->validate([
-      'name'        => 'required|string|unique:roles,name,'.$role->id,
-      'permissions' => 'sometimes|array',
-      'permissions.*' => 'string|exists:permissions,name'
-    ]);
-
-    $role->name = $data['name'];
-    $role->save();
-
-    // re-sincronizamos permisos
-    $role->syncPermissions($data['permissions'] ?? []);
-    
-    return response()->json($role->load('permissions'));
-});
-
-// Mostrar un rol con sus permisos
-Route::get('/roles/{role}', function(Role $role){
-    return response()->json($role->load('permissions'));
-});
-
-//Actualiza el nombre del rol
-Route::put('/roles/{id}', function($id, Request $request) {
-    $request->validate(['name' => 'required|string|unique:roles,name,' . $id]);
-    
-    $rol = Role::findOrFail($id);
-    $rol->name = $request->name;
-    $rol->save();
-
-    return response()->json(['message' => 'Rol actualizado correctamente', 'rol' => $rol]);
-});
-
-// Obtiene un rol en especifico con sus permisos
-Route::get('/roles/{id}', function($id) {
-    $rol = Role::with('permissions')->findOrFail($id);
-    return response()->json($rol);
-});
-
-// Listar permisos
-Route::get('/permissions', function(){
-    return response()->json(Permission::all());
-});
-
-// Crear permiso
-Route::post('/permissions', function(Request $req){
-    $req->validate(['name'=>'required|string|unique:permissions,name']);
-    $p = Permission::create(['name'=>$req->name,'guard_name'=>'sanctum']);
-    return response()->json($p,201);
-});
-
-// Asignar permiso a rol
-Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
-    $req->validate(['permission'=>'required|exists:permissions,name']);
-    $role->givePermissionTo($req->permission);
-    return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
-});
-
-//Actualiza los permisos del rol
-Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
-    $request->validate(['permissions' => 'required|array']);
-    
-    $rol = Role::findOrFail($id);
-    $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
-
-    return response()->json(['message' => 'Permisos actualizados correctamente']);
-});
-
-// RECIBOS
-Route::post('/recibos', [ReciboController::class, 'store']);
-Route::get('/recibos/{id}', [ReciboController::class, 'show']);
-
-
-
-
-
 //envia correo de restablecimiento de contraseña
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 //actualiza la contraseña 
-
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 // envia notificaciones a tutores
 Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTutors']);
-
-
 
 Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
 
@@ -332,7 +128,7 @@ Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::clas
 Route::prefix('convocatoria')->group(function(){
     Route::post('role',      [ConvocatoriaRoleController::class,'store']);
     Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
-    Route::get('roles/all',  [ConvocatoriaRoleController::class,'all']);
+    Route::get('roles/all',  [ConvocatoriaRoleController::class, 'all']);
 });
 
 Route::prefix('user')->group(function(){
@@ -342,9 +138,59 @@ Route::prefix('user')->group(function(){
     Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
 });
 
-Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
+// -------------------------------------------------
+// RUTAS PRIVADAS
+// -------------------------------------------------
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::middleware('auth:sanctum')->group(function() {
+    //Registrar un postulante
+    Route::post('/registrar-postulante', [PostulanteController::class, 'register']);
+    Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::class, 'updatePostulante']);
+
+    Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
+
+    //crear solo en tabla convocatoria
+    Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
+
+    Route::get('/postulantes', [PostulanteController::class, 'index']);
+
+    Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
+
+        //buscador por nombre e id al tutor o nombre
+    Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
+
+        // guarda los datos de un usuario
+    Route::post('/guardausers', [UserController::class, 'store']);
+
+    //actualiza los datos de un usuario mediante su id
+    Route::put('/editausers/{id}', [UserController::class, 'update']);
+
+    //elimina un usuario mediante su id
+    Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
+
+    //guarda areas y todo lo demas d convocatoria
+    Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
+
+    //eliminar convocatoria mediante id convocatoria
+    Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
+
+    //actualiza los datos de orden pago mediante id convocatoria
+    Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
+
+        // muestra todos los usuarios
+    Route::get('/todosusers', [UserController::class, 'index']);
+
+    // muestra los datos de un usuario mediante su id
+    Route::get('/especificousers/{id}', [UserController::class, 'show']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+    //recuperar al tutor
+    Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
+
     // ver todas las bitácoras
     Route::get('/logs', [LogController::class, 'index']);
 
@@ -353,9 +199,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Filtrar bitácoras
     Route::get('/logs/filter', [LogController::class, 'filter']);
-});
 
-Route::middleware('auth:sanctum')->group(function() {
     // Crear un nuevo backup
     Route::post('/backups', [BackupController::class, 'create']);
 
@@ -367,19 +211,98 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Restaurar base de datos desde backup
     Route::post('/backups/restore', [BackupController::class, 'restore']);
-});
 
-Route::prefix('backups')->group(function () {
-    Route::get('/',                   [BackupController::class, 'index'])
-        ->name('api.backups.index');
-    Route::post('/',                  [BackupController::class, 'store'])
-        ->name('api.backups.store');
-    Route::post('upload',            [BackupController::class, 'upload'])
-        ->name('api.backups.upload');
-    Route::post('{filename}/restore', [BackupController::class, 'restore'])
-        ->name('api.backups.restore');
-    Route::get('{filename}',          [BackupController::class, 'download'])
-        ->name('api.backups.download');
-    Route::delete('{filename}',       [BackupController::class, 'destroy'])
-        ->name('api.backups.destroy');
+    // CRUD de Postulante (admin)
+    Route::patch('/actualizar-postulante/{idPostulante}', [PostulanteController::class, 'updatePostulante']);
+    Route::get('/postulantes', [PostulanteController::class, 'index']);
+
+    // CRUD de Colegio completo (admin)
+    Route::post('/colegios', [ColegioController::class, 'store']);
+    Route::put('/colegio/{id}', [ColegioController::class, 'update']);
+    Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegioconid']);
+
+    // CRUD de Curso (admin)
+    Route::post('/cursos', [CursoController::class, 'store']);
+
+    // CRUD de Orden de Pago (admin)
+    Route::post('/ordenpago', [OrdenPagoController::class, 'store']);
+    Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
+    Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
+
+    // CRUD de Convocatoria (admin)
+    //Route::post('/convocatorias', [ConvocatoriaController::class, 'store']);
+    Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
+    Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
+    Route::put('/editconvocatorias/{id}', [ConvocatoriaController::class, 'updateConvocatoria']);
+    Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaController::class, 'updateAreasCategorias']);
+    Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
+
+    // CRUD de Usuario (admin)
+    Route::post('/guardausers', [UserController::class, 'store']);
+    Route::put('/editausers/{id}', [UserController::class, 'update']);
+    Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
+    Route::get('/todosusers', [UserController::class, 'index']);
+    Route::get('/especificousers/{id}', [UserController::class, 'show']);
+
+    // Gestión de Roles y Permisos (Spatie)
+    Route::get('/roles', function(){
+        $roles = Role::with('permissions')->get(); // Carga los permisos de cada rol
+        return response()->json($roles);
+    });
+    Route::post('/roles', function(Request $req){
+        $data = $req->validate([
+          'name'        => 'required|string|unique:roles,name',
+          'permissions' => 'sometimes|array',
+          'permissions.*' => 'string|exists:permissions,name'
+        ]);
+        $role = Role::create([ 'name' => $data['name'], 'guard_name' => 'sanctum' ]);
+        if (!empty($data['permissions'])) { $role->syncPermissions($data['permissions']); }
+        return response()->json($role->load('permissions'), 201);
+    });
+    Route::put('/roles/{role}', function(Role $role, Request $req){
+        $data = $req->validate([
+          'name'        => 'required|string|unique:roles,name,'.$role->id,
+          'permissions' => 'sometimes|array',
+          'permissions.*' => 'string|exists:permissions,name'
+        ]);
+        $role->name = $data['name'];
+        $role->save();
+        $role->syncPermissions($data['permissions'] ?? []);
+        return response()->json($role->load('permissions'));    
+    });
+    Route::get('/roles/{role}', function(Role $role){
+        return response()->json($role->load('permissions'));
+    });
+    Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
+        $request->validate(['permissions' => 'required|array']);
+        $rol = Role::findOrFail($id);
+        $rol->syncPermissions($request->permissions); // ← reemplaza todos los permisos
+        return response()->json(['message' => 'Permisos actualizados correctamente']);
+    });
+
+    // Reportes y Notificaciones avanzadas
+    Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
+    Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
+    Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTutors']);
+    
+    // Gestión de Recibos
+    Route::post('/recibos', [ReciboController::class, 'store']);
+    Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+    Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
+
+    // Prefijos adicionales
+    Route::prefix('convocatoria')->group(function(){
+        Route::post('role',      [ConvocatoriaRoleController::class,'store']);
+        Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
+        Route::get('roles/all',  [ConvocatoriaRoleController::class, 'all']);
+    });
+    Route::prefix('user')->group(function(){
+        // .todos los roles y permisos de un usuario en todas las convocatorias
+        Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
+        // Roles y permisos de un usuario dentro de UNA convocatoria
+        Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
+    });
+
+    //eliminar rol dado el rol
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 });

@@ -27,6 +27,12 @@ class CategoriaController extends Controller
             'idArea'
         ]));
 
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($categoria)
+        ->withProperties($categoria->toArray())
+        ->log('categoria_created');
+
         return response()->json([
             'message' => 'Categoría creada correctamente',
             'categoria' => $categoria
