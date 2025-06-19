@@ -7,6 +7,7 @@ import EditColegios from "./pages/EditColegio";
 import CrearConvForm from "./pages/CrearConvForm";
 import DetalleConv from "./pages/DetalleConv";
 import Inicio from "./views/Inicio";
+import DetalleEstructura from "./pages/DetalleEstructura"; // o "./views/DetalleEstructura" según tu estructura
 
 import Convocatorias from "./views/Convocatorias";
 
@@ -84,6 +85,14 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+<Route
+  path="/detalle-estructura/:id"
+  element={
+    <PrivateRoute allowedRoles={["tutor", "admin"]}>
+      <DetalleEstructura />
+    </PrivateRoute>
+  }
+/>
 
       {/* Inscripciones */}
       {RutasInscripcion()}
