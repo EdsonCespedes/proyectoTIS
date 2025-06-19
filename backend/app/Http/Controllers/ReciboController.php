@@ -52,4 +52,36 @@ class ReciboController extends Controller
         return response()->json($recibos);
     }
 
+    public function update(Request $request, $id)
+    {
+        $recibo = Recibo::findOrFail($id);
+
+        $request->validate([
+            'idOrdenPago' => 'sometimes|exists:ordenpago,idOrdenPago',
+            'imagen_comprobante' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->has('idOrdenPago')) {
+            $recibo->idOrdenPago = $request->idOrdenPago;
+        }
+
+        if ($request->hasFile('imagen_comprobante')) {
+            // Elimina la imagen anterior si existe
+            if ($recibo->imagen_comprobante && Storage::disk('public')->exists($recibo->imagen_comprobante)) {
+                Storage::disk('public')->delete($recibo->imagen_comprobante);
+            }
+
+            // Guarda la nueva imagen
+            $path = $request->file('imagen_comprobante')->store('recibos', 'public');
+            $recibo->imagen_comprobante = $path;
+        }
+
+        $recibo->save();
+
+        return response()->json([
+            'message' => 'Recibo actualizado correctamente.',
+            'data' => $recibo,
+        ], 200);
+    }
+
 }

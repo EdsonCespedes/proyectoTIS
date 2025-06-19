@@ -308,6 +308,7 @@ Route::put('/roles/{id}/sync-permissions', function($id, Request $request) {
 // RECIBOS
 Route::post('/recibos', [ReciboController::class, 'store']);
 Route::get('/recibos/{id}', [ReciboController::class, 'show']);
+Route::put('/recibos/{id}', [ReciboController::class, 'update']);
 
 
 
