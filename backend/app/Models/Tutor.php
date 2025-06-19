@@ -56,7 +56,7 @@ class Tutor extends Model
 
     public function postulantes()
     {
-        return $this->hasMany(Postulante::class, 'idTutor');
+        return $this->hasMany(Postulante::class, 'idTutor', 'idTutor');
     }
 
     public function user()

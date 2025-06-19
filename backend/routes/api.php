@@ -191,14 +191,24 @@ Route::middleware('auth:sanctum')->group(function () {
     //recuperar al tutor
     Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
 
-    // ver todas las bitácoras
-    Route::get('/logs', [LogController::class, 'index']);
+    //.............BITACORAS................
+    // Listar todas las bitácoras
+    Route::get('/logs',         [LogController::class, 'index']);
 
     // Ver detalle de una bitácora
-    Route::get('/logs/{id}', [LogController::class, 'show']);
+    Route::get('/logs/{id}',    [LogController::class, 'show']);
 
-    // Filtrar bitácoras
-    Route::get('/logs/filter', [LogController::class, 'filter']);
+    // Filtrar por evento (created, updated, deleted, login, logout)
+    Route::get('/logs/event/{event}', [LogController::class, 'byEvent'])
+         ->where('event', '[A-Za-z_]+');
+
+    // Filtrar por usuario
+    Route::get('/logs/user/{userId}', [LogController::class, 'byUser'])
+         ->whereNumber('userId');
+
+    // Filtrar por rango de fechas, agregar "?from=2025-06-01&to=2025-06-15" a la ruta
+    Route::get('/logs/date-range',    [LogController::class, 'byDateRange']);
+    //.......................
 
     // Crear un nuevo backup
     Route::post('/backups', [BackupController::class, 'create']);
@@ -289,6 +299,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recibos', [ReciboController::class, 'store']);
     Route::get('/recibos/{id}', [ReciboController::class, 'show']);
     Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
+    Route::post('/recibos', [ReciboController::class, 'store']);
+    Route::put('/recibos/{id}', [ReciboController::class, 'update']);
 
     // Prefijos adicionales
     Route::prefix('convocatoria')->group(function(){

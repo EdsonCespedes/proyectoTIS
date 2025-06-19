@@ -110,20 +110,49 @@
 
 /* Checkboxes en grilla */
 .checkbox-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 20px;
   margin-top: 10px;
 }
 
 .checkbox-item {
-  background-color: #d2f3f5;
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid #007290;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-item span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  border: 2px solid #999;
+  border-radius: 3px;
+  background-color: #fff;
+}
+
+.checkbox-item input[type="checkbox"]:checked + span::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border: solid #000;
+  border-width: 0 2px 2px 0;
 }
 
 .area-name {
@@ -175,25 +204,29 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro translúcido */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Asegura que esté encima de todo */
+  align-items: flex-start;
+  padding: 5vh 0; /* espacio arriba y abajo */
+  overflow-y: auto; /* aquí está el scroll general */
+  z-index: 9999;
 }
 
 /* Contenido del modal */
 .modal-content-cat {
-  background-color: #fff;
-  padding: 2rem;
+  background-color: white;
+  padding: 1.5rem;
   border-radius: 10px;
   width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 480px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  overflow: visible;     /* <- sin scroll interno */
+  max-height: none;      /* <- dejar que crezca libre */
+  box-sizing: border-box;
 }
+
 
 /* Botón de cerrar */
 .close-modal-cat {
@@ -235,19 +268,6 @@
   background-color: #007290;
 }
 
-/* Grid para los checkboxes */
-.checkbox-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  margin-top: 0.5rem;
-}
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: normal;
-}
 .button-cat {
   display: flex;
   justify-content: center;

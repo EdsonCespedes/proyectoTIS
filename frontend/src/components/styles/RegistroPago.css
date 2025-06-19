@@ -129,12 +129,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;               /* Espacio moderado entre botones */
-  margin: 10px 0 20px;     /* Espaciado vertical */
-  flex-wrap: wrap;         /* Permite adaptación en pantallas pequeñas */
+  gap: 8px;              
+  margin: 10px 0 20px;     
+  flex-wrap: wrap;         
 }
 
 .guardar-btn,
+.Salir-btn,
 .cancelar-btn {
   font-size: 1rem;
   font-weight: bold;
@@ -151,14 +152,20 @@
   background-color: #00a7c7;
   color: white;
 }
-
-.guardar-btn:hover {
-  background-color: #0089a7;
+.Salir-btn {
+  background-color: #00a7c7;
+  color: white;
 }
-
+.guardar-btn:hover {
+   background-color: #d0d7df;
+}
+.Salir-btn:hover {
+   background-color: #d0d7df;
+}
 .cancelar-btn {
-  background-color: #e0e6ed;
-  color: #333;
+   background-color: #00a7c7;
+  color: white;
+
 }
 
 .cancelar-btn:hover {
@@ -182,4 +189,7 @@
   }
 }
 
-  
+.divDeshabilitado {
+  pointer-events: none; /* Evita clicks, focus, etc */
+  opacity: 0.5;         /* Visualmente indica deshabilitado */
+}  

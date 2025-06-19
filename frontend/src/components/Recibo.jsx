@@ -1,8 +1,9 @@
-// Recibo.jsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import './styles/Recibo.css';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+import SpinnerInsideButton from './SpinnerInsideButton';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -20,12 +21,9 @@ const Recibo = () => {
   const inputCamaraRef = useRef(null);
   const [imagenSubida, setImagenSubida] = useState(false);
 
+  const [subiendo, setSubiendo] = useState(false);
 
-
-  const validarIdRecibo = (id) => {
-    const regex = /^\d{6}$/;
-    return regex.test(id);
-  };
+  const validarIdRecibo = (id) => /^\d{6}$/.test(id);
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -41,11 +39,6 @@ const Recibo = () => {
     setTextoExtraido('');
     setMensajeCoincidencia('');
 
-    console.log(tutorGuardado);
-    console.log(orden);
-
-
-
     Tesseract.recognize(
       file,
       'spa',
@@ -54,31 +47,7 @@ const Recibo = () => {
       console.log('Texto detectado:', text);
       setTextoExtraido(text);
       setProcesandoOCR(false);
-
-      if (idRecibo.trim() !== '') {
-        if (text.includes(idRecibo)) {
-          setMensajeCoincidencia('✅ El ID fue encontrado en la imagen.');
-          const textPlano = text.toLowerCase();
-          console.log(textPlano);
-
-          const tutor = tutorGuardado.nombreTutor + " " + tutorGuardado.apellidoTutor;
-          console.log(tutor.toLowerCase());
-
-          if (textPlano.includes(tutor.toLowerCase()) && textPlano.includes(orden.montoTotal)) {
-            setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
-          } else {
-            setMensajeCoincidencia('❌ El ID fue encontrado en la imagen pero no coincide con el tutor o la orden de pago. Por favor suba una imagen mas clara o la imagen correcta.');
-          }
-
-        } else {
-          setMensajeCoincidencia('❌ El ID no se encontró en la imagen por favor suba la imagen correcta .');
-
-        }
-      } else {
-        setMensajeCoincidencia('⚠️ Por favor, escribe un ID antes de subir la imagen.');
-      }
-
-
+      setMensajeCoincidencia('ℹ️ Imagen procesada. Por favor, ingresa el ID para verificar coincidencias.');
     }).catch((err) => {
       console.error('Error al procesar OCR:', err);
       setProcesandoOCR(false);
@@ -86,44 +55,82 @@ const Recibo = () => {
     });
   };
 
+  // Verifica coincidencias automáticamente cuando se escribe el ID o se termina el OCR
+  useEffect(() => {
+    if (textoExtraido && idRecibo.trim() !== '') {
+      const textPlano = textoExtraido.toLowerCase();
+      const tutor = (tutorGuardado.nombreTutor + " " + tutorGuardado.apellidoTutor).toLowerCase();
+
+      if (textoExtraido.includes(idRecibo)) {
+        if (textPlano.includes(tutor) && textPlano.includes(orden.montoTotal)) {
+          setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
+        } else {
+          setMensajeCoincidencia('❌ El ID fue encontrado en la imagen pero no coincide con el tutor o la orden de pago. Por favor suba una imagen más clara o la imagen correcta.');
+        }
+      } else {
+        setMensajeCoincidencia('❌ El ID no se encontró en la imagen.');
+      }
+    }
+  }, [idRecibo, textoExtraido]);
 
   const handleImportar = async () => {
+    setSubiendo(true);
+
     if (!idRecibo || !imagen) {
       alert('Por favor, ingresa un ID de recibo y sube una imagen.');
+      setSubiendo(false);
       return;
     }
     if (!validarIdRecibo(idRecibo)) {
       alert('El ID debe tener exactamente 6 dígitos numéricos.');
+      setSubiendo(false);
       return;
     }
-    console.log('Importando recibo con ID:', idRecibo, 'y archivo:', imagen);
 
     const formData = new FormData();
     formData.append('id', idRecibo);
     formData.append('idOrdenPago', orden.idOrdenPago);
     formData.append('imagen_comprobante', imagen);
 
-
     try {
-      const response = await fetch(`${apiUrl}/recibos`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(`${apiUrl}/recibos/${idRecibo}`);
+      if (!res.ok) {
+        const response = await fetch(`${apiUrl}/recibos`, {
+          method: 'POST',
+          body: formData,
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error al registrar el recibo:`, errorText);
-        return;
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error al registrar el recibo:`, errorText);
+          setSubiendo(false);
+          return;
+        }
+      } else {
+        formData.append('_method', 'PUT');
+        fetch(`${apiUrl}/recibos/${idRecibo}`, {
+          method: "POST", // o "PUT" si usas PUT
+          body: formData,
+        })
+          .then(res => res.json())
+          .then(data => console.log("Recibo actualizado:", data))
+          .catch(err => {
+            console.error("Error al actualizar:", err)
+            setSubiendo(false);
+            return;
+          });
+
       }
+
+
 
       const { idOrdenPago, ...datos } = orden;
       datos.cancelado = true;
+
       try {
         const respuesta = await fetch(`${apiUrl}/ordenpago/${orden.idOrdenPago}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(datos)
         });
 
@@ -137,11 +144,15 @@ const Recibo = () => {
       } catch (error) {
         console.error('Error:', error.message);
         alert('Hubo un problema al actualizar la orden de pago');
+        setSubiendo(false);
       }
 
       navigate("/ordenes-pago");
     } catch (error) {
       console.error(`Error al registrar el recibo:`, error);
+      setSubiendo(false);
+    } finally {
+      setSubiendo(false);
     }
   };
 
@@ -150,26 +161,28 @@ const Recibo = () => {
     setImagenSubida(false);
     setTextoExtraido('');
     setMensajeCoincidencia('');
-
   };
 
   return (
     <div className="recibo-container">
-      
-        <h2 className="titulo">RECIBO</h2>
-      <div className="formulario-subtitulo" >
-         Por favor, suba una foto visible del recibo proporcionad por Caja Facultativa e ingrese el ID Recibo (numérico de 6 dígitos) .
-      
+      <h2 className="titulo">RECIBO</h2>
+      <div className="formulario-subtitulo">
+        Por favor, suba una foto visible del recibo proporcionado por Caja Facultativa e ingrese el ID Recibo (numérico de 6 dígitos).
       </div>
 
-      <label className="recibo-label">ID del Recibo:
-    
-
-      <input type="text" value={idRecibo} onChange={(e) => setIdRecibo(e.target.value)} className="recibo-input" maxLength={6}
-        pattern="\d{6}"
-        title="Debe ser un número de 6 dígitos"
-      />
+      <label className="recibo-label">
+        ID del Recibo:
+        <input
+          type="text"
+          value={idRecibo}
+          onChange={(e) => setIdRecibo(e.target.value)}
+          className="recibo-input"
+          maxLength={6}
+          pattern="\d{6}"
+          title="Debe ser un número de 6 dígitos"
+        />
       </label>
+
       {mensajeCoincidencia && (
         <p style={{
           marginTop: '5px',
@@ -185,7 +198,6 @@ const Recibo = () => {
       )}
 
       <div className="recibo-upload-area">
-
         {!imagenSubida && (
           <div className="recibo-icono">
             <img
@@ -195,19 +207,15 @@ const Recibo = () => {
             />
           </div>
         )}
-
         <div className="recibo-botones">
           {!imagenSubida && (
             <label className="btn-subir">
               <input type="file" onChange={handleImagenChange} hidden />
               📤 Subir foto
             </label>
-
           )}
         </div>
       </div>
-
-      {/* Vista previa de imagen */}
 
       {imagen && (
         <div style={{ marginBottom: '20px' }}>
@@ -233,11 +241,12 @@ const Recibo = () => {
       {procesandoOCR && <p>🔄 Procesando imagen con OCR...</p>}
 
       <button className="btn-importar" onClick={handleImportar}>
-        Enviar
+        Enviar {subiendo && <span><SpinnerInsideButton /></span>}
       </button>
     </div>
   );
 };
 
 export default Recibo;
+
 

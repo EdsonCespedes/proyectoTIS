@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './styles/LogsTablePrueba.css';
 
 const LogsTablePrueba = () => {
   const [logs, setLogs] = useState([]);
@@ -10,11 +11,13 @@ const LogsTablePrueba = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [expandedIds, setExpandedIds] = useState([]);
+  const [filterUser, setFilterUser] = useState('');
+  const [filterAction, setFilterAction] = useState('');
+  const [selectedLog, setSelectedLog] = useState(null);
 
-  // Obtenemos el token del localStorage (debería estar guardado al loguear)
   const token = localStorage.getItem('token');
 
-  // Función genérica para traer una página de logs
   const fetchLogs = async (url = `http://127.0.0.1:8000/api/logs?page=1`) => {
     setLoading(true);
     setError(null);
@@ -30,7 +33,6 @@ const LogsTablePrueba = () => {
         throw new Error(`Error ${res.status}`);
       }
       const json = await res.json();
-      // json.data es el array de registros, json.current_page, json.last_page, etc.
       setLogs(json.data);
       setPagination({
         current_page: json.current_page,
@@ -46,120 +48,157 @@ const LogsTablePrueba = () => {
     }
   };
 
-  // Al montar, traemos la primera página
+  const fetchFilteredLogs = async () => {
+    setLoading(true);
+    setError(null);
+
+    const query = new URLSearchParams();
+    if (filterUser) query.append('user', filterUser);
+    if (filterAction) query.append('action', filterAction);
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/logs/filter?${query.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+
+      const json = await res.json();
+      setLogs(json.data);
+      setPagination({
+        current_page: json.current_page,
+        last_page: json.last_page,
+        next_page_url: json.next_page_url,
+        prev_page_url: json.prev_page_url,
+      });
+    } catch (e) {
+      console.error(e);
+      setError('No se pudo cargar la lista filtrada.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchLogDetail = async (id) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/logs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+
+      const data = await res.json();
+      setSelectedLog(data);
+    } catch (e) {
+      console.error(e);
+      alert('No se pudo cargar el detalle de la bitácora.');
+    }
+  };
+
   useEffect(() => {
-    fetchLogs(); // por defecto page=1
+    fetchLogs();
   }, []);
 
-  // Manejar paginación
   const handlePrev = () => {
     if (pagination.prev_page_url) {
       fetchLogs(pagination.prev_page_url);
     }
   };
+
   const handleNext = () => {
     if (pagination.next_page_url) {
       fetchLogs(pagination.next_page_url);
     }
   };
 
+  const toggleExpand = (id) => {
+    setExpandedIds((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+    );
+  };
+
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Historial de Actividad (activity_log)</h2>
+    <div className="logs-container">
+      <div className="Titulo">
+        <h2>Historial de Actividad (activity_log)</h2>
+      </div>
+
+      {/* Filtros */}
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Filtrar por usuario"
+          value={filterUser}
+          onChange={(e) => setFilterUser(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Filtrar por acción"
+          value={filterAction}
+          onChange={(e) => setFilterAction(e.target.value)}
+        />
+        <button onClick={fetchFilteredLogs}>Buscar</button>
+      </div>
 
       {loading && <p>Cargando...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
+      {error && <p className="error">{error}</p>}
       {!loading && !error && logs.length === 0 && (
         <p>No hay entradas en la bitácora.</p>
       )}
 
       {!loading && logs.length > 0 && (
         <>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              marginTop: '1rem',
-            }}
-          >
+          <table className="logs-table desktop-view">
             <thead>
               <tr>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  Fecha / Hora
-                </th>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  Usuario
-                </th>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  Acción
-                </th>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  Modelo
-                </th>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  ID
-                </th>
-                <th style={{ border: '1px solid #ddd', padding: '0.5rem' }}>
-                  Detalle
-                </th>
+                <th>Fecha / Hora</th>
+                <th>Usuario</th>
+                <th>Acción</th>
+                <th>Modelo</th>
+                <th>Identificación</th>
+                <th>Detalle</th>
+                <th>Ver</th>
               </tr>
             </thead>
             <tbody>
               {logs.map((log) => {
-                // Por ejemplo, subject_type = "App\\Models\\Tutor"
-                // Podemos extraer solo la última parte: "Tutor"
-                let modelName = log.subject_type
+                const modelName = log.subject_type
                   ? log.subject_type.split('\\').pop()
                   : '';
-                // Fecha formateada:
                 const fecha = new Date(log.created_at).toLocaleString();
 
-                // Construir un pequeño JSON de “antes y después” si existe
                 let detalle = '';
                 if (log.properties) {
-                  // properties puede tener “attributes” (para create) o { old, attributes } (para update)
-                  detalle = JSON.stringify(log.properties, null, 0);
+                  const { old, attributes } = log.properties;
+                  if (old && attributes) {
+                    detalle = `Antes: ${JSON.stringify(old)}\nDespués: ${JSON.stringify(attributes)}`;
+                  } else if (attributes) {
+                    detalle = `Creado: ${JSON.stringify(attributes)}`;
+                  } else {
+                    detalle = JSON.stringify(log.properties);
+                  }
                 }
 
                 return (
                   <tr key={log.id}>
-                    <td
-                      style={{ border: '1px solid #ddd', padding: '0.5rem' }}
-                    >
-                      {fecha}
-                    </td>
-                    <td
-                      style={{ border: '1px solid #ddd', padding: '0.5rem' }}
-                    >
-                      {log.causer ? log.causer.name : '<Sistema>'}
-                    </td>
-                    <td
-                      style={{ border: '1px solid #ddd', padding: '0.5rem' }}
-                    >
-                      {log.description}
-                    </td>
-                    <td
-                      style={{ border: '1px solid #ddd', padding: '0.5rem' }}
-                    >
-                      {modelName}
-                    </td>
-                    <td
-                      style={{ border: '1px solid #ddd', padding: '0.5rem' }}
-                    >
-                      {log.subject_id}
-                    </td>
-                    <td
-                      style={{
-                        border: '1px solid #ddd',
-                        padding: '0.5rem',
-                        fontSize: '0.85rem',
-                        maxWidth: '200px',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-all',
-                      }}
-                    >
-                      {detalle}
+                    <td>{fecha}</td>
+                    <td>{log.causer ? log.causer.name : '<Sistema>'}</td>
+                    <td>{log.description}</td>
+                    <td>{modelName}</td>
+                    <td>{log.subject_id}</td>
+                    <td className="detalle-col">{detalle}</td>
+                    <td>
+                      <button onClick={() => fetchLogDetail(log.id)}>Ver Detalle</button>
                     </td>
                   </tr>
                 );
@@ -167,22 +206,52 @@ const LogsTablePrueba = () => {
             </tbody>
           </table>
 
-          <div
-            style={{
-              marginTop: '1rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
+          {/* Vista Móvil */}
+          <div className="mobile-cards">
+            {logs.map((log) => {
+              const modelName = log.subject_type ? log.subject_type.split('\\').pop() : '';
+              const fecha = new Date(log.created_at).toLocaleString();
+              let detalle = '';
+
+              if (log.properties) {
+                const { old, attributes } = log.properties;
+                if (old && attributes) {
+                  detalle = `Antes: ${JSON.stringify(old)}\nDespués: ${JSON.stringify(attributes)}`;
+                } else if (attributes) {
+                  detalle = `Creado: ${JSON.stringify(attributes)}`;
+                } else {
+                  detalle = JSON.stringify(log.properties);
+                }
+              }
+
+              const isExpanded = expandedIds.includes(log.id);
+
+              return (
+                <div className="user-card" key={log.id}>
+                  <div className="user-header" onClick={() => toggleExpand(log.id)}>
+                    <span className="user-name">{log.causer?.name || "Sistema"}</span>
+                    <span className="toggle-icon">{isExpanded ? "▲" : "▼"}</span>
+                  </div>
+                  {isExpanded && (
+                    <div className="user-details">
+                      <p><strong>Fecha:</strong> {fecha}</p>
+                      <p><strong>Acción:</strong> {log.description}</p>
+                      <p><strong>Modelo:</strong> {modelName}</p>
+                      <p><strong>ID:</strong> {log.subject_id}</p>
+                      <p><strong>Detalle:</strong> {detalle}</p>
+                      <button onClick={() => fetchLogDetail(log.id)}>Ver Detalle</button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pagination">
             <button
               onClick={handlePrev}
               disabled={!pagination.prev_page_url}
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#eee',
-                border: '1px solid #ccc',
-                cursor: pagination.prev_page_url ? 'pointer' : 'not-allowed',
-              }}
+              className="pagination-btn"
             >
               ← Anterior
             </button>
@@ -192,17 +261,28 @@ const LogsTablePrueba = () => {
             <button
               onClick={handleNext}
               disabled={!pagination.next_page_url}
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#eee',
-                border: '1px solid #ccc',
-                cursor: pagination.next_page_url ? 'pointer' : 'not-allowed',
-              }}
+              className="pagination-btn"
             >
               Siguiente →
             </button>
           </div>
         </>
+      )}
+
+      {/* Modal de Detalle */}
+      {selectedLog && (
+        <div className="modal-overlay" onClick={() => setSelectedLog(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Detalle de Bitácora #{selectedLog.id}</h3>
+            <p><strong>Usuario:</strong> {selectedLog.causer?.name || 'Sistema'}</p>
+            <p><strong>Acción:</strong> {selectedLog.description}</p>
+            <p><strong>Fecha:</strong> {new Date(selectedLog.created_at).toLocaleString()}</p>
+            <p><strong>Modelo:</strong> {selectedLog.subject_type?.split('\\').pop()}</p>
+            <p><strong>ID:</strong> {selectedLog.subject_id}</p>
+            <pre>{JSON.stringify(selectedLog.properties, null, 2)}</pre>
+            <button onClick={() => setSelectedLog(null)}>Cerrar</button>
+          </div>
+        </div>
       )}
     </div>
   );
