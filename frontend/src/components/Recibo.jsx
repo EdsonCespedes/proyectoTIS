@@ -85,16 +85,34 @@ const Recibo = () => {
     formData.append('imagen_comprobante', imagen);
 
     try {
-      const response = await fetch(`${apiUrl}/recibos`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(`${apiUrl}/recibos/${idRecibo}`);
+      if (!res.ok) {
+        const response = await fetch(`${apiUrl}/recibos`, {
+          method: 'POST',
+          body: formData,
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error al registrar el recibo:`, errorText);
-        return;
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error al registrar el recibo:`, errorText);
+          return;
+        }
+      } else {
+        formData.append('_method', 'PUT');
+        fetch(`${apiUrl}/recibos/${idRecibo}`, {
+          method: "POST", // o "PUT" si usas PUT
+          body: formData,
+        })
+          .then(res => res.json())
+          .then(data => console.log("Recibo actualizado:", data))
+          .catch(err => {
+            console.error("Error al actualizar:", err)
+            return;
+          });
+
       }
+
+
 
       const { idOrdenPago, ...datos } = orden;
       datos.cancelado = true;

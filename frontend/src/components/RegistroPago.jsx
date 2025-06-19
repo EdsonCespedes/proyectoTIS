@@ -238,6 +238,98 @@ const RegistroPago = () => {
     }
   }
 
+  const handleRechazar = async (e) => {
+    e.preventDefault();
+
+    const ordenesVerificadas = tutores
+      .flatMap(tutor => tutor.ordenes_pago) // aplanamos todas las órdenes de todos los tutores
+      .filter(orden => verificaciones[orden.idOrdenPago] && !orden.recibido); // nos quedamos con las que están marcadas como true
+
+    try {
+      const respuestas = await Promise.all(
+        ordenesVerificadas.map(async (orden) => {
+          const { idOrdenPago, recibos, ...datos } = orden;
+          datos.cancelado = false;
+
+          const respuesta = await fetch(`${apiUrl}/ordenpago/${idOrdenPago}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+          });
+
+          const resultado = await respuesta.json();
+
+          if (!respuesta.ok) {
+            throw new Error(resultado.message || 'Error al actualizar la orden');
+          }
+
+          return resultado.orden;
+        })
+      );
+
+      console.log('Todas las órdenes actualizadas:', respuestas);
+
+      const obtenerRecibosAsociados = async (ordenes) => {
+        const ordenesConRecibos = await Promise.all(
+          ordenes.map(async (orden) => {
+            try {
+              const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`);
+              const data = await response.json();
+
+              return {
+                ...orden,
+                recibos: data
+              };
+            } catch (error) {
+              console.error(`Error obteniendo recibos para orden ${orden.idOrdenPago}:`, error);
+              return orden; // Devolver orden sin modificar si falla
+            }
+          })
+        );
+
+        return ordenesConRecibos;
+      };
+
+      const obtenerOrdenesPago = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/buscar-ordenes`);
+          const data = await response.json();
+
+          if (data) {
+            const tutoresConRecibos = await Promise.all(
+              data.map(async (tutor) => {
+                const ordenesValidas = (tutor.ordenes_pago || []).filter(orden => orden.cancelado === 1);
+                const nuevasOrdenes = await obtenerRecibosAsociados(ordenesValidas);
+                return {
+                  ...tutor,
+                  ordenes_pago: nuevasOrdenes
+                };
+              })
+            );
+
+            setTutores(tutoresConRecibos);
+            console.log(tutoresConRecibos);
+            return true;
+          } else {
+            console.warn("No se encontraron órdenes");
+          }
+        } catch (error) {
+          console.error("Error al obtener órdenes de pago:", error);
+        }
+      };
+
+      await obtenerOrdenesPago();
+
+      setSearchText('');
+      setVerificaciones({});
+    } catch (error) {
+      console.error('Error:', error.message);
+      alert('Hubo un problema al actualizar una o más órdenes de pago');
+    }
+  }
+
   return (
     <>
       {
@@ -409,7 +501,7 @@ const RegistroPago = () => {
 
               <div className="formulario-botones">
                 <button className="guardar-btn" onClick={(e) => handleSubmit(e)}>Aceptar</button>
-                <button className="cancelar-btn" onClick={() => { }}>Rechazar</button>
+                <button className="cancelar-btn" onClick={(e) => handleRechazar(e)}>Rechazar</button>
                 <button className="Salir-btn" onClick={(e) => navigate("/")}>Salir</button>
               </div>
 
