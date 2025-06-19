@@ -122,4 +122,83 @@ class AuthController extends Controller
         ]);
     }
 
+    public function crearUsuario(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'lastName' => 'nullable|string|max:255',
+            'email' => 'required|email|string|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:6',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'apellido' => $request->lastName,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'eliminado' => false, 
+                'rol' => null,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Usuario registrado exitosamente sin rol',
+                'user' => $user
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error al registrar el usuario',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function crearUsuarioConRol(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'lastName' => 'nullable|string|max:255',
+            'email' => 'required|email|string|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:6',
+            'rol' => 'required|string|exists:roles,name',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'apellido' => $request->lastName,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'eliminado' => true,
+                'rol' => $request->rol,
+            ]);
+
+            $user->assignRole($request->rol);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Usuario registrado exitosamente con rol',
+                'user' => $user
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error al registrar el usuario con rol',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

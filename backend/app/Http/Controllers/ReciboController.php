@@ -49,6 +49,12 @@ class ReciboController extends Controller
             }
         }
 
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($recibo)
+        ->withProperties($recibo->toArray())
+        ->log('created');
+
         return response()->json($recibos);
     }
 

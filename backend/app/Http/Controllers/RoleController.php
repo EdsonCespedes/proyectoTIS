@@ -9,7 +9,8 @@ class RoleController extends Controller
 {
     public function index()
     {
-        return response()->json(Role::with('permissions')->get());
+        $roles = Role::where('habilitado', true)->with('permissions')->get();
+        return response()->json($roles);
     }
 
     public function store(Request $req)
@@ -47,7 +48,14 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        $role->delete();
-        return response()->json(null,204);
+      $role = Role::findOrFail($id);
+
+      $role->habilitado = false;
+      $role->save();
+
+      return response()->json([
+          'message' => 'Rol inhabilitado correctamente',
+          'role'    => $role
+      ], 200);
     }
 }

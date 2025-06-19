@@ -145,6 +145,12 @@ public function areasEstructura(Request $request, $id)
 
         $conv->update($updateData);
 
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($conv)
+        ->withProperties(['attributes' => $conv->getChanges()])
+        ->log('convocatoria_updated');
+
          // Responder con mensaje de éxito
          return response()->json(['message' => 'Convocatoria actualizada correctamente'], 200);
 
@@ -159,18 +165,6 @@ public function areasEstructura(Request $request, $id)
      }
  }
 
-
-
-
-
-
-
-
-
-
-
-
- 
       //upadte solo de areas //
 
       public function updateAreasCategorias(Request $request, $idConvocatoria)
@@ -248,7 +242,7 @@ public function areasEstructura(Request $request, $id)
           }
       }
       
-      // 🔍 Función para comparar nombres flexible
+      // Función para comparar nombres flexible
       private function compararNombres($a, $b)
       {
           return strtolower(trim($a)) === strtolower(trim($b));
@@ -293,6 +287,11 @@ public function areasEstructura(Request $request, $id)
         $idsProtegidos = DB::table('postulacion')->pluck('idCategoria');
         $idsEliminables = $categoriaIds->diff($idsProtegidos);
         Categoria::whereIn('idCategoria', $idsEliminables)->delete();
+
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($conv)
+        ->log('convocatoria_deleted');
 
         DB::commit();
         return response()->json(['message' => 'Convocatoria marcada como eliminada correctamente'], 200);
@@ -373,6 +372,12 @@ public function storeConvocatoria(Request $request)
             'maximoPostPorArea'   => $request->input('maximoPostPorArea'),
             'eliminado' => false,
         ]);
+
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($convocatoria)
+        ->withProperties($convocatoria->toArray())
+        ->log('convocatoria_created');
 
         // devuelve el id del a convocatoria creada
         return response()->json([

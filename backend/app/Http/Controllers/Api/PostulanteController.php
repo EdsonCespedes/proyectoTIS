@@ -127,9 +127,9 @@ class PostulanteController extends Controller
                     ['idCategoria' => $cat['idCategoria']],
                     [
                         'nombreCategoria' => $cat['nombreCategoria'],
-                        'descCategoria'   => $cat['descCategoria'] ?? null,
+                        'descCategoria'   => $cat['descCategoria'],
                         'idArea'          => $cat['idArea'],
-                        'maxPost'         => $cat['maxPost'] ?? 0
+                        'maxPost'         => $cat['maxPost']
                     ]
                 );
 

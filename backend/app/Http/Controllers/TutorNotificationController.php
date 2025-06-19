@@ -22,6 +22,11 @@ class TutorNotificationController extends Controller
             $tutor->notify(new NewConvocationNotification($message));
         }
 
+        activity()
+        ->causedBy(Auth::user())
+        ->withProperties(['message' => $message])
+        ->log('notificó a tutores sobre nueva convocatoria');
+
         return response()->json(['message' => 'Notificación enviada a todos los tutores'], 200);
     }
 }
