@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './styles/LogsTablePrueba.css';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const LogsTablePrueba = () => {
   const [logs, setLogs] = useState([]);
   const [pagination, setPagination] = useState({
@@ -16,9 +18,11 @@ const LogsTablePrueba = () => {
   const [filterAction, setFilterAction] = useState('');
   const [selectedLog, setSelectedLog] = useState(null);
 
+  const [usuarios, setUsuarios] = useState([]);
+
   const token = localStorage.getItem('token');
 
-  const fetchLogs = async (url = `http://127.0.0.1:8000/api/logs?page=1`) => {
+  const fetchLogs = async (usuariosDisponibles, url = `${apiUrl}/logs?page=1`) => {
     setLoading(true);
     setError(null);
 
@@ -33,7 +37,26 @@ const LogsTablePrueba = () => {
         throw new Error(`Error ${res.status}`);
       }
       const json = await res.json();
-      setLogs(json.data);
+      const logs = json.data;
+
+      const logsWithNames = logs.map((log) => {
+        if (log.causer_id) {
+          const usuario = usuariosDisponibles.find(u => u.id === log.causer_id);
+          return {
+            ...log,
+            causer_name: usuario ? `${usuario.name} ${usuario.apellido}` : 'Desconocido',
+          };
+        } else {
+          return {
+            ...log,
+            causer_name: 'Sistema',
+          };
+        }
+      });
+      
+      setLogs(logsWithNames);
+      console.log(logsWithNames);
+
       setPagination({
         current_page: json.current_page,
         last_page: json.last_page,
@@ -57,7 +80,7 @@ const LogsTablePrueba = () => {
     if (filterAction) query.append('action', filterAction);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/logs/filter?${query.toString()}`, {
+      const res = await fetch(`${apiUrl}/logs/filter?${query.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -84,9 +107,59 @@ const LogsTablePrueba = () => {
     }
   };
 
+  // const fetchLogDetail = async (id) => {
+  //   try {
+  //     const res = await fetch(`${apiUrl}/logs/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+
+  //     if (!res.ok) {
+  //       throw new Error(`Error ${res.status}`);
+  //     }
+
+  //     const data = await res.json();
+
+  //     // Agrega causer_name si tiene causer_id
+  //     if (data.causer_id) {
+  //       try {
+  //         const userRes = await fetch(`${apiUrl}/especificousers/${data.causer_id}`, {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //             'Content-Type': 'application/json',
+  //           },
+  //         });
+
+  //         if (userRes.ok) {
+  //           const userData = await userRes.json();
+  //           data.causer_name = `${userData.name} ${userData.apellido}`;
+  //         } else {
+  //           data.causer_name = 'Desconocido';
+  //         }
+  //       } catch (err) {
+  //         console.error(`Error al obtener usuario para log ${id}`, err);
+  //         data.causer_name = 'Desconocido';
+  //       }
+  //     } else {
+  //       data.causer_name = 'Sistema';
+  //     }
+
+  //     setSelectedLog(data);
+  //   } catch (e) {
+  //     console.error(e);
+  //     alert('No se pudo cargar el detalle de la bitácora.');
+  //   }
+  // };
   const fetchLogDetail = async (id) => {
+    if (!usuarios.length) {
+      alert('Espere a que se carguen los usuarios...');
+      return;
+    }
+
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/logs/${id}`, {
+      const res = await fetch(`${apiUrl}/logs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -98,6 +171,17 @@ const LogsTablePrueba = () => {
       }
 
       const data = await res.json();
+
+      // Buscar el nombre del usuario localmente
+      if (data.causer_id) {
+        const usuario = usuarios.find(u => u.id === data.causer_id);
+        data.causer_name = usuario
+          ? `${usuario.name} ${usuario.apellido}`
+          : 'Desconocido';
+      } else {
+        data.causer_name = 'Sistema';
+      }
+
       setSelectedLog(data);
     } catch (e) {
       console.error(e);
@@ -105,8 +189,43 @@ const LogsTablePrueba = () => {
     }
   };
 
+
+  const fetchUsuarios = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/todosusers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al obtener usuarios');
+      }
+
+      const data = await res.json();
+      console.log(data);
+      setUsuarios(data);
+      return data;
+    } catch (e) {
+      console.error('Error al cargar todos los usuarios:', e);
+      setUsuarios([]);
+      return [];
+    }
+  };
+
+
   useEffect(() => {
-    fetchLogs();
+    // fetchUsuarios();
+    // fetchLogs();
+    const cargarDatos = async () => {
+      const usuariosCargados = await fetchUsuarios(); // Espera a que termine
+      if (usuariosCargados.length > 0) {
+        await fetchLogs(usuariosCargados); // pásalos como parámetro
+      }
+    };
+
+    cargarDatos();
   }, []);
 
   const handlePrev = () => {
@@ -192,7 +311,7 @@ const LogsTablePrueba = () => {
                 return (
                   <tr key={log.id}>
                     <td>{fecha}</td>
-                    <td>{log.causer ? log.causer.name : '<Sistema>'}</td>
+                    <td>{log.causer_id ? log.causer_name : '<Sistema>'}</td>
                     <td>{log.description}</td>
                     <td>{modelName}</td>
                     <td>{log.subject_id}</td>
@@ -229,7 +348,7 @@ const LogsTablePrueba = () => {
               return (
                 <div className="user-card" key={log.id}>
                   <div className="user-header" onClick={() => toggleExpand(log.id)}>
-                    <span className="user-name">{log.causer?.name || "Sistema"}</span>
+                    <span className="user-name">{log.causer_name || "Sistema"}</span>
                     <span className="toggle-icon">{isExpanded ? "▲" : "▼"}</span>
                   </div>
                   {isExpanded && (
@@ -274,7 +393,7 @@ const LogsTablePrueba = () => {
         <div className="modal-overlay" onClick={() => setSelectedLog(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Detalle de Bitácora #{selectedLog.id}</h3>
-            <p><strong>Usuario:</strong> {selectedLog.causer?.name || 'Sistema'}</p>
+            <p><strong>Usuario:</strong> {selectedLog.causer_name || 'Sistema'}</p>
             <p><strong>Acción:</strong> {selectedLog.description}</p>
             <p><strong>Fecha:</strong> {new Date(selectedLog.created_at).toLocaleString()}</p>
             <p><strong>Modelo:</strong> {selectedLog.subject_type?.split('\\').pop()}</p>

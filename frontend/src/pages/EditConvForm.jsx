@@ -9,6 +9,8 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 
 export const EditConvForm = () => {
+  const token = localStorage.getItem('token');
+  
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: "",
@@ -131,6 +133,9 @@ export const EditConvForm = () => {
     try {
       const response = await fetch(`${apiUrl}/editconvocatorias/${id}`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: newformData,
       });
 

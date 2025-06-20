@@ -44,9 +44,10 @@ const InscripcionManual = () => {
             return {
                 idCategoria: categoria.id,
                 nombreCategoria: categoria.nombre,
-                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                descCategoria: categoria.descripcion || "", // si se requiere
                 idArea: idAreaEncontrado, // Asignar el idArea encontrado
                 monto: categoria.monto || 50,
+                maxPost: categoria.maxPost
             };
         });
 
@@ -81,9 +82,10 @@ const InscripcionManual = () => {
             return {
                 idCategoria: categoria.id,
                 nombreCategoria: categoria.nombre,
-                descripcionCategoria: categoria.descripcion || "", // si se requiere
+                descCategoria: categoria.descripcion || "", // si se requiere
                 idArea: idAreaEncontrado, // Asignar el idArea encontrado
                 monto: categoria.monto || 50,
+                maxPost: categoria.maxPost
             };
         });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recibo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -27,6 +28,12 @@ class ReciboController extends Controller
             'imagen_comprobante' => $path,
         ]);
 
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($recibo)
+        ->withProperties($recibo->toArray())
+        ->log('created');
+
         return response()->json([
             'message' => 'Recibo creado correctamente.',
             'data' => $recibo,
@@ -48,12 +55,6 @@ class ReciboController extends Controller
                 $r->imagen_comprobante = Storage::disk('public')->url($r->imagen_comprobante);
             }
         }
-
-        activity()
-        ->causedBy(Auth::user())
-        ->performedOn($recibo)
-        ->withProperties($recibo->toArray())
-        ->log('created');
 
         return response()->json($recibos);
     }
@@ -83,6 +84,12 @@ class ReciboController extends Controller
         }
 
         $recibo->save();
+
+        activity()
+        ->causedBy(Auth::user())
+        ->performedOn($recibo)
+        ->withProperties($recibo->toArray())
+        ->log('updated');
 
         return response()->json([
             'message' => 'Recibo actualizado correctamente.',

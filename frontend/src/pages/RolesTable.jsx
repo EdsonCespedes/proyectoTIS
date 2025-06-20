@@ -11,10 +11,17 @@ const RolesTable = () => {
 
   const [cargando, setCargando] = useState(true);
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch(`${apiUrl}/roles`);
+        const res = await fetch(`${apiUrl}/roles`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
         if (!res.ok) throw new Error("Error al obtener roles");
         const data = await res.json();
         const dataWithExpanded = data.filter(r => r.name.toLowerCase() != 'admin' && r.name.toLowerCase() != 'tutor').map(role => ({ ...role, expanded: false }));

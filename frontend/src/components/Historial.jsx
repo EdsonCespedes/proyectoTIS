@@ -8,6 +8,8 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const Historial = () => {
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [ordenesPago, setOrdenesPago] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -23,7 +25,12 @@ const Historial = () => {
 
     const obtenerOrdenesPago = async () => {
       try {
-        const response = await fetch(`${apiUrl}/buscar-ordenes?query=${idTutor}`);
+        const response = await fetch(`${apiUrl}/buscar-ordenes?query=${idTutor}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
         const data = await response.json();
 
         if (data.length > 0 && data[0].ordenes_pago) {

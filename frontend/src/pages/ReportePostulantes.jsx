@@ -8,6 +8,8 @@ import FullScreenSpinner from '../components/FullScreenSpinner';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const ReportePostulantes = () => {
+  const token = localStorage.getItem('token');
+
   const [cursos, setCursos] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
   const [convocatorias, setConvocatorias] = useState([]);
@@ -64,7 +66,12 @@ const ReportePostulantes = () => {
 
   useEffect(() => {
     setCargando(true);
-    fetch(`${apiUrl}/reporte-postulantes`)
+    fetch(`${apiUrl}/reporte-postulantes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
       .then(res => res.json())
       .then(data => {
         setPostulaciones(data);

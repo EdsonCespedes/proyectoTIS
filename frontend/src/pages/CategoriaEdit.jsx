@@ -9,6 +9,8 @@ const iconStyle = { cursor: "pointer", marginLeft: "10px" };
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ac() {
+  const token = localStorage.getItem('token');
+  
   const location = useLocation();
   const idConvocatoria = location.state.idConvocatoria;
   const datosAreas = location.state.areas;
@@ -221,7 +223,10 @@ export default function ac() {
     try {
       const res = await fetch(`${apiUrl}/editcatconvocatorias/${idConvocatoria}/areas-categorias`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`, 
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify(payload),
       });
 

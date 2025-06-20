@@ -7,6 +7,8 @@ import FullScreenSpinner from "../components/FullScreenSpinner";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const DetalleConv = () => {
+  const token = localStorage.getItem('token');
+
   const [convocatorias, setConvocatorias] = useState([]);
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
@@ -57,6 +59,9 @@ const DetalleConv = () => {
     try {
       const response = await fetch(`${apiUrl}/editconvocatorias/${id}`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: newformData,
       });
 

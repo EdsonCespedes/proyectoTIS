@@ -103,7 +103,6 @@ Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaControlle
 Route::get('/tutor/{id}', [TutorController::class, 'show']);
 //Route::get('/tutor', [TutorController::class, 'index']);
 Route::get('/tutores', [TutorController::class, 'index']);
-////
 Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
@@ -118,31 +117,11 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 //actualiza la contraseña 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
-// envia notificaciones a tutores
-Route::post('/notify-tutors', [TutorNotificationController::class, 'notifyAllTutors']);
-
-Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
-
-Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
-
-Route::prefix('convocatoria')->group(function(){
-    Route::post('role',      [ConvocatoriaRoleController::class,'store']);
-    Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
-    Route::get('roles/all',  [ConvocatoriaRoleController::class, 'all']);
-});
-
-Route::prefix('user')->group(function(){
-    // .todos los roles y permisos de un usuario en todas las convocatorias
-    Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
-    // Roles y permisos de un usuario dentro de UNA convocatoria
-    Route::get('{user}/convocatoria/{conv}/roles', [UserRoleController::class,'forUserInConvocatoria']);
-});
-
 // -------------------------------------------------
 // RUTAS PRIVADAS
 // -------------------------------------------------
 Route::middleware('auth:sanctum')->group(function () {
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
@@ -152,15 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/mostrarpostulaciones/{id}', [PostulacionController::class, 'show']); //edita inscripcion
 
-    //crear solo en tabla convocatoria
-    Route::post('/solo-convocatoria', [ConvocatoriaController::class, 'storeConvocatoria']);
-
     Route::get('/postulantes', [PostulanteController::class, 'index']);
-
-    Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
-
-        //buscador por nombre e id al tutor o nombre
-    Route::get('/buscar-ordenes', [OrdenPagoController::class, 'buscar']);
 
         // guarda los datos de un usuario
     Route::post('/guardausers', [UserController::class, 'store']);
@@ -171,14 +142,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //elimina un usuario mediante su id
     Route::delete('/eliminausers/{id}', [UserController::class, 'destroy']);
 
-    //guarda areas y todo lo demas d convocatoria
-    Route::post('/convocatoria/{id}/estructura', [ConvocatoriaEstructuraController::class, 'areasEstructura']);
-
     //eliminar convocatoria mediante id convocatoria
     Route::delete('/delconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'destroy']);
-
-    //actualiza los datos de orden pago mediante id convocatoria
-    Route::put('/ordenpago/{idOrdenPago}', [OrdenPagoController::class, 'update']);
 
         // muestra todos los usuarios
     Route::get('/todosusers', [UserController::class, 'index']);
@@ -193,10 +158,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //.............BITACORAS................
     // Listar todas las bitácoras
-    Route::get('/logs',         [LogController::class, 'index']);
+    Route::get('/logs', [LogController::class, 'index']);
 
     // Ver detalle de una bitácora
-    Route::get('/logs/{id}',    [LogController::class, 'show']);
+    Route::get('/logs/{id}', [LogController::class, 'show']);
 
     // Filtrar por evento (created, updated, deleted, login, logout)
     Route::get('/logs/event/{event}', [LogController::class, 'byEvent'])
@@ -290,6 +255,18 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['message' => 'Permisos actualizados correctamente']);
     });
 
+    // Listar permisos
+    Route::get('/permissions', function(){
+        return response()->json(Permission::all());
+    });
+
+    // Asignar permiso a rol
+    Route::post('/roles/{role}/give-permission', function(Role $role, Request $req){
+        $req->validate(['permission'=>'required|exists:permissions,name']);
+        $role->givePermissionTo($req->permission);
+        return response()->json(['message'=>"Permission {$req->permission} added to role {$role->name}"]);
+    });
+
     // Reportes y Notificaciones avanzadas
     Route::get('/reporte-postulantes/{idCurso}', [ReportePostulantesController::class, 'obtenerPostulantesPorCurso']);
     Route::get('/reporte-postulantes', [ReportePostulantesController::class, 'obtenerPostulantes']);
@@ -299,15 +276,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recibos', [ReciboController::class, 'store']);
     Route::get('/recibos/{id}', [ReciboController::class, 'show']);
     Route::get('/recibos/orden/{idOrdenPago}', [ReciboController::class, 'getByOrdenPago']);
-    Route::post('/recibos', [ReciboController::class, 'store']);
     Route::put('/recibos/{id}', [ReciboController::class, 'update']);
 
     // Prefijos adicionales
     Route::prefix('convocatoria')->group(function(){
         Route::post('role',      [ConvocatoriaRoleController::class,'store']);
         Route::get('{id}/roles', [ConvocatoriaRoleController::class,'index']);
-        Route::get('roles/all',  [ConvocatoriaRoleController::class, 'all']);
+        Route::get('roles/all',  [ConvocatoriaRoleController::class,'all']);
+
     });
+    Route::get('/convocatorias-roles', [ConvocatoriaRoleController::class, 'all']);
+    Route::get('/convocatoria/{convocatoria}/roles',[ConvocatoriaRoleController::class,'index']);
+
+
     Route::prefix('user')->group(function(){
         // .todos los roles y permisos de un usuario en todas las convocatorias
         Route::get('{user}/roles', [UserRoleController::class,'allForUser']);
@@ -317,4 +298,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //eliminar rol dado el rol
     Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
+
 });

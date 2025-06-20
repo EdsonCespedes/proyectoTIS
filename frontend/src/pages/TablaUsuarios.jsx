@@ -9,6 +9,8 @@ const TablaUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
@@ -16,9 +18,16 @@ const TablaUsuarios = () => {
   }, []);
 
   const cargarUsuarios = () => {
-    fetch(`${apiUrl}/todosusers`)
+    fetch(`${apiUrl}/todosusers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
       .then(response => response.json())
       .then(data => {
+        console.log(data);
+        
         const withExpanded = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor').map(u => ({ ...u, expanded: false }));
         setUsuarios(withExpanded);
       })
@@ -37,6 +46,9 @@ const TablaUsuarios = () => {
     try {
       const res = await fetch(`${apiUrl}/eliminausers/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!res.ok) {

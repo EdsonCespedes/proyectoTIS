@@ -8,6 +8,8 @@ import SpinnerInsideButton from "./SpinnerInsideButton";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const OrdenPago = () => {
+  const token = localStorage.getItem('token');
+
   const [mostrarDescargar, setMostrarDescargar] = useState(false);
   const [mostrarBotones, setMostrarBotones] = useState(true);
   const [salirActivo, setSalirActivo] = useState(false);
@@ -252,6 +254,7 @@ const OrdenPago = () => {
         const response = await fetch(`${apiUrl}/registrar-postulante`, {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(postulante),
@@ -311,6 +314,7 @@ const OrdenPago = () => {
       const response = await fetch(`${apiUrl}/ordenpago`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },

@@ -19,6 +19,8 @@ const ahora = new Date();
 const RegistroPago = () => {
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
   const [tutores, setTutores] = useState([]);
@@ -33,7 +35,12 @@ const RegistroPago = () => {
       const ordenesConRecibos = await Promise.all(
         ordenes.map(async (orden) => {
           try {
-            const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`);
+            const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
             const data = await response.json();
 
             return {
@@ -51,7 +58,12 @@ const RegistroPago = () => {
 
     const obtenerOrdenesPago = async () => {
       try {
-        const response = await fetch(`${apiUrl}/buscar-ordenes`);
+        const response = await fetch(`${apiUrl}/buscar-ordenes`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const data = await response.json();
 
         if (data) {
@@ -167,6 +179,7 @@ const RegistroPago = () => {
           const respuesta = await fetch(`${apiUrl}/ordenpago/${idOrdenPago}`, {
             method: 'PUT',
             headers: {
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(datos),
@@ -188,7 +201,12 @@ const RegistroPago = () => {
         const ordenesConRecibos = await Promise.all(
           ordenes.map(async (orden) => {
             try {
-              const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`);
+              const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              });
               const data = await response.json();
 
               return {
@@ -207,7 +225,12 @@ const RegistroPago = () => {
 
       const obtenerOrdenesPago = async () => {
         try {
-          const response = await fetch(`${apiUrl}/buscar-ordenes`);
+          const response = await fetch(`${apiUrl}/buscar-ordenes`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
           const data = await response.json();
 
           if (data) {
@@ -262,6 +285,7 @@ const RegistroPago = () => {
           const respuesta = await fetch(`${apiUrl}/ordenpago/${idOrdenPago}`, {
             method: 'PUT',
             headers: {
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(datos),
@@ -283,7 +307,12 @@ const RegistroPago = () => {
         const ordenesConRecibos = await Promise.all(
           ordenes.map(async (orden) => {
             try {
-              const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`);
+              const response = await fetch(`${apiUrl}/recibos/orden/${orden.idOrdenPago}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              });
               const data = await response.json();
 
               return {
@@ -302,7 +331,12 @@ const RegistroPago = () => {
 
       const obtenerOrdenesPago = async () => {
         try {
-          const response = await fetch(`${apiUrl}/buscar-ordenes`);
+          const response = await fetch(`${apiUrl}/buscar-ordenes`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
           const data = await response.json();
 
           if (data) {
