@@ -174,9 +174,7 @@ input, select {
 }
 
 
-
-.competencias label {
-  display: flex !important;
+.competencias label {  
   align-items: center !important;
   justify-content: flex-start !important;
   gap: 8px !important;
