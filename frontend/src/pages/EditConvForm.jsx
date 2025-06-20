@@ -24,6 +24,12 @@ export const EditConvForm = () => {
   });
   const { id } = useParams();
   console.log(id);
+  const [mostrarAviso, setMostrarAviso] = useState({
+    fechaInicioInscripcion: false,
+    fechaCierreInscripcion: false,
+    fechaInicioOlimpiada: false,
+    fechaFinOlimpiada: false,
+  });
 
   const [convocatoria, setConvocatoria] = useState({});
   const [areas, setAreas] = useState([]);
@@ -161,6 +167,15 @@ export const EditConvForm = () => {
     navigate("/detalle-convocatoria");
   };
 
+  const handleBloqueoTeclado = (e, campo) => {
+    e.preventDefault();
+    setMostrarAviso(prev => ({ ...prev, [campo]: true }));
+    
+    setTimeout(() => {
+      setMostrarAviso(prev => ({ ...prev, [campo]: false }));
+    }, 3000);
+  };
+
 
   return (
     <div className="container-formconv">
@@ -193,16 +208,26 @@ export const EditConvForm = () => {
             min={today}
             value={formData.fechaInicioInscripcion}
             onChange={handleChange}
+            onKeyDown={(e) => handleBloqueoTeclado(e, "fechaInicioInscripcion")}
+            onPaste={(e) => e.preventDefault()}
             className="input-field"
           />
+          {mostrarAviso.fechaInicioInscripcion && (
+            <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
           <input
             type="date"
             name="fechaCierreInscripcion"
-            min={today}
+            min={formData.fechaInicioInscripcion || today}
             value={formData.fechaCierreInscripcion}
             onChange={handleChange}
+            onKeyDown={(e) => handleBloqueoTeclado(e, "fechaCierreInscripcion")}
+            onPaste={(e) => e.preventDefault()}
             className="input-field"
           />
+          {mostrarAviso.fechaCierreInscripcion && (
+            <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
         </div>
 
         <label>Fechas de olimpiadas:</label>
@@ -210,19 +235,29 @@ export const EditConvForm = () => {
           <input
             type="date"
             name="fechaInicioOlimpiada"
-            min={today}
+            min={formData.fechaCierreInscripcion || today}
             value={formData.fechaInicioOlimpiada}
             onChange={handleChange}
+            onKeyDown={(e) => handleBloqueoTeclado(e, "fechaInicioOlimpiada")}
+            onPaste={(e) => e.preventDefault()}
             className="input-field"
           />
+          {mostrarAviso.fechaInicioOlimpiada && (
+            <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
           <input
             type="date"
             name="fechaFinOlimpiada"
-            min={today}
+            min={formData.fechaInicioOlimpiada || today}
             value={formData.fechaFinOlimpiada}
             onChange={handleChange}
+            onKeyDown={(e) => handleBloqueoTeclado(e, "fechaFinOlimpiada")}
+            onPaste={(e) => e.preventDefault()}
             className="input-field"
           />
+          {mostrarAviso.fechaFinOlimpiada && (
+            <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
         </div>
 
         <label>Máximo de inscripción por categoría{/*área*/}:</label>

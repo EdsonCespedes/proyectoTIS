@@ -35,6 +35,10 @@ const DetalleEstructura = () => {
   if (loading) return <div className="loading">Cargando...</div>;
   if (!convocatoria) return <div className="error">No se encontró la convocatoria.</div>;
 
+   const handleVolver = () => {
+    navigate("/convocatorias");
+  };
+
   return (
     <div className="estructura-container">
       <h2 className="tituloConv">{convocatoria.tituloConvocatoria}</h2>
@@ -78,10 +82,10 @@ const DetalleEstructura = () => {
           </tbody>
         </table>
       </div>
-
-      <button className="btn-inscribirse" onClick={handleInscribirse}>
-        Inscribirse
-      </button>
+        <div className="detalle">
+          <button className="btn-inscribirse" onClick={handleInscribirse}>Inscribirse</button>
+          <button type="button" className="btn-volver" onClick={handleVolver}>Volver</button>
+        </div>
     </div>
   );
 };
