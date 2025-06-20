@@ -31,6 +31,7 @@ const AddRoles = () => {
 
   const [cargando, setCargando] = useState(true);
   const [subiendo, setSubiendo] = useState(false);
+  
 
   useEffect(() => {
     // const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
@@ -58,7 +59,12 @@ const AddRoles = () => {
         }
 
 
-        const res = await fetch(`${apiUrl}/permissions`);
+        const res = await fetch(`${apiUrl}/permissions`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
         if (!res.ok) throw new Error("Error al obtener permisos");
         const data = await res.json();
         setPermisosDisponibles(data);

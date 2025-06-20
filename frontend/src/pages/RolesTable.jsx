@@ -11,6 +11,8 @@ const RolesTable = () => {
 
   const [cargando, setCargando] = useState(true);
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
