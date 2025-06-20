@@ -27,8 +27,11 @@ const TablaUsuarios = () => {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        
-        const withExpanded = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor').map(u => ({ ...u, expanded: false }));
+        const dataNull = data.map(u => ({
+          ...u,
+          rol: u.rol === null ? "" : u.rol
+        }));
+        const withExpanded = dataNull.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor').map(u => ({ ...u, expanded: false }));
         setUsuarios(withExpanded);
       })
       .catch(error => console.error("Error al obtener usuarios:", error))
