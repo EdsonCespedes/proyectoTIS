@@ -16,6 +16,8 @@ export default function Ac() {
   const idConvocatoria = location.state.idConvocatoria;
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [areas, setAreas] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
   const [showAreaModal, setShowAreaModal] = useState(false);
@@ -204,7 +206,10 @@ export default function Ac() {
     try {
       const res = await fetch(`${apiUrl}/convocatoria/${idConvocatoria}/estructura`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", 
+        },
         body: JSON.stringify(payload),
       });
       const data = await res.json();

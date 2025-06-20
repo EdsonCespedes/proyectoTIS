@@ -14,6 +14,8 @@ const AsignarRoles = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [personas, setPersonas] = useState([]);
   const [roles, setRoles] = useState([]);
   const [convocatorias, setConvocatorias] = useState([]);
@@ -34,7 +36,12 @@ const AsignarRoles = () => {
 
   useEffect(() => {
     try {
-      fetch(`${apiUrl}/todosusers`)
+      fetch(`${apiUrl}/todosusers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           const users = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor')
@@ -42,7 +49,12 @@ const AsignarRoles = () => {
         })
         .catch(error => console.error("Error al obtener usuarios:", error));
 
-      fetch(`${apiUrl}/roles`)
+      fetch(`${apiUrl}/roles`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           const roles = data.filter(r => r.name.toLowerCase() != 'admin' && r.name.toLowerCase() != 'tutor')
@@ -112,6 +124,9 @@ const AsignarRoles = () => {
         method: "POST",
         //headers: { "Content-Type": "application/json" },
         //body: JSON.stringify(formularioSend)
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 

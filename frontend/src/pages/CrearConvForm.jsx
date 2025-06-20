@@ -8,6 +8,8 @@ import SpinnerInsideButton from "../components/SpinnerInsideButton";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const CrearConvForm = () => {
+  const token = localStorage.getItem('token');
+  
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: "",
@@ -155,6 +157,9 @@ export const CrearConvForm = () => {
     try {
       const response = await fetch(`${apiUrl}/solo-convocatoria`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: newformData,
       });
 

@@ -9,6 +9,7 @@ import SpinnerInsideButton from "../components/SpinnerInsideButton";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const EditColegios = () => {
+    const token = localStorage.getItem('token');
 
     const location = useLocation();
     const colegio = location.state?.colegio;
@@ -97,6 +98,7 @@ const EditColegios = () => {
             const response = await fetch(`${apiUrl}/colegio/${idColegio}`, {
                 method: "PUT",
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },

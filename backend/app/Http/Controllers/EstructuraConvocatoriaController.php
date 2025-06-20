@@ -77,7 +77,9 @@ class EstructuraConvocatoriaController extends Controller
                 $resultado['estructura'][$areaId] = [
                     'area' => [
                         'id' => $categoria->area->idArea,
-                        'nombre' => $categoria->area->tituloArea
+                        'nombre' => $categoria->area->tituloArea,
+                        //
+                        'descripcion' => $categoria->area->descArea
                     ],
                     'categorias' => []
                 ];
@@ -86,7 +88,10 @@ class EstructuraConvocatoriaController extends Controller
             $resultado['estructura'][$areaId]['categorias'][] = [
                 'id' => $categoria->idCategoria,
                 'nombre' => $categoria->nombreCategoria,
-                'monto' => $categoria ->montoCate
+                'monto' => $categoria ->montoCate,
+                //
+                'descripcion' => $categoria -> descCategoria,
+                'maxPost' => $categoria -> maxPost
             ];
         }
     }

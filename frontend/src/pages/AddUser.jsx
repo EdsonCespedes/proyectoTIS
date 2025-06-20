@@ -13,6 +13,7 @@ const AddUser = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const token = localStorage.getItem('token');
 
   const [nombre, setNombre] = useState("");
   const [apellido, setApellidos] = useState("");
@@ -23,9 +24,9 @@ const AddUser = () => {
 
   const [cargando, setCargando] = useState(false);
   const [subiendo, setSubiendo] = useState(false);
-  
-  
-const [errores, setErrores] = useState({
+
+
+  const [errores, setErrores] = useState({
     nombre: "",
     apellido: ""
   });
@@ -36,7 +37,12 @@ const [errores, setErrores] = useState({
       setCargando(true);
       const metodo = async () => {
 
-        fetch(`${apiUrl}/especificousers/${id}`)
+        fetch(`${apiUrl}/especificousers/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
           .then(response => response.json())
           .then(data => {
             console.log(data);
@@ -61,7 +67,7 @@ const [errores, setErrores] = useState({
   }, [id]);
 
 
-   const handleNombreChange = (e) => {
+  const handleNombreChange = (e) => {
     const valor = e.target.value;
     setNombre(valor);
 
@@ -104,15 +110,15 @@ const [errores, setErrores] = useState({
       return;
     }
 
-    if(!id && !password) {
-        alert("Debe llenar todos los campos");
-        setSubiendo(false);
-        return;
-      }
-    
+    if (!id && !password) {
+      alert("Debe llenar todos los campos");
+      setSubiendo(false);
+      return;
+    }
 
 
-     if (errores.nombre || errores.apellido) {
+
+    if (errores.nombre || errores.apellido) {
       alert("Corrige los errores antes de guardar.");
       setSubiendo(false);
       return;
@@ -130,6 +136,7 @@ const [errores, setErrores] = useState({
         const res = await fetch(`${apiUrl}/editausers/${id}`, {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
           },
@@ -157,6 +164,7 @@ const [errores, setErrores] = useState({
         const res = await fetch(`${apiUrl}/guardausers`, {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
           },
@@ -196,7 +204,7 @@ const [errores, setErrores] = useState({
               {errores.nombre && <small className="error">{errores.nombre}</small>}
             </div>
 
-            
+
             <div className="form-group">
               <label>Apellidos</label>
               <input
@@ -209,7 +217,7 @@ const [errores, setErrores] = useState({
             </div>
 
 
-             {!id && (
+            {!id && (
               <div className="form-group">
                 <label htmlFor="password">Contraseña *</label>
                 <div className="password-wrapper">
@@ -231,7 +239,7 @@ const [errores, setErrores] = useState({
               </div>
             )}
 
-            
+
             <div className="form-group">
               <label>Email :</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={cargando || subiendo} />

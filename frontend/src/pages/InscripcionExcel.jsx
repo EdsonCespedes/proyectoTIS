@@ -180,6 +180,7 @@ const InscripcionExcel = () => {
                     const areas = data.estructura.map(item => ({
                         id: item.area.id,
                         nombre: item.area.nombre,
+                        descripcion: item.area.descripcion,
                         categorias: item.categorias
                     }));
 
@@ -243,9 +244,10 @@ const InscripcionExcel = () => {
                         return {
                             idCategoria: categoria.id,
                             nombreCategoria: categoria.nombre,
-                            descripcionCategoria: categoria.descripcion || "", // si se requiere
+                            descCategoria: categoria.descripcion || "", // si se requiere
                             idArea: idAreaEncontrado, // Asignar el idArea encontrado
                             monto: categoria.monto || 50,
+                            maxPost: categoria.maxPost
                         };
                     });
 

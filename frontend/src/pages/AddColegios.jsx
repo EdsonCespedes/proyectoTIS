@@ -18,6 +18,8 @@ const AddColegios = () => {
         direccion: "",
     });
 
+    const token = localStorage.getItem('token');
+
     const navigate = useNavigate();
 
     const [departamentos, setDepartamentos] = useState([]);
@@ -69,6 +71,9 @@ const AddColegios = () => {
         try {
             const response = await fetch(`${apiUrl}/colegios`, {
                 method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
                 body: formDataToSend,
             });
 

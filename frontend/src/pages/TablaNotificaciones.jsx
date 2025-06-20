@@ -8,6 +8,8 @@ import FullScreenSpinner from '../components/FullScreenSpinner';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const TablaNotificaciones = () => {
+  const token = localStorage.getItem('token');
+  
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -86,6 +88,7 @@ const TablaNotificaciones = () => {
     fetch(`${apiUrl}/notify-tutors`, {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
