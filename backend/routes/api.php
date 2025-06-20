@@ -56,7 +56,6 @@ Route::get('/categorias', [CategoriaController::class, 'index']);
 
 // Colegio
 Route::post('/colegios', [ColegioController::class, 'store']);
-//esta
 Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 Route::put('/colegio/{id}', [ColegioController::class, 'update']);
 
@@ -89,7 +88,7 @@ Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 
 //obtiene los datos de una convocatoria activa mediante su id
 Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
-//esta
+
 //obtiene todas las convocatorias activas
 Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
 
@@ -104,7 +103,6 @@ Route::put('/editcatconvocatorias/{id}/areas-categorias', [ConvocatoriaControlle
 Route::get('/tutor/{id}', [TutorController::class, 'show']);
 //Route::get('/tutor', [TutorController::class, 'index']);
 Route::get('/tutores', [TutorController::class, 'index']);
-////
 Route::post('/tutor', [TutorController::class, 'store']);
 
 // login y registro
