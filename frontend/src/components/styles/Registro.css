@@ -172,18 +172,20 @@ input, select {
     padding: 15px;
     display: block;
 }
-
-
-.competencias label {  
+.competencias label {
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 8px !important;
+  gap: 56px !important;
   font-size: 16px !important;
   font-weight: bold !important;
   color: #333 !important;
   margin-bottom: 6px !important;
   text-align: left !important;
+  width: auto !important;
 }
+
+
 
 
 .competencias input[type="checkbox"] {

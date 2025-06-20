@@ -515,18 +515,20 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
                 {areas.map((area) => (
                   <div key={area.id}>
                     <label>
+                      {area.nombre}
                       <input
                         type="checkbox"
                         checked={areasSeleccionadas.some((a) => a.id === area.id)}
                         onChange={() => handleCheckboxChange(area)}
                         disabled={areasSeleccionadas.length === 2 && !areasSeleccionadas.some((a) => a.id === area.id)}
                       />
-                      {area.nombre}
+                      
                     </label>
                     {areasSeleccionadas.some((a) => a.id === area.id) && (
                       <div>
                         {area.categorias.map((categoria) => (
-                          <label key={categoria.id}>
+                          <label key={categoria.id} >
+                            {categoria.nombre}
                             <input
                               type="checkbox"
                               checked={categoriasSeleccionadas.some((a) => a.id === categoria.id)}
@@ -539,7 +541,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
                                   !categoriasSeleccionadas.some((a) => a.id === categoria.id))
                               }
                             />
-                            {categoria.nombre}
+                            
                           </label>
                         ))}
                       </div>
