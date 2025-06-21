@@ -38,9 +38,9 @@ const LogsTablePrueba = () => {
 
       const logs = Array.isArray(json.data)
         ? json.data.map((log) => ({
-            ...log,
-            causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
-          }))
+          ...log,
+          causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
+        }))
         : [];
 
       setLogs(logs);
@@ -83,9 +83,9 @@ const LogsTablePrueba = () => {
 
       const logsWithNames = Array.isArray(json.data)
         ? json.data.map((log) => ({
-            ...log,
-            causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
-          }))
+          ...log,
+          causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
+        }))
         : [];
 
       setLogs(logsWithNames);
@@ -151,7 +151,7 @@ const LogsTablePrueba = () => {
 
       {/* Filtros */}
       <div className="filters">
-      <input
+        <input
           type="text"
           placeholder="Filtrar por ID de usuario"
           value={filterUser}

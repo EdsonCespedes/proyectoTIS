@@ -31,7 +31,7 @@ const AddRoles = () => {
 
   const [cargando, setCargando] = useState(true);
   const [subiendo, setSubiendo] = useState(false);
-  
+
 
   useEffect(() => {
     // const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
@@ -60,11 +60,11 @@ const AddRoles = () => {
 
 
         const res = await fetch(`${apiUrl}/permissions`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
         if (!res.ok) throw new Error("Error al obtener permisos");
         const data = await res.json();
         setPermisosDisponibles(data);
@@ -109,9 +109,9 @@ const AddRoles = () => {
   const crearRol = async (nombreRol) => {
     const res = await fetch(`${apiUrl}/roles`, {
       method: 'POST',
-      headers: { 
+      headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ name: nombreRol }),
     });
@@ -122,9 +122,9 @@ const AddRoles = () => {
   const asignarPermisoARol = async (roleId, permiso) => {
     await fetch(`${apiUrl}/roles/${roleId}/give-permission`, {
       method: 'POST',
-      headers: { 
+      headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ permission: permiso }),
     }).catch(
@@ -220,33 +220,37 @@ const AddRoles = () => {
         <div className="titulo-box">
           <h2>{modoEdicion ? "Editar Rol" : "Crear Rol"}</h2>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={subiendo ? "divDeshabilitado" : ""}>
           <label htmlFor="nombreRol">Nombre Rol:</label>
           <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)} />
 
           <label>Funciones:</label>
           <div className="funciones">
-            {/* {opcionesFunciones.map((funcion, index) => ( */}
-            {permisosDisponibles.map((funcion) => (
-              // <div key={index}>
-              <div key={funcion.id}>
-                <input
-                  type="checkbox"
-                  // id={`funcion-${index}`}
-                  id={`funcion-${funcion.id}`}
-                  // checked={funciones.includes(funcion)}
-                  // onChange={() => handleCheckboxChange(funcion)}
-                  checked={funciones.includes(funcion.name)}
-                  onChange={() => handleCheckboxChange(funcion.name)}
-                />
-                {/* <label htmlFor={`funcion-${index}`}>{funcion}</label> */}
-                <label htmlFor={`funcion-${funcion.id}`}>{funcion.name}</label>
+            {cargando ? (
+              <div>
+                <SpinnerInsideButton/>
+                Cargando...
               </div>
-            ))}
+            ) : (
+              <>
+                {permisosDisponibles.map((funcion) => (
+                  <div className="funcion" key={funcion.id}>
+                    <input
+                      type="checkbox"
+                      id={`funcion-${funcion.id}`}
+                      checked={funciones.includes(funcion.name)}
+                      onChange={() => handleCheckboxChange(funcion.name)}
+                    />
+                    <label htmlFor={`funcion-${funcion.id}`}>{funcion.name}</label>
+                  </div>
+                ))}
+              </>
+            )}
+
           </div>
 
           <div className="button-container">
-            <button type="submit" className="btn-registrarse">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
+            <button type="submit" className="btn-registrarse">{modoEdicion ? <>Guardar Cambios {subiendo ? <span><SpinnerInsideButton/></span> : ""}</> : <>Registrar {subiendo ? <span><SpinnerInsideButton/></span> : ""}</>}</button>
             <button type="button" className="btn-cancelar-register" onClick={handleCancel}>Cancelar</button>
           </div>
         </form>

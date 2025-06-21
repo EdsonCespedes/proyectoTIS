@@ -12,6 +12,7 @@ class Colegio extends Model
 {
     use HasFactory, LogsActivity;
     
+
     protected $table = 'colegio';
     protected $primaryKey = 'idColegio';
     public $timestamps = false;
@@ -23,6 +24,7 @@ class Colegio extends Model
         'RUE',
         'direccion',
         'fecha_creacion',
+        'estado',
     ];
 
      protected static $logName = 'colegio';

@@ -34,14 +34,14 @@ class Convocatoria extends Model
         'eliminado'
     ];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->useLogName('convocatorias')
-            ->logOnly($this->fillable)
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //         ->useLogName('convocatorias')
+    //         ->logOnly($this->fillable)
+    //         ->logOnlyDirty()
+    //         ->dontSubmitEmptyLogs();
+    // }
 
     public function eliminarConvocatoria()
     {
