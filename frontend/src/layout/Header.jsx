@@ -46,7 +46,7 @@ const Header = () => {
                 )}
 
                 {/* Solo Administrador */}
-                {isAdmin && (
+                {(isAdmin || (user?.permissions && user.permissions.length > 0)) && (
                     <div className="dropdown">
                         <button className="boton-header">Gestión ▼</button>
                         <div className="dropdown-content">
@@ -68,7 +68,13 @@ const Header = () => {
                 {/* Login / Logout y nombre */}
                 {isLoggedIn ? (
                     <>
-                        <span className="boton-header">Hola, {user.name}</span>
+                        {!(user?.permissions && user.permissions.length > 0) ?
+                            (
+                                <span className="boton-header">Hola, {user.name}</span>
+                            ) : (
+                                <button className="boton-header" onClick={() => navigate("/seleccionar-rol")}>Hola, {user.name}</button>
+                            )}
+
                         <button
                             className="boton-header"
                             onClick={() => {

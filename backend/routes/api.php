@@ -38,6 +38,8 @@ use App\Http\Controllers\ReportePostulantesController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\LogController;
 
+use App\Http\Controllers\UserRoleController;
+
 // -------------------------------------------------
 // RUTAS PÚBLICAS (sin autenticación)
 // -------------------------------------------------

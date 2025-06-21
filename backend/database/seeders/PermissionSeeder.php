@@ -9,12 +9,23 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        // $permisos = [
+        //     'Gestion de Convocatoria',
+        //     'Gestion de Colegios',
+        //     'Login, Registrar',
+        //     'Orden Pago (OCR)',
+        //     'Orden Pago (Vereficar)'
+        // ];
+
         $permisos = [
-            'Gestion de Convocatoria',
+            //'Gestion de Convocatoria',
+            'Gestion de Convocatorias',
             'Gestion de Colegios',
-            'Login, Registrar',
-            'Orden Pago (OCR)',
-            'Orden Pago (Vereficar)'
+            'Gestion y Asignacion de Roles',
+            'Gestion y Registro de Usuarios',
+            'Gestion de Ordenes de Pago',
+            'Visualizacion de Logs',
+            'Hacer Reportes'
         ];
         
         foreach ($permisos as $p) {
