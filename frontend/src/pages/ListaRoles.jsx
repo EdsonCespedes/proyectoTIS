@@ -9,9 +9,15 @@ const ListaRoles = () => {
   const [datos, setDatos] = useState([]);
   const navigate = useNavigate();
   const [cargando, setCargando] = useState(true);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch(`${apiUrl}/convocatorias-roles`)
+    fetch(`${apiUrl}/convocatorias-roles`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
       .then((res) => res.json())
       .then((data) => {
         const datosConExpandido = data.map((item) => ({

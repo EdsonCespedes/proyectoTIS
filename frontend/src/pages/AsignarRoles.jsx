@@ -44,7 +44,11 @@ const AsignarRoles = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          const users = data.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor')
+          const dataNull = data.map(u => ({
+            ...u,
+            rol: u.rol === null ? "" : u.rol
+          }));
+          const users = dataNull.filter(u => u.rol.toLowerCase() != 'admin' && u.rol.toLowerCase() != 'tutor')
           setPersonas(users)
         })
         .catch(error => console.error("Error al obtener usuarios:", error));
