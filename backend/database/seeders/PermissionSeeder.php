@@ -18,9 +18,10 @@ class PermissionSeeder extends Seeder
         // ];
 
         $permisos = [
-            'Gestion de Convocatoria',
+            //'Gestion de Convocatoria',
             'Gestion de Convocatorias',
             'Gestion de Colegios',
+            'Gestion y Asignacion de Roles',
             'Gestion y Registro de Usuarios',
             'Gestion de Ordenes de Pago',
             'Visualizacion de Logs',
