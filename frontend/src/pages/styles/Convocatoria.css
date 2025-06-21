@@ -115,6 +115,12 @@ label {
   cursor: default;
   pointer-events: none;
 }
+.mensaje-teclado {
+  color: #000;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
 
 /* 📱 Media Query para pantallas pequeñas */
 @media screen and (max-width: 600px) {
