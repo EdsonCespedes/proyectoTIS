@@ -24,8 +24,6 @@ const ListaRoles = () => {
           ...item,
           usuarios: item.usuarios?.map((u) => ({ ...u, expanded: false })) || [],
         }));
-        console.log(datosConExpandido);
-        
         setDatos(datosConExpandido);
       })
       .catch((error) => console.error("Error: ", error))
@@ -66,8 +64,6 @@ const ListaRoles = () => {
   return (
     <div className="lista-container">
       <div className="lista-titulo-roles"> Lista de Roles Asignados </div>
-      <h1 style={{padding: "0 10px", textAlign: "center"}}>¡Advertencia!</h1>
-      <h2 style={{padding: "0 10px", textAlign: "center"}}>Un usuario solo puede tener un rol por convocatoria, si se le asigna otro en la misma solo quedara con el ultimo rol asignado.</h2>
       {cargando ? (
         <FullScreenSpinner />
       ) : (

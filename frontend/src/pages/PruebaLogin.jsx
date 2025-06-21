@@ -43,16 +43,9 @@ const PruebaLogin = () => {
             const response = await axios.post(`${apiUrl}/login`, formData);
             const { token, user } = response.data;
 
-            //login(user, token);
-            const result = await login(user, token);
+            login(user, token);
             setSuccessMessage('Inicio de sesión exitoso.');
-            //navigate("/");
-
-            if (result.needsRoleSelection) {
-                navigate('/seleccionar-rol'); // pantalla intermedia
-            } else {
-                navigate('/');
-            }
+            navigate("/");
 
         } catch (error) {
             if (error.response && error.response.data) {
@@ -102,7 +95,7 @@ const PruebaLogin = () => {
                     </div>
 
                     <div className="button-container">
-                        <button type="submit" className="btn-iniciar">INICIAR  {cargando ? <span><SpinnerInsideButton /></span> : ""}</button>
+                        <button type="submit" className="btn-iniciar">INICIAR  {cargando ? <span><SpinnerInsideButton/></span> : ""}</button>
                     </div>
 
                     <p>

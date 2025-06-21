@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import jsPDF from 'jspdf';
 import './styles/Reporte.css';
 import PostulantesToogleResponsive from '../components/PostulantesToggleResponsive';
-
 import FullScreenSpinner from '../components/FullScreenSpinner';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -62,7 +61,7 @@ const ReportePostulantes = () => {
       .then(data => setConvocatorias(data))
       .catch(err => setError('Error al cargar las convocatorias', err))
       .finally(() => setCargandoConv(false));
-  }, [])
+  }, []);
 
   useEffect(() => {
     setCargando(true);
@@ -149,7 +148,6 @@ const ReportePostulantes = () => {
       );
     }
 
-
     if (departamentoSeleccionado) {
       filtradas = filtradas.filter(p =>
         p.postulante?.colegio?.departamentoColegio === departamentoSeleccionado
@@ -186,7 +184,6 @@ const ReportePostulantes = () => {
     cursoSeleccionado
   ]);
 
-
   const imprimirPDF = () => {
     const doc = new jsPDF();
     let y = 20;
@@ -213,7 +210,6 @@ const ReportePostulantes = () => {
       y += 10;
     }
 
-
     if (departamentoSeleccionado) {
       doc.setFontSize(10);
       doc.text('Departamentos: ' + departamentoSeleccionado, 14, y);
@@ -239,19 +235,22 @@ const ReportePostulantes = () => {
     }
 
     doc.setFontSize(10);
-    doc.text('N° | Postulante         | Tutor              | Colegio              | Áreas                        | Monto', 14, y);
+    doc.text('N° | Postulante         | Tutor              | Colegio              | Convocatoria             | Áreas                        | Monto', 14, y);
     y += 5;
     doc.line(14, y, 200, y);
     y += 5;
 
     postulacionesFiltradas.forEach((p, index) => {
-      const postulante = `${p.postulante?.nombrePost} ${p.postulante?.apellidoPost}`;
-      const tutor = `${p.postulante?.tutor?.nombreTutor} ${p.postulante?.tutor?.apellidoTutor}`;
-      const colegio = `${p.postulante?.colegio?.nombreColegio}`
+      const postulante = `${p.postulante?.nombrePost || ''} ${p.postulante?.apellidoPost || ''}`;
+      const tutor = `${p.postulante?.tutor?.nombreTutor || ''} ${p.postulante?.tutor?.apellidoTutor || ''}`;
+      const colegio = `${p.postulante?.colegio?.nombreColegio || ''}`;
+      const convocatoria = Array.isArray(p.categoria) && p.categoria.length > 0 && p.categoria[0].convocatoria?.tituloConvocatoria
+        ? p.categoria[0].convocatoria.tituloConvocatoria
+        : 'Sin convocatoria';
       const areas = p.categoria.map(c => c.area?.nombreArea + " - " + c.nombreCategoria).join(', ');
       const monto = 'Bs. ' + p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2);
 
-      const texto = `${index + 1} | ${postulante} | ${tutor} | ${colegio} | ${areas} | ${monto}`;
+      const texto = `${index + 1} | ${postulante} | ${tutor} | ${colegio} | ${convocatoria} | ${areas} | ${monto}`;
       doc.text(texto, 14, y);
       y += 7;
     });
@@ -292,7 +291,7 @@ const ReportePostulantes = () => {
               </select>
 
               <label>Selecciona una area de la convocatoria:</label>
-              <select value={areaSeleccionado} onChange={(e) => setAreaSeleccionado(e.target.value)} disabled={convocatoriaSeleccionado == ''}>
+              <select value={areaSeleccionado} onChange={(e) => setAreaSeleccionado(e.target.value)} disabled={convocatoriaSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
                 {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.map(a => (
                   <option key={a.idArea} value={a.tituloArea}>{a.tituloArea}</option>
@@ -300,9 +299,9 @@ const ReportePostulantes = () => {
               </select>
 
               <label>Selecciona una categoria del area de la convocatoria:</label>
-              <select value={categoriaSeleccionado} onChange={(e) => setCategoriaSeleccionado(e.target.value)} disabled={areaSeleccionado == ''}>
+              <select value={categoriaSeleccionado} onChange={(e) => setCategoriaSeleccionado(e.target.value)} disabled={areaSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
-                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.find(a => a.tituloArea == areaSeleccionado)?.categorias.map(c => (
+                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.find(a => a.tituloArea === areaSeleccionado)?.categorias.map(c => (
                   <option key={c.idCategoria} value={c.nombreCategoria}>{c.nombreCategoria}</option>
                 ))}
               </select>
@@ -318,7 +317,7 @@ const ReportePostulantes = () => {
               </select>
 
               <label>Selecciona una provincia del departamento:</label>
-              <select value={provinciaSeleccionado} onChange={(e) => setProvinciaSeleccionado(e.target.value)} disabled={departamentoSeleccionado == ''}>
+              <select value={provinciaSeleccionado} onChange={(e) => setProvinciaSeleccionado(e.target.value)} disabled={departamentoSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
                 {provinciasColegio.map(p => (
                   <option key={p.idProvincia} value={p.nombreProvincia}>{p.nombreProvincia}</option>
@@ -326,7 +325,7 @@ const ReportePostulantes = () => {
               </select>
 
               <label>Selecciona un colegio:</label>
-              <select value={colegioSeleccionado} onChange={(e) => setColegioSeleccionado(e.target.value)} disabled={provinciaSeleccionado == ''}>
+              <select value={colegioSeleccionado} onChange={(e) => setColegioSeleccionado(e.target.value)} disabled={provinciaSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
                 {Object.entries(colegiosDisponibles).map(([id, nombre]) => (
                   <option key={id} value={nombre}>
@@ -354,37 +353,50 @@ const ReportePostulantes = () => {
                     <th>Postulante</th>
                     <th>Tutor</th>
                     <th>Colegio</th>
-                    <th>Áreas</th>
-                    <th>Monto Total</th>
+                    <th>Convocatoria</th>
+                    <th>Áreas y Categorías</th>
+                    <th>Monto</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {postulacionesFiltradas.length > 0 ? (
-                    postulacionesFiltradas.map((p, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{p.postulante?.nombrePost} {p.postulante?.apellidoPost}</td>
-                        <td>{p.postulante?.tutor?.nombreTutor} {p.postulante?.tutor?.apellidoTutor}</td>
-                        <td>
-                          {p.postulante?.colegio?.nombreColegio}
-                        </td>
-                        <td>{p.categoria.map(c => c.area?.nombreArea + " - " + c.nombreCategoria).join(', ')}</td>
-                        <td>Bs. {p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2)}</td>
-                      </tr>
-                    ))
-                  ) : (
+                  {postulacionesFiltradas.length === 0 ? (
                     <tr>
-                      <td colSpan="6">No hay datos para mostrar...</td>
+                      <td colSpan="7">No hay datos para mostrar...</td>
                     </tr>
+                  ) : (
+                    postulacionesFiltradas.map((p, index) => {
+                      const postulante = `${p.postulante?.nombrePost || ''} ${p.postulante?.apellidoPost || ''}`;
+                      const tutor = `${p.postulante?.tutor?.nombreTutor || ''} ${p.postulante?.tutor?.apellidoTutor || ''}`;
+                      const colegio = `${p.postulante?.colegio?.nombreColegio || ''}`;
+                      const convocatoria = Array.isArray(p.categoria) && p.categoria.length > 0 && p.categoria[0].convocatoria?.tituloConvocatoria
+                        ? p.categoria[0].convocatoria.tituloConvocatoria
+                        : 'Sin convocatoria';
+                      const areasYCategorias = p.categoria.map(c => c.area?.nombreArea + " - " + c.nombreCategoria).join(', ');
+                      const monto = 'Bs. ' + p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2);
+
+                      return (
+                        <tr key={p.idPostulacion}>
+                          <td>{index + 1}</td>
+                          <td>{postulante}</td>
+                          <td>{tutor}</td>
+                          <td>{colegio}</td>
+                          <td>{convocatoria}</td>
+                          <td>{areasYCategorias}</td>
+                          <td>{monto}</td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
             )}
-            <button onClick={imprimirPDF} className='btn-pdf button'>Imprimir PDF</button>
+
+            <button onClick={imprimirPDF} className="button imprimir-btn">
+              Descargar PDF
+            </button>
           </>
         )}
       </div>
-
     </div>
   );
 };
