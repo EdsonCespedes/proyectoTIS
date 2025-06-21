@@ -31,25 +31,56 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const login = async(userData, tokenData) => {
+  const login = async (userData, tokenData) => {
     localStorage.setItem('token', tokenData);
     localStorage.setItem('user', JSON.stringify(userData));
     console.log('🔐 [Login] token y user guardados en localStorage');
     setUser(userData);
     setToken(tokenData);
 
-    if (userData.rol.toLowerCase() === 'tutor' || userData.rol.toLowerCase() === 'admin') {
+    console.log(userData);    
+
+    if (userData.rol === null) {
+      try {
+        const response = await fetch(`${apiUrl}/user/${userData.id}/roles`, {
+          //method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${tokenData}`,
+            //'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: No se pudo obtener los roles`);
+        }
+
+        const data = await response.json();
+
+        console.log("Datos de roles del usuario:", data);
+        localStorage.setItem('roles', JSON.stringify(data.assignments));
+
+        // 🚨 Devolver bandera para redirigir a la pantalla de selección
+        return { needsRoleSelection: true };
+      } catch (error) {
+        console.error("Error al obtener roles del usuario:", error);
+        return { needsRoleSelection: false };
+      }
+    } else if (userData.rol.toLowerCase() === 'tutor' || userData.rol.toLowerCase() === 'admin') {
       console.log('🔐 [Login] usuario es tutor, solicitando datos de tutor...');
-      console.log("🔐 [Token enviado]:",tokenData);
-      
+      console.log("🔐 [Token enviado]:", tokenData);
+
       //const resTutor = await axios.get('http://localhost:8000/api/tutor', {
       const resTutor = await axios.get(`${apiUrl}/tutor`, {
-          headers: { Authorization: `Bearer ${tokenData}` }
+        headers: { Authorization: `Bearer ${tokenData}` }
       });
       console.log('🔐 [Login] respuesta tutor:', resTutor);
       localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
       console.log('Tutor asociado:', resTutor.data.tutor);
-  }
+
+      return { needsRoleSelection: false };
+    }
+
+    return { needsRoleSelection: false };
   };
 
   const logout = () => {

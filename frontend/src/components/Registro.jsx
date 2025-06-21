@@ -196,8 +196,8 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
       const today = new Date();
       const currentYear = today.getFullYear();
 
-      const minDate = new Date(currentYear - edadMax, 0, 1);    // 1 de enero hace 35 años
-      const maxDate = new Date(currentYear - edadMin, 11, 31);  // 31 de diciembre hace 6 años
+      const minDate = new Date(currentYear - edadMax, 0, 1);    
+      const maxDate = new Date(currentYear - edadMin, 11, 31);  
 
       const selectedTime = selectedDate.getTime();
       const minTime = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()).getTime();
@@ -256,6 +256,12 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
   };
 
   const handleAceptar = () => {
+
+      if (!form.idColegio) {
+    alert("Debes seleccionar un colegio.");
+    return;
+  }
+
     if (!esFechaValida(form.fechaNaciPost)) {
       alert("Fecha inválida o fuera de rango.");
       return;
@@ -265,6 +271,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
     const camposRequeridos = [
       "nombrePost", "apellidoPost", "carnet", "correoPost", "fechaNaciPost",
       "idCurso", "departamento", "provincia",
+      "departamentoColegio", "provinciaColegio", "idColegio"
     ];
 
     const getValorCampo = (obj, path) => {
@@ -508,18 +515,20 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
                 {areas.map((area) => (
                   <div key={area.id}>
                     <label>
+                      {area.nombre}
                       <input
                         type="checkbox"
                         checked={areasSeleccionadas.some((a) => a.id === area.id)}
                         onChange={() => handleCheckboxChange(area)}
                         disabled={areasSeleccionadas.length === 2 && !areasSeleccionadas.some((a) => a.id === area.id)}
                       />
-                      {area.nombre}
+                      
                     </label>
                     {areasSeleccionadas.some((a) => a.id === area.id) && (
                       <div>
                         {area.categorias.map((categoria) => (
-                          <label key={categoria.id}>
+                          <label key={categoria.id} >
+                            {categoria.nombre}
                             <input
                               type="checkbox"
                               checked={categoriasSeleccionadas.some((a) => a.id === categoria.id)}
@@ -532,7 +541,7 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
                                   !categoriasSeleccionadas.some((a) => a.id === categoria.id))
                               }
                             />
-                            {categoria.nombre}
+                            
                           </label>
                         ))}
                       </div>

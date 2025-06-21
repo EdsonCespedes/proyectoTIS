@@ -14,6 +14,8 @@ const AddRoles = () => {
   const [indexEditar, setIndexEditar] = useState(null);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const opcionesFunciones = [
     "Gestion de Convocatoria",
     "Gestion de Colegios",
@@ -29,6 +31,7 @@ const AddRoles = () => {
 
   const [cargando, setCargando] = useState(true);
   const [subiendo, setSubiendo] = useState(false);
+  
 
   useEffect(() => {
     // const rolEditar = JSON.parse(localStorage.getItem("rolEditar"));
@@ -44,14 +47,24 @@ const AddRoles = () => {
     const fetchPermisos = async () => {
       try {
         if (id) {
-          const res = await fetch(`${apiUrl}/roles/${id}`);
+          const res = await fetch(`${apiUrl}/roles/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
           const data = await res.json();
           setNombreRol(data.name);
           setFunciones(data.permissions.map(p => p.name));
         }
 
 
-        const res = await fetch(`${apiUrl}/permissions`);
+        const res = await fetch(`${apiUrl}/permissions`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
         if (!res.ok) throw new Error("Error al obtener permisos");
         const data = await res.json();
         setPermisosDisponibles(data);
@@ -96,7 +109,10 @@ const AddRoles = () => {
   const crearRol = async (nombreRol) => {
     const res = await fetch(`${apiUrl}/roles`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json' 
+      },
       body: JSON.stringify({ name: nombreRol }),
     });
     const data = await res.json();
@@ -106,14 +122,17 @@ const AddRoles = () => {
   const asignarPermisoARol = async (roleId, permiso) => {
     await fetch(`${apiUrl}/roles/${roleId}/give-permission`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json' 
+      },
       body: JSON.stringify({ permission: permiso }),
     }).catch(
-      error=>{
+      error => {
         console.log("Error: ", error);
-    }).finally(
-      ()=> setSubiendo(false)
-    );
+      }).finally(
+        () => setSubiendo(false)
+      );
   };
 
   const actualizarRol = async (id, nombreRol, funciones) => {
@@ -122,6 +141,7 @@ const AddRoles = () => {
       const updateRoleResponse = await fetch(`${apiUrl}/roles/${id}`, {
         method: 'PUT',
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: nombreRol }),
@@ -135,6 +155,7 @@ const AddRoles = () => {
       const syncResponse = await fetch(`${apiUrl}/roles/${id}/sync-permissions`, {
         method: 'PUT',
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ permissions: funciones }),
@@ -201,7 +222,7 @@ const AddRoles = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <label htmlFor="nombreRol">Nombre Rol:</label>
-          <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)}/>
+          <input type="text" id="nombreRol" value={nombreRol} onChange={(e) => setNombreRol(e.target.value)} />
 
           <label>Funciones:</label>
           <div className="funciones">
@@ -225,7 +246,7 @@ const AddRoles = () => {
           </div>
 
           <div className="button-container">
-            <button type="submit"className="btn-registrarse">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
+            <button type="submit" className="btn-registrarse">{modoEdicion ? "Guardar Cambios" : "Registrar"}</button>
             <button type="button" className="btn-cancelar-register" onClick={handleCancel}>Cancelar</button>
           </div>
         </form>

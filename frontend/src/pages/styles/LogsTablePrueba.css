@@ -149,6 +149,50 @@
   overflow-y: auto;
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f8ff;
+  border-radius: 10px;
+  max-width: 900px;
+  margin: 0 auto 20px auto; /* Centrado horizontal + separación abajo */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filters input[type="text"],
+.filters input[type="date"] {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 180px;
+  transition: border-color 0.3s ease;
+}
+
+.filters input:focus {
+  outline: none;
+  border-color: #007b9e;
+}
+
+.filters button {
+  padding: 8px 16px;
+  background-color: #007b9e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filters button:hover {
+  background-color: #005f7a;
+}
+
 
 /* Vista móvil */
 .mobile-cards {

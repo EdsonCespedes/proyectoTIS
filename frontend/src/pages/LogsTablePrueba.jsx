@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './styles/LogsTablePrueba.css';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const LogsTablePrueba = () => {
   const [logs, setLogs] = useState([]);
   const [pagination, setPagination] = useState({
@@ -14,14 +16,15 @@ const LogsTablePrueba = () => {
   const [expandedIds, setExpandedIds] = useState([]);
   const [filterUser, setFilterUser] = useState('');
   const [filterAction, setFilterAction] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [selectedLog, setSelectedLog] = useState(null);
 
   const token = localStorage.getItem('token');
 
-  const fetchLogs = async (url = `http://127.0.0.1:8000/api/logs?page=1`) => {
+  const fetchLogs = async (url = `${apiUrl}/logs?page=1`) => {
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch(url, {
         headers: {
@@ -29,16 +32,23 @@ const LogsTablePrueba = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Error ${res.status}`);
       const json = await res.json();
-      setLogs(json.data);
+      console.log('Respuesta fetchLogs:', json); // ← Verifica estructura
+
+      const logs = Array.isArray(json.data)
+        ? json.data.map((log) => ({
+            ...log,
+            causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
+          }))
+        : [];
+
+      setLogs(logs);
       setPagination({
-        current_page: json.current_page,
-        last_page: json.last_page,
-        next_page_url: json.next_page_url,
-        prev_page_url: json.prev_page_url,
+        current_page: json.current_page || 1,
+        last_page: json.last_page || 1,
+        next_page_url: json.next_page_url || null,
+        prev_page_url: json.prev_page_url || null,
       });
     } catch (e) {
       console.error(e);
@@ -51,30 +61,39 @@ const LogsTablePrueba = () => {
   const fetchFilteredLogs = async () => {
     setLoading(true);
     setError(null);
-
-    const query = new URLSearchParams();
-    if (filterUser) query.append('user', filterUser);
-    if (filterAction) query.append('action', filterAction);
-
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/logs/filter?${query.toString()}`, {
+      let url = `${apiUrl}/logs`;
+      if (filterUser) {
+        url = `${apiUrl}/logs/user/${filterUser}`;
+      } else if (filterAction) {
+        url = `${apiUrl}/logs/event/${filterAction}`;
+      } else if (dateFrom && dateTo) {
+        url = `${apiUrl}/logs/date-range?from=${dateFrom}&to=${dateTo}`;
+      }
+
+      const res = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(`Error ${res.status}`);
       const json = await res.json();
-      setLogs(json.data);
+      console.log('Respuesta fetchFilteredLogs:', json); // ← Verifica estructura
+
+      const logsWithNames = Array.isArray(json.data)
+        ? json.data.map((log) => ({
+            ...log,
+            causer_name: log.causer_id ? `Usuario #${log.causer_id}` : 'Sistema',
+          }))
+        : [];
+
+      setLogs(logsWithNames);
       setPagination({
-        current_page: json.current_page,
-        last_page: json.last_page,
-        next_page_url: json.next_page_url,
-        prev_page_url: json.prev_page_url,
+        current_page: json.current_page || 1,
+        last_page: json.last_page || 1,
+        next_page_url: json.next_page_url || null,
+        prev_page_url: json.prev_page_url || null,
       });
     } catch (e) {
       console.error(e);
@@ -86,18 +105,15 @@ const LogsTablePrueba = () => {
 
   const fetchLogDetail = async (id) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/logs/${id}`, {
+      const res = await fetch(`${apiUrl}/logs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
+      data.causer_name = data.causer_id ? `Usuario #${data.causer_id}` : 'Sistema';
       setSelectedLog(data);
     } catch (e) {
       console.error(e);
@@ -135,17 +151,37 @@ const LogsTablePrueba = () => {
 
       {/* Filtros */}
       <div className="filters">
-        <input
+      <input
           type="text"
-          placeholder="Filtrar por usuario"
+          placeholder="Filtrar por ID de usuario"
           value={filterUser}
-          onChange={(e) => setFilterUser(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setFilterUser(value);
+
+            if (value.trim() === '') {
+              setFilterAction('');
+              setDateFrom('');
+              setDateTo('');
+              fetchLogs();
+            }
+          }}
         />
         <input
           type="text"
           placeholder="Filtrar por acción"
           value={filterAction}
           onChange={(e) => setFilterAction(e.target.value)}
+        />
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => setDateFrom(e.target.value)}
+        />
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => setDateTo(e.target.value)}
         />
         <button onClick={fetchFilteredLogs}>Buscar</button>
       </div>
@@ -176,7 +212,6 @@ const LogsTablePrueba = () => {
                   ? log.subject_type.split('\\').pop()
                   : '';
                 const fecha = new Date(log.created_at).toLocaleString();
-
                 let detalle = '';
                 if (log.properties) {
                   const { old, attributes } = log.properties;
@@ -188,11 +223,10 @@ const LogsTablePrueba = () => {
                     detalle = JSON.stringify(log.properties);
                   }
                 }
-
                 return (
                   <tr key={log.id}>
                     <td>{fecha}</td>
-                    <td>{log.causer ? log.causer.name : '<Sistema>'}</td>
+                    <td>{log.causer_name}</td>
                     <td>{log.description}</td>
                     <td>{modelName}</td>
                     <td>{log.subject_id}</td>
@@ -206,75 +240,25 @@ const LogsTablePrueba = () => {
             </tbody>
           </table>
 
-          {/* Vista Móvil */}
-          <div className="mobile-cards">
-            {logs.map((log) => {
-              const modelName = log.subject_type ? log.subject_type.split('\\').pop() : '';
-              const fecha = new Date(log.created_at).toLocaleString();
-              let detalle = '';
-
-              if (log.properties) {
-                const { old, attributes } = log.properties;
-                if (old && attributes) {
-                  detalle = `Antes: ${JSON.stringify(old)}\nDespués: ${JSON.stringify(attributes)}`;
-                } else if (attributes) {
-                  detalle = `Creado: ${JSON.stringify(attributes)}`;
-                } else {
-                  detalle = JSON.stringify(log.properties);
-                }
-              }
-
-              const isExpanded = expandedIds.includes(log.id);
-
-              return (
-                <div className="user-card" key={log.id}>
-                  <div className="user-header" onClick={() => toggleExpand(log.id)}>
-                    <span className="user-name">{log.causer?.name || "Sistema"}</span>
-                    <span className="toggle-icon">{isExpanded ? "▲" : "▼"}</span>
-                  </div>
-                  {isExpanded && (
-                    <div className="user-details">
-                      <p><strong>Fecha:</strong> {fecha}</p>
-                      <p><strong>Acción:</strong> {log.description}</p>
-                      <p><strong>Modelo:</strong> {modelName}</p>
-                      <p><strong>ID:</strong> {log.subject_id}</p>
-                      <p><strong>Detalle:</strong> {detalle}</p>
-                      <button onClick={() => fetchLogDetail(log.id)}>Ver Detalle</button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
           <div className="pagination">
-            <button
-              onClick={handlePrev}
-              disabled={!pagination.prev_page_url}
-              className="pagination-btn"
-            >
+            <button onClick={handlePrev} disabled={!pagination.prev_page_url}>
               ← Anterior
             </button>
             <span>
               Página {pagination.current_page} de {pagination.last_page}
             </span>
-            <button
-              onClick={handleNext}
-              disabled={!pagination.next_page_url}
-              className="pagination-btn"
-            >
+            <button onClick={handleNext} disabled={!pagination.next_page_url}>
               Siguiente →
             </button>
           </div>
         </>
       )}
 
-      {/* Modal de Detalle */}
       {selectedLog && (
         <div className="modal-overlay" onClick={() => setSelectedLog(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Detalle de Bitácora #{selectedLog.id}</h3>
-            <p><strong>Usuario:</strong> {selectedLog.causer?.name || 'Sistema'}</p>
+            <p><strong>Usuario:</strong> {selectedLog.causer_name}</p>
             <p><strong>Acción:</strong> {selectedLog.description}</p>
             <p><strong>Fecha:</strong> {new Date(selectedLog.created_at).toLocaleString()}</p>
             <p><strong>Modelo:</strong> {selectedLog.subject_type?.split('\\').pop()}</p>

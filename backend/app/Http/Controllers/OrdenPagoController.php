@@ -7,6 +7,7 @@ use App\Models\Tutor;
 use App\Models\OrdenPago;
 use App\Notifications\OrdenPagoCorrecto;
 use App\Notifications\OrdenPagoDenegado;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Notification;
 
@@ -96,7 +97,7 @@ class OrdenPagoController extends Controller
             ->performedOn($orden)
             ->withProperties([
                 'orden'   => $orden->toArray(),
-                'detalles'=> $detallesCreados->map->toArray()
+                'detalles'=> collect($detallesCreados)->map->toArray()
             ])
             ->log('orden_pago_created');
 

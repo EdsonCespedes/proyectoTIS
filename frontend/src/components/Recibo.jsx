@@ -13,6 +13,8 @@ const Recibo = () => {
   const tutorGuardado = JSON.parse(localStorage.getItem('tutor'));
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+
   const [idRecibo, setIdRecibo] = useState('');
   const [imagen, setImagen] = useState(null);
   const [textoExtraido, setTextoExtraido] = useState('');
@@ -93,10 +95,18 @@ const Recibo = () => {
     formData.append('imagen_comprobante', imagen);
 
     try {
-      const res = await fetch(`${apiUrl}/recibos/${idRecibo}`);
+      const res = await fetch(`${apiUrl}/recibos/${idRecibo}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (!res.ok) {
         const response = await fetch(`${apiUrl}/recibos`, {
           method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         });
 
@@ -110,6 +120,9 @@ const Recibo = () => {
         formData.append('_method', 'PUT');
         fetch(`${apiUrl}/recibos/${idRecibo}`, {
           method: "POST", // o "PUT" si usas PUT
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         })
           .then(res => res.json())
@@ -130,7 +143,10 @@ const Recibo = () => {
       try {
         const respuesta = await fetch(`${apiUrl}/ordenpago/${orden.idOrdenPago}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(datos)
         });
 
