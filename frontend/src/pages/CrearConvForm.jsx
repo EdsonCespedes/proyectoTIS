@@ -8,8 +8,8 @@ import SpinnerInsideButton from "../components/SpinnerInsideButton";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const CrearConvForm = () => {
-  const token = localStorage.getItem('token');
-  
+  const token = localStorage.getItem("token");
+
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: "",
@@ -28,6 +28,7 @@ export const CrearConvForm = () => {
     fechaFinOlimpiada: false,
   });
 
+  const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
   const today = new Date().toISOString().split("T")[0];
@@ -36,20 +37,16 @@ export const CrearConvForm = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFieldErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleFileChange = (file) => {
     setFormData({ ...formData, imagenPortada: file });
+    setFieldErrors((prev) => ({ ...prev, imagenPortada: "" }));
   };
 
   const isValidDateFormat = (dateStr) => {
-    // Requiere formato YYYY-MM-DD y asegura que sea una fecha válida
     return /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(new Date(dateStr).getTime());
-  };
-
-  const convertToMDY = (dateStr) => {
-    const [y, m, d] = dateStr.split("-");
-    return `${m}-${d}-${y}`;
   };
 
   const getYear = (dateStr) => {
@@ -61,6 +58,7 @@ export const CrearConvForm = () => {
     e.preventDefault();
     setCargando(true);
     setError("");
+    setFieldErrors({});
 
     const {
       titulo,
@@ -73,22 +71,22 @@ export const CrearConvForm = () => {
       maxConcursantes,
     } = formData;
 
-    // 1. Campos obligatorios
-    if (
-      !titulo ||
-      !descripcion ||
-      !fechaInicioInscripcion ||
-      !fechaCierreInscripcion ||
-      !fechaInicioOlimpiada ||
-      !fechaFinOlimpiada ||
-      !imagenPortada
-    ) {
-      setError("Por favor, complete todos los campos obligatorios.");
+    // Validación de campos vacíos individuales
+    const newErrors = {};
+    if (!titulo) newErrors.titulo = "El título es obligatorio.";
+    if (!descripcion) newErrors.descripcion = "La descripción es obligatoria.";
+    if (!fechaInicioInscripcion) newErrors.fechaInicioInscripcion = "Seleccione la fecha de inicio de inscripción.";
+    if (!fechaCierreInscripcion) newErrors.fechaCierreInscripcion = "Seleccione la fecha de cierre de inscripción.";
+    if (!fechaInicioOlimpiada) newErrors.fechaInicioOlimpiada = "Seleccione la fecha de inicio de olimpiada.";
+    if (!fechaFinOlimpiada) newErrors.fechaFinOlimpiada = "Seleccione la fecha de fin de olimpiada.";
+    if (!imagenPortada) newErrors.imagenPortada = "Debe subir una imagen de portada.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
       setCargando(false);
       return;
     }
 
-    // 2. Validación de formato de fecha y año (YYYY-MM-DD, 4 dígitos)
     const fechas = [
       fechaInicioInscripcion,
       fechaCierreInscripcion,
@@ -109,7 +107,6 @@ export const CrearConvForm = () => {
       }
     }
 
-    // 3. Validación de fechas lógicas
     if (new Date(fechaInicioInscripcion) >= new Date(fechaCierreInscripcion)) {
       setError("La fecha de cierre de inscripción debe ser posterior al inicio.");
       setCargando(false);
@@ -128,7 +125,6 @@ export const CrearConvForm = () => {
       return;
     }
 
-    // 4. No permitir coincidencia entre inscripción y olimpiada
     if (
       fechaInicioInscripcion === fechaInicioOlimpiada ||
       fechaCierreInscripcion === fechaInicioOlimpiada
@@ -138,14 +134,12 @@ export const CrearConvForm = () => {
       return;
     }
 
-    // 5. Validar concursantes
     if (isNaN(maxConcursantes) || parseInt(maxConcursantes) < 0) {
       setError("El número máximo de concursantes debe ser un número positivo.");
       setCargando(false);
       return;
     }
 
-    // Enviar formulario
     const fechaFinInsc = `${fechaCierreInscripcion} 23:59:59`;
     const fechaFinOlimp = `${fechaFinOlimpiada} 23:59:59`;
 
@@ -193,10 +187,9 @@ export const CrearConvForm = () => {
 
   const handleBloqueoTeclado = (e, campo) => {
     e.preventDefault();
-    setMostrarAviso(prev => ({ ...prev, [campo]: true }));
-
+    setMostrarAviso((prev) => ({ ...prev, [campo]: true }));
     setTimeout(() => {
-      setMostrarAviso(prev => ({ ...prev, [campo]: false }));
+      setMostrarAviso((prev) => ({ ...prev, [campo]: false }));
     }, 3000);
   };
 
@@ -213,6 +206,7 @@ export const CrearConvForm = () => {
           onChange={handleChange}
           className="input-field"
         />
+        {fieldErrors.titulo && <p className="error-message">{fieldErrors.titulo}</p>}
 
         <label>Descripción:</label>
         <textarea
@@ -222,6 +216,7 @@ export const CrearConvForm = () => {
           onChange={handleChange}
           className="input-field"
         ></textarea>
+        {fieldErrors.descripcion && <p className="error-message">{fieldErrors.descripcion}</p>}
 
         <label>Fechas de inscripción:</label>
         <div className="fecha-group">
@@ -238,6 +233,10 @@ export const CrearConvForm = () => {
           {mostrarAviso.fechaInicioInscripcion && (
             <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
           )}
+          {fieldErrors.fechaInicioInscripcion && (
+            <p className="error-message">{fieldErrors.fechaInicioInscripcion}</p>
+          )}
+
           <input
             type="date"
             name="fechaCierreInscripcion"
@@ -250,6 +249,9 @@ export const CrearConvForm = () => {
           />
           {mostrarAviso.fechaCierreInscripcion && (
             <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
+          {fieldErrors.fechaCierreInscripcion && (
+            <p className="error-message">{fieldErrors.fechaCierreInscripcion}</p>
           )}
         </div>
 
@@ -264,10 +266,15 @@ export const CrearConvForm = () => {
             onKeyDown={(e) => handleBloqueoTeclado(e, "fechaInicioOlimpiada")}
             onPaste={(e) => e.preventDefault()}
             className="input-field"
+            disabled={!formData.fechaInicioInscripcion || !formData.fechaCierreInscripcion}
           />
           {mostrarAviso.fechaInicioOlimpiada && (
             <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
           )}
+          {fieldErrors.fechaInicioOlimpiada && (
+            <p className="error-message">{fieldErrors.fechaInicioOlimpiada}</p>
+          )}
+
           <input
             type="date"
             name="fechaFinOlimpiada"
@@ -277,9 +284,13 @@ export const CrearConvForm = () => {
             onKeyDown={(e) => handleBloqueoTeclado(e, "fechaFinOlimpiada")}
             onPaste={(e) => e.preventDefault()}
             className="input-field"
+            disabled={!formData.fechaInicioOlimpiada}
           />
           {mostrarAviso.fechaFinOlimpiada && (
             <p className="mensaje-teclado">⚠️ Usa el calendario para seleccionar la fecha.</p>
+          )}
+          {fieldErrors.fechaFinOlimpiada && (
+            <p className="error-message">{fieldErrors.fechaFinOlimpiada}</p>
           )}
         </div>
 
@@ -300,6 +311,7 @@ export const CrearConvForm = () => {
 
         <label>Imagen de portada:</label>
         <ImageUpload onFileSelect={handleFileChange} />
+        {fieldErrors.imagenPortada && <p className="error-message">{fieldErrors.imagenPortada}</p>}
 
         {error && <p className="error-message">{error}</p>}
       </form>
@@ -327,3 +339,4 @@ export const CrearConvForm = () => {
 };
 
 export default CrearConvForm;
+
