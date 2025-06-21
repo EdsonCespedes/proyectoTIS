@@ -232,6 +232,19 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters input,
+  .filters button {
+    width: 50%;
+  }
+
+  .filters button {
+    margin-top: 8px;
+  }
   .desktop-view {
     display: none;
   }
@@ -240,3 +253,4 @@
     display: block;
   }
 }
+
