@@ -156,6 +156,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //recuperar al tutor
     Route::get('/tutor', [AuthController::class, 'obtenerDatosTutor']);
 
+   
     //.............BITACORAS................
     // Listar todas las bitácoras
     Route::get('/logs', [LogController::class, 'index']);
@@ -174,6 +175,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Filtrar por rango de fechas, agregar "?from=2025-06-01&to=2025-06-15" a la ruta
     Route::get('/logs/date-range',    [LogController::class, 'byDateRange']);
     //.......................
+
+
 
     // Crear un nuevo backup
     Route::post('/backups', [BackupController::class, 'create']);
