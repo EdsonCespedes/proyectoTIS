@@ -9,6 +9,7 @@ use App\Models\Categoria;
 use App\Models\Curso;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 //
 use Illuminate\Support\Facades\Validator;
 
@@ -21,6 +22,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ConvocatoriaController extends Controller
 {
+
+    public function all()
+    {
+        return response()->json(
+            Convocatoria::orderBy('fechaInicioInsc')->get()
+        );
+    }
 // ConvocatoriaEstructuraController.php
 public function areasEstructura(Request $request, $id)
 {
@@ -441,6 +449,50 @@ public function getConvocatoriasActivas()
         }
         
         return response()->json($convocatorias);
+    }
+
+    public function soloPasadas()
+    {
+        $now = Carbon::now();
+        $past = Convocatoria::where('fechaFinInsc', '<', $now)
+            ->orderBy('fechaFinInsc', 'desc')
+            ->get();
+
+        return response()->json($past);
+    }
+
+    public function soloActivas()
+    {
+        $now = Carbon::now();
+
+        $active = Convocatoria::where('fechaInicioInsc', '<=', $now)
+            ->where('fechaFinInsc', '>=', $now)
+            ->orderBy('fechaInicioInsc')
+            ->get();
+
+        return response()->json($active);
+    }
+
+    public function dentroRango(Request $request)
+    {
+        $request->validate([
+            'inicio' => 'required|date',
+            'fin'   => 'required|date|after_or_equal:inicio',
+        ]);
+
+        $start = Carbon::parse($request->query('inicio'))->startOfDay();
+        $end   = Carbon::parse($request->query('fin'))->endOfDay();
+
+        $inRange = Convocatoria::where(function($q) use ($start, $end) {
+                $q->whereBetween('fechaInicioInsc', [$start, $end])
+                  ->orWhereBetween('fechaFinInsc',   [$start, $end])
+                  ->orWhereRaw('? BETWEEN fechaInicioInsc AND fechaFinInsc',   [$start])
+                  ->orWhereRaw('? BETWEEN fechaInicioInsc AND fechaFinInsc',   [$end]);
+            })
+            ->orderBy('fechaInicioInsc')
+            ->get();
+
+        return response()->json($inRange);
     }
 
 }

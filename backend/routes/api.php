@@ -92,8 +92,8 @@ Route::get('/todasconvocatorias', [ConvocatoriaController::class, 'index']);
 //obtiene los datos de una convocatoria activa mediante su id
 Route::get('/veridconvocatorias/{idConvocatoria}', [ConvocatoriaController::class, 'getConvocatoriaById']);
 
-//obtiene todas las convocatorias activas
-Route::get('convocatorias/activas', [ConvocatoriaController::class, 'getConvocatoriasActivas']);
+//obtiene todas las convocatorias activas (ya no usa el campo habilitado, filtra automaticamente por fechas)
+Route::get('convocatorias/activas', [ConvocatoriaController::class, 'soloActivas']);
 
 //edita solo convocatorias
 // Para editar solo la convocatoria
@@ -119,6 +119,18 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 
 //actualiza la contraseña 
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+// convocatorias filtradas
+Route::prefix('convocatorias')->group(function(){
+    // devuelve TODo: activas, pasadas, futuras
+    Route::get('all',     [ConvocatoriaController::class, 'all']);
+    // solo onvocatorias que ya terminaron (solo pasadas)
+    Route::get('pasadas',    [ConvocatoriaController::class, 'soloPasadas']);
+    // solo convocatorias actuales (habilitadas y en su periodo de inscripción)
+    Route::get('soloactivas',  [ConvocatoriaController::class, 'soloActivas']);
+    // convocatorias dentro de un rango dado
+    Route::get('rango',   [ConvocatoriaController::class, 'dentroRango']);
+});
 
 // -------------------------------------------------
 // RUTAS PRIVADAS
