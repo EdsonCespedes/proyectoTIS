@@ -46,7 +46,7 @@ const Header = () => {
                 )}
 
                 {/* Solo Administrador */}
-                {isAdmin && (
+                {(isAdmin || (user?.permissions && user.permissions.length > 0)) && (
                     <div className="dropdown">
                         <button className="boton-header">Gestión ▼</button>
                         <div className="dropdown-content">
