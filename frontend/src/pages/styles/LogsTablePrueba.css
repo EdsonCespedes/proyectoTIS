@@ -29,8 +29,8 @@
 
 .logs-table {
 
-    margin: 0 auto;
-  width: 95%; /* o 90% si quieres más espacio */
+  margin: 0 auto;
+  width: 95%; 
   border-collapse: collapse;
 }
 
