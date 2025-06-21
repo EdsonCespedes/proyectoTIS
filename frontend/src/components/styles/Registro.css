@@ -70,7 +70,7 @@ input, select {
 }
 
 /* Botones */
-.botones {
+.botones-registro {
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -142,12 +142,12 @@ input, select {
 
 .btn-competencia {
     margin: 0 20px;
-    background: #1e40af;
+    background: #0099B3;
     color: white;
 }
 
 .btn-competencia:hover {
-    background: #1d4ed8;
+    background: #007290;
 }
 
 /* Contenedor de Áreas de Competencia */

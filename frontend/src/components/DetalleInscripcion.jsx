@@ -86,7 +86,7 @@ const DetalleInscripcion = ({
         </table>
 
         {estudiantes.length === 0 && (
-          <h1 className="no-data-d">NO HAY ESTUDIANTES PARA REGISTRAR AÚN...</h1>
+          <h1 style={{textAlign: "center"}} className="no-data-d">NO HAY ESTUDIANTES PARA REGISTRAR AÚN...</h1>
         )}
 
         {estudiantes.length > itemsPerPage && (
