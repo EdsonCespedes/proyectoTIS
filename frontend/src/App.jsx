@@ -33,6 +33,7 @@ import TablaUsuarios from './pages/TablaUsuarios';
 import RolesTable from './pages/RolesTable';
 import RecuperarContrasena from './pages/RecuperarContrasena';
 import TablaNotificaciones from './pages/TablaNotificaciones';
+import Nosotros from './pages/nosotros';
 
 import { ConvocatoriaProvider, ConvocatoriaContext } from './context/ConvocatoriaContext';
 import RequirePermission from './routes/RequirePermission';
@@ -63,6 +64,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Inicio />} />
+      <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/seleccionar-rol" element={<SeleccionarRol />} />
 
       {/* Gestión de colegios libre */}
