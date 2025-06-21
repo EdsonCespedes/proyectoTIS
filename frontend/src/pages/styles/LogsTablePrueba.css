@@ -28,9 +28,10 @@
 }
 
 .logs-table {
-  width: 100%;
+
+    margin: 0 auto;
+  width: 95%; /* o 90% si quieres más espacio */
   border-collapse: collapse;
-  margin-top: 1rem;
 }
 
 .logs-table th,
