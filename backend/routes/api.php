@@ -58,6 +58,7 @@ Route::get('/categorias', [CategoriaController::class, 'index']);
 Route::post('/colegios', [ColegioController::class, 'store']);
 Route::get('/getcolegio', [ColegioController::class, 'index']);     //obtiene todo los datos del colegio
 Route::put('/colegio/{id}', [ColegioController::class, 'update']);
+Route::put('/colegio/{id}/deshabilitar', [ColegioController::class, 'deshabilitar']);
 
 //Crear ordenPago
    // "montoTotal": ,
@@ -195,6 +196,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/colegios', [ColegioController::class, 'store']);
     Route::put('/colegio/{id}', [ColegioController::class, 'update']);
     Route::get('/muestracolegio/{id}', [ColegioController::class, 'muestraColegioconid']);
+    Route::put('/colegio/{id}/deshabilitar', [ColegioController::class, 'deshabilitar']);
 
     // CRUD de Curso (admin)
     Route::post('/cursos', [CursoController::class, 'store']);
