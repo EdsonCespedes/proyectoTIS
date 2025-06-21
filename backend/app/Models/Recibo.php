@@ -23,14 +23,14 @@ class Recibo extends Model
         'imagen_comprobante'
     ];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->useLogName('recibos')
-            ->logOnly($this->fillable)
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //         ->useLogName('recibos')
+    //         ->logOnly($this->fillable)
+    //         ->logOnlyDirty()
+    //         ->dontSubmitEmptyLogs();
+    // }
 
     public function ordenPago()
     {
