@@ -49,7 +49,6 @@ class ColegioController extends Controller
 
     public function index() //obtiene
     {
-
         return Colegio::obtenerDatosColegio();
     }
 
@@ -86,6 +85,7 @@ class ColegioController extends Controller
     {
           $colegios=Colegio::where('departamento',$departamento)
           ->where('provincia',$provincia)
+          ->where('estado', 1)
           ->select('idColegio','nombreColegio')
           ->orderBy('nombreColegio')
           ->get()

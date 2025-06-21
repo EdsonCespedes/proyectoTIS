@@ -249,10 +249,10 @@ const AddUser = () => {
 
         <div className="form-buttons">
 
-          <button className="btn-agregar-addusr" onClick={handleGuardar}>
-            {id ? "Editar" : "Guardar"}
+          <button className="btn-agregar-addusr" onClick={handleGuardar} disabled={subiendo || cargando}>
+            {id ? <>Editar {subiendo ? <span><SpinnerInsideButton/></span> : ""}</> : <>Guardar {subiendo ? <span><SpinnerInsideButton/></span> : ""}</>}
           </button>
-          <button className="btn-cancelar-addusr" onClick={handleCancelar}>Cancelar</button>
+          <button className="btn-cancelar-addusr" onClick={handleCancelar} disabled={subiendo || cargando}>Cancelar</button>
 
         </div>
       </div>

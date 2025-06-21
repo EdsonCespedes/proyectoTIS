@@ -554,11 +554,11 @@ const Registro = ({ idConvocatoria, setRegistro, estudiante, areasSeleccionadas,
         </>
       )}
 
-      <div className="botones">
+      <div className="botones-registro">
         {Object.keys(estudiante).length > 0
-          ? <button className="boton btn-blue" onClick={handleAceptar}>Modificar</button>
-          : <button className="boton btn-blue" onClick={handleAceptar}>Registrar</button>}
-        <button className="boton btn-red" onClick={handleCancelar}>Cancelar</button>
+          ? <button className="boton" onClick={handleAceptar}>Modificar</button>
+          : <button className="boton" onClick={handleAceptar}>Registrar</button>}
+        <button className="boton" onClick={handleCancelar}>Cancelar</button>
       </div>
 
     </div>

@@ -20,6 +20,10 @@
   border-top-right-radius: 5px;
 }
 
+.desktop-rol-view{
+  margin: 5%;
+}
+
 /* Tabla */
 .lista-table {
   width: 100%;
@@ -143,6 +147,7 @@ button {
   .mobile-cards {
     display: block;
     margin-top: 20px;
+    padding:0 10px;
   }
 
   .role-card {

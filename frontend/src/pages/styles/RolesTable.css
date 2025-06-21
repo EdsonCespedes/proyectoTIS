@@ -66,6 +66,7 @@ button:hover {
 /* Desktop visible por defecto */
 .desktop-table {
   display: block;
+  padding: 5%;
 }
 
 .mobile-cards {

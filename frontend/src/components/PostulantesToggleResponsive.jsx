@@ -29,7 +29,9 @@ const PostulantesToogleResponsive = ({ postulantes }) => {
               <strong>Áreas y Categorías:</strong>{" "}
               {p.categoria.map(c => `${c.area?.nombreArea} - ${c.nombreCategoria}`).join(', ')}
             </p>
-
+            <p><strong>Convocatoria:</strong> {Array.isArray(p.categoria) && p.categoria.length > 0 && p.categoria[0].convocatoria?.tituloConvocatoria
+                        ? p.categoria[0].convocatoria.tituloConvocatoria
+                        : 'Sin convocatoria'}</p>
             <p><strong>Monto Total:</strong> Bs. {p.categoria.reduce((acc, c) => acc + parseFloat(c.monto), 0).toFixed(2)} </p>
           </div>
         </div>

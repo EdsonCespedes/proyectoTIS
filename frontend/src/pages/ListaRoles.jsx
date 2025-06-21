@@ -13,11 +13,11 @@ const ListaRoles = () => {
 
   useEffect(() => {
     fetch(`${apiUrl}/convocatorias-roles`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      })
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         const datosConExpandido = data.map((item) => ({
@@ -25,7 +25,7 @@ const ListaRoles = () => {
           usuarios: item.usuarios?.map((u) => ({ ...u, expanded: false })) || [],
         }));
         console.log(datosConExpandido);
-        
+
         setDatos(datosConExpandido);
       })
       .catch((error) => console.error("Error: ", error))
@@ -66,8 +66,8 @@ const ListaRoles = () => {
   return (
     <div className="lista-container">
       <div className="lista-titulo-roles"> Lista de Roles Asignados </div>
-      <h1 style={{padding: "0 10px", textAlign: "center"}}>¡Advertencia!</h1>
-      <h2 style={{padding: "0 10px", textAlign: "center"}}>Un usuario solo puede tener un rol por convocatoria, si se le asigna otro en la misma solo quedara con el ultimo rol asignado.</h2>
+      <h1 style={{ padding: "0 10px", textAlign: "center" }}>¡Advertencia!</h1>
+      <h2 style={{ padding: "0 10px", textAlign: "center" }}>Un usuario solo puede tener un rol por convocatoria, si se le asigna otro en la misma solo quedara con el ultimo rol asignado.</h2>
       {cargando ? (
         <FullScreenSpinner />
       ) : (
@@ -76,33 +76,35 @@ const ListaRoles = () => {
           {datos.length === 0 ? (
             <p>No hay datos guardados.</p>
           ) : (
-            <table className="lista-table">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Convocatoria</th>
-                  <th>Rol</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {datos
-                  .filter((item) => item.usuarios && item.usuarios.length > 0)
-                  .map((item) =>
-                    item.usuarios.map((user, index) => (
-                      <tr key={index}>
-                        <td>{user.name}</td>
-                        <td>{item.convocatoria_nombre}</td>
-                        <td>{user.role}</td>
-                        <td>
-                          <button onClick={() => iniciarEdicion(item.convocatoria_id, user)}>✏️</button>
-                          <button onClick={() => eliminarFila(user.id)}>❌</button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-              </tbody>
-            </table>
+            <div className="desktop-rol-view">
+              <table className="lista-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Convocatoria</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {datos
+                    .filter((item) => item.usuarios && item.usuarios.length > 0)
+                    .map((item) =>
+                      item.usuarios.map((user, index) => (
+                        <tr key={index}>
+                          <td>{user.name}</td>
+                          <td>{item.convocatoria_nombre}</td>
+                          <td>{user.role}</td>
+                          <td>
+                            <button onClick={() => iniciarEdicion(item.convocatoria_id, user)}>✏️</button>
+                            <button onClick={() => eliminarFila(user.id)}>❌</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                </tbody>
+              </table>
+            </div>
           )}
 
           {/* Vista móvil (tarjetas colapsables) */}

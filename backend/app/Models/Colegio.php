@@ -10,12 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class Colegio extends Model
 {
-<<<<<<< HEAD
     use HasFactory, LogsActivity;
     
-=======
 
->>>>>>> 6f035c9f4bb52a0008437576c2cec6b8bbfee802
     protected $table = 'colegio';
     protected $primaryKey = 'idColegio';
     public $timestamps = false;
