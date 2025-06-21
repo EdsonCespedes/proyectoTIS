@@ -249,16 +249,6 @@ public function areasEstructura(Request $request, $id)
       {
           return strtolower(trim($a)) === strtolower(trim($b));
       }
-      
-
-
-
-
-
-
-
-
-
 
       public function destroy($idConvocatoria)
 {
