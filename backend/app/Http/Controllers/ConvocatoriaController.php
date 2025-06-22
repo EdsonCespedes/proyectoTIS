@@ -442,6 +442,7 @@ public function getConvocatoriasActivas()
     public function index(){
         $convocatorias = Convocatoria::all();
         
+        $this->syncHabilitadoPorFecha();
         foreach ($convocatorias as $conv) {
             if ($conv->portada) {
                 $conv->portada = Storage::disk('public')->url($conv->portada);
@@ -453,6 +454,7 @@ public function getConvocatoriasActivas()
 
     public function soloPasadas()
     {
+        $this->syncHabilitadoPorFecha();
         $now = Carbon::now();
         $past = Convocatoria::where('fechaFinInsc', '<', $now)
             ->orderBy('fechaFinInsc', 'desc')
@@ -463,6 +465,7 @@ public function getConvocatoriasActivas()
 
     public function soloActivas()
     {
+        $this->syncHabilitadoPorFecha();
         $now = Carbon::now();
 
         $active = Convocatoria::where('fechaInicioInsc', '<=', $now)
@@ -473,8 +476,21 @@ public function getConvocatoriasActivas()
         return response()->json($active);
     }
 
+    public function soloFuturas()
+    {
+        $this->syncHabilitadoPorFecha();
+        $now = Carbon::now();
+
+        $upcoming = Convocatoria::where('fechaInicioInsc', '>', $now)
+            ->orderBy('fechaInicioInsc')
+            ->get();
+
+        return response()->json($upcoming, 200);
+    }
+
     public function dentroRango(Request $request)
     {
+        $this->syncHabilitadoPorFecha();
         $request->validate([
             'inicio' => 'required|date',
             'fin'   => 'required|date|after_or_equal:inicio',
@@ -493,6 +509,21 @@ public function getConvocatoriasActivas()
             ->get();
 
         return response()->json($inRange);
+    }
+
+    private function syncHabilitadoPorFecha(): void
+    {
+        $now = Carbon::now();
+
+        Convocatoria::chunk(100, function ($batch) use ($now) {
+            foreach ($batch as $conv) {
+                $shouldBeEnabled = $now->between($conv->fechaInicioInsc, $conv->fechaFinInsc);
+                if ($conv->habilitada !== $shouldBeEnabled) {
+                    $conv->habilitada = $shouldBeEnabled;
+                    $conv->saveQuietly();
+                }
+            }
+        });
     }
 
 }

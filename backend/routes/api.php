@@ -128,6 +128,8 @@ Route::prefix('convocatorias')->group(function(){
     Route::get('pasadas',    [ConvocatoriaController::class, 'soloPasadas']);
     // solo convocatorias actuales (habilitadas y en su periodo de inscripción)
     Route::get('soloactivas',  [ConvocatoriaController::class, 'soloActivas']);
+    // solo conv futuras (que la fecha inicio aun no llega)
+    Route::get('solofuturas', [ConvocatoriaController::class, 'soloFuturas']);
     // convocatorias dentro de un rango dado
     Route::get('rango',   [ConvocatoriaController::class, 'dentroRango']);
 });
