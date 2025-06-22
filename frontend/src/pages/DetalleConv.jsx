@@ -16,12 +16,48 @@ const DetalleConv = () => {
   const [cargando, setCargando] = useState(true);
 
   console.log(convocatorias);
-  
+
+  const [convocatoriasPasadas, setConvocatoriasPasadas] = useState([]);
+  const [convocatoriasFuturas, setConvocatoriasFuturas] = useState([]);
+
 
   useEffect(() => {
-    fetch(`${apiUrl}/convocatorias/activas`)
+    const obtenerConvocatoriasIncativas = () => {
+      fetch(`${apiUrl}/convocatorias/pasadas`)
+        .then((response) => response.json())
+        .then((data) => {
+          const convocatoriasHabilitadas = data.filter(conv =>
+            (conv.eliminado === 0 || conv.eliminado === false)
+          );
+          setConvocatoriasPasadas(convocatoriasHabilitadas);
+          console.log("Convocatorias Pasadas:", convocatoriasHabilitadas);
+        })
+        .catch((error) => console.error("Error al obtener convocatorias:", error))
+        .finally(() => setCargando(false));
+
+      fetch(`${apiUrl}/convocatorias/solofuturas`)
+        .then((response) => response.json())
+        .then((data) => {
+          const convocatoriasHabilitadas = data.filter(conv =>
+            (conv.eliminado === 0 || conv.eliminado === false)
+          );
+          setConvocatoriasFuturas(convocatoriasHabilitadas);
+          console.log("Convocatorias Futuras:", convocatoriasHabilitadas);
+        })
+        .catch((error) => console.error("Error al obtener convocatorias:", error))
+        .finally(() => setCargando(false));
+    }
+    
+    fetch(`${apiUrl}/convocatorias/soloactivas`)
       .then((response) => response.json())
-      .then((data) => setConvocatorias(data))
+      .then((data) => {
+        const convocatoriasHabilitadas = data.filter(conv =>
+          (conv.eliminado === 0 || conv.eliminado === false)
+        );
+        setConvocatorias(convocatoriasHabilitadas);
+        console.log("Convocatorias:", convocatoriasHabilitadas);
+        obtenerConvocatoriasIncativas();
+      })
       .catch((error) => console.error("Error al obtener convocatorias:", error))
       .finally(() => setCargando(false));
   }, [refresh]);
@@ -95,6 +131,7 @@ const DetalleConv = () => {
       ) : (
         <>
           {/* Vista escritorio */}
+          <h2>Convocatorias Activas</h2>
           <div className="desktop tabla-contenedor">
             <table className="convocatoria-table-">
               <thead>
@@ -102,7 +139,7 @@ const DetalleConv = () => {
                   <th>Título</th>
                   <th>Fecha de inscripciones</th>
                   <th>Fecha de olimpiadas</th>
-                  <th>Estado</th>
+
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -116,14 +153,73 @@ const DetalleConv = () => {
                     <td>
                       {convocatoria.fechaInicioOlimp.split(' ')[0]} - {convocatoria.fechaFinOlimp.split(' ')[0]}
                     </td>
+
                     <td>
-                      <span
-                        className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
-                          }`}
-                      >
-                        {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
-                      </span>
+                      <div className="btn-groupdetconv">
+                        <button className="edit-btndetconv" onClick={() => handleEdit(convocatoria.idConvocatoria)}>✏️</button>
+                        <button className="delete-btndetconv" onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}>❌</button>
+                      </div>
                     </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h2>Convocatorias Pasadas</h2>
+            <table className="convocatoria-table-">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Fecha de inscripciones</th>
+                  <th>Fecha de olimpiadas</th>
+
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {convocatoriasPasadas.map((convocatoria) => (
+                  <tr key={convocatoria.idConvocatoria}>
+                    <td>{convocatoria.tituloConvocatoria}</td>
+                    <td>
+                      {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                    </td>
+                    <td>
+                      {convocatoria.fechaInicioOlimp.split(' ')[0]} - {convocatoria.fechaFinOlimp.split(' ')[0]}
+                    </td>
+
+                    <td>
+                      <div className="btn-groupdetconv">
+                        <button className="edit-btndetconv" onClick={() => handleEdit(convocatoria.idConvocatoria)}>✏️</button>
+                        <button className="delete-btndetconv" onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}>❌</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h2>Convocatorias Futuras</h2>
+            <table className="convocatoria-table-">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Fecha de inscripciones</th>
+                  <th>Fecha de olimpiadas</th>
+
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {convocatoriasFuturas.map((convocatoria) => (
+                  <tr key={convocatoria.idConvocatoria}>
+                    <td>{convocatoria.tituloConvocatoria}</td>
+                    <td>
+                      {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                    </td>
+                    <td>
+                      {convocatoria.fechaInicioOlimp.split(' ')[0]} - {convocatoria.fechaFinOlimp.split(' ')[0]}
+                    </td>
+
                     <td>
                       <div className="btn-groupdetconv">
                         <button className="edit-btndetconv" onClick={() => handleEdit(convocatoria.idConvocatoria)}>✏️</button>
@@ -176,6 +272,89 @@ const DetalleConv = () => {
               </div>
             ))}
           </div>
+
+          <div className="mobile-cards">
+            <h2>Convocatorias Pasadas</h2>
+            {convocatoriasPasadas.map((convocatoria) => (
+              <div key={convocatoria.idConvocatoria} className="user-card">
+                <div className="user-header">
+                  <span>{convocatoria.tituloConvocatoria}</span>
+                  <span
+                    className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
+                      }`}
+                  >
+                    {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
+                  </span>
+                </div>
+                <div className="user-details">
+                  <p>
+                    <strong>Inscripciones:</strong>{" "}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                  </p>
+                  <p>
+                    <strong>Olimpiadas:</strong>{" "}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                  </p>
+                  <div className="card-actionsdetconv">
+                    <button
+                      className="edit-btndetconv"
+                      onClick={() => handleEdit(convocatoria.idConvocatoria)}
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      className="delete-btndetconv"
+                      onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}
+                    >
+                      ❌ Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mobile-cards">
+            <h2>Convocatorias Futuras</h2>
+            {convocatoriasFuturas.map((convocatoria) => (
+              <div key={convocatoria.idConvocatoria} className="user-card">
+                <div className="user-header">
+                  <span>{convocatoria.tituloConvocatoria}</span>
+                  <span
+                    className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
+                      }`}
+                  >
+                    {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
+                  </span>
+                </div>
+                <div className="user-details">
+                  <p>
+                    <strong>Inscripciones:</strong>{" "}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                  </p>
+                  <p>
+                    <strong>Olimpiadas:</strong>{" "}
+                    {convocatoria.fechaInicioInsc.split(' ')[0]} - {convocatoria.fechaFinInsc.split(' ')[0]}
+                  </p>
+                  <div className="card-actionsdetconv">
+                    <button
+                      className="edit-btndetconv"
+                      onClick={() => handleEdit(convocatoria.idConvocatoria)}
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      className="delete-btndetconv"
+                      onClick={() => handleDelete(convocatoria.idConvocatoria, convocatoria)}
+                    >
+                      ❌ Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="botones-detconv">
             <button type="button" className="btn-agregar-detconv" onClick={handleAbrir}>
               + Agregar

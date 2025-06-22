@@ -13,7 +13,7 @@ const RecuperarContrasena = () => {
   const [confirmar, setConfirmar] = useState('');
   const [mostrarNueva, setMostrarNueva] = useState(false);
   const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
-
+  const [cargando, setCargando] = useState(false);
   // Enviar correo para reset
   const handleVerificar = async (e) => {
     e.preventDefault();

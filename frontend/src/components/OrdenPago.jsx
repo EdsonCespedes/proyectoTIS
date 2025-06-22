@@ -200,6 +200,13 @@ const OrdenPago = () => {
         "departamento",
         "provincia",
       ];
+      const convertirFecha = (fechaString) => {
+        // De "DD/MM/YYYY" a "YYYY-MM-DD"
+        const [dia, mes, año] = fechaString.split("/");
+        return `${año}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+      };
+  estudianteOriginal.fechaNaciPost = convertirFecha(estudianteOriginal.fechaNaciPost);
+
 
       const camposVacios = camposRequeridos.filter((campo) => {
         if (campo.includes(".")) {
@@ -219,9 +226,30 @@ const OrdenPago = () => {
           `Estudiante ${i + 1} tiene campos vacíos:`,
           camposVacios
         );
+        console.warn(`Estudiante ${i + 1} tiene campos vacíos o fecha inválida`);
+  console.warn("Campos vacíos:", camposVacios);
+  console.warn("Fecha:", estudianteOriginal.fechaNaciPost);
+  console.warn("Fecha válida:", fechaValida);
+  console.warn("Áreas:", estudianteOriginal.areas);
+  console.warn("Categorías:", estudianteOriginal.categorias);
+  console.warn("Objeto completo del estudiante:", estudianteOriginal);
         hayErrores = true;
         continue;
       }
+      const fechaValida = estudianteOriginal.fechaNaciPost &&
+        !isNaN(new Date(estudianteOriginal.fechaNaciPost).getTime());
+
+          if (
+            camposVacios.length > 0 ||
+            !fechaValida ||
+            estudianteOriginal.areas.length === 0 ||
+            estudianteOriginal.categorias.length === 0
+          ) {
+            console.warn(`Estudiante ${i + 1} tiene campos vacíos o fecha inválida`);
+            hayErrores = true;
+            continue;
+          }
+
 
       const { departamentoColegio, provinciaColegio, ...estudiante } =
         estudianteOriginal;
@@ -232,7 +260,11 @@ const OrdenPago = () => {
         telefonoPost: String(estudiante.telefonoPost ?? ""),
         idCurso: String(estudiante.idCurso ?? ""),
         idColegio: String(estudiante.idColegio ?? ""),
-        fechaNaciPost: new Date(estudiante.fechaNaciPost).toISOString().split("T")[0],
+        fechaNaciPost: estudiante.fechaNaciPost
+  ? new Date(estudiante.fechaNaciPost).toISOString().split("T")[0]
+  : null,
+
+
         idTutor: tutor.idTutor,
         tutor: tutor,
         areas: estudiante.areas.map(area => ({
