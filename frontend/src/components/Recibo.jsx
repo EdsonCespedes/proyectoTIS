@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const Recibo = () => {
   const location = useLocation();
   const orden = location.state.orden;
-  const tutorGuardado = JSON.parse(localStorage.getItem('tutor') || '{}');
+  const tutorGuardado = JSON.parse(localStorage.getItem('tutor'));
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -54,47 +54,55 @@ const Recibo = () => {
       });
   };
 
+  // 🔁 Validación con búsqueda de IDs detectados (más flexible)
   useEffect(() => {
-    if (textoExtraido && idRecibo.trim() !== '') {
-      const textoPlano = textoExtraido
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+  if (textoExtraido && idRecibo.trim() !== '') {
+    const textoPlano = textoExtraido
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
 
-      const idReciboNumerico = idRecibo.trim();
-      const montoTotal = orden?.montoTotal?.toString().trim() || '';
+    const idReciboNumerico = idRecibo.trim();
 
-      let apellidoTutorNormalizado = '';
-      if (tutorGuardado && tutorGuardado.apellidoTutor) {
-        apellidoTutorNormalizado = tutorGuardado.apellidoTutor
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-      }
+    const apellidoTutor = tutorGuardado?.apellidoTutor
+      ?.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
 
-      const idsEncontrados = textoPlano.match(/\d{6}/g) || [];
-      console.log("IDs encontrados por OCR:", idsEncontrados);
+    const nombreTutor = tutorGuardado?.nombreTutor
+      ?.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
 
-      const coincidencia = idsEncontrados.includes(idReciboNumerico);
+    const montoTotal = orden?.montoTotal?.toString()?.trim();
 
-      if (coincidencia) {
-        const tutorCoincide = apellidoTutorNormalizado
-          ? textoPlano.includes(apellidoTutorNormalizado)
-          : false;
-        const montoCoincide = montoTotal
-          ? textoPlano.includes(montoTotal)
-          : false;
+    const idsEncontrados = textoPlano.match(/\d{6}/g) || [];
+    console.log("IDs encontrados por OCR:", idsEncontrados);
 
-        if (tutorCoincide && montoCoincide) {
-          setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
-        } else {
-          setMensajeCoincidencia('❌ El ID fue encontrado pero no coincide con el tutor o la orden. Verifique la imagen.');
-        }
+    const coincidencia = idsEncontrados.includes(idReciboNumerico);
+
+    if (coincidencia) {
+      // Validar que al menos aparezca nombre o apellido
+      const tutorCoincide =
+        (apellidoTutor && textoPlano.includes(apellidoTutor)) ||
+        (nombreTutor && textoPlano.includes(nombreTutor));
+
+      // Tolerar montos como 27,00 o 27.00
+      const montoCoincide = textoPlano.includes(
+        montoTotal.replace('.', ',')
+      ) || textoPlano.includes(montoTotal);
+
+      if (tutorCoincide && montoCoincide) {
+        setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
       } else {
-        setMensajeCoincidencia('❌ El ID no fue encontrado en la imagen.');
+        setMensajeCoincidencia('⚠️ El ID fue encontrado, pero el tutor o el monto no coinciden completamente.');
       }
+    } else {
+      setMensajeCoincidencia('❌ El ID no fue encontrado en la imagen.');
     }
-  }, [idRecibo, textoExtraido]);
+  }
+}, [idRecibo, textoExtraido]);
+
 
   const handleImportar = async () => {
     setSubiendo(true);
@@ -214,7 +222,6 @@ const Recibo = () => {
         </p>
       )}
 
-      
 
       <div className="recibo-upload-area">
         {!imagenSubida && (
@@ -267,4 +274,5 @@ const Recibo = () => {
 };
 
 export default Recibo;
+
 
