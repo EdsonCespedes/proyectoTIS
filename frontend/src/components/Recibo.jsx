@@ -192,7 +192,7 @@ const Recibo = () => {
     <div className="recibo-container">
       <h2 className="titulo">RECIBO</h2>
       <div className="formulario-subtitulo">
-        Por favor, suba una foto visible del recibo proporcionado por Caja Facultativa e ingrese el ID Recibo (numérico de 6 dígitos).
+        Por favor, suba una foto visible del recibo proporcionado por Caja Facultativa e ingrese el ID Recibo (numérico de 6 dígitos), Recibira un email si es rechazado y tendra que volver a subir la foto .
       </div>
 
       <label className="recibo-label">
