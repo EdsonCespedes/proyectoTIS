@@ -107,6 +107,7 @@ Route::get('/tutor/{id}', [TutorController::class, 'show']);
 //Route::get('/tutor', [TutorController::class, 'index']);
 Route::get('/tutores', [TutorController::class, 'index']);
 Route::post('/tutor', [TutorController::class, 'store']);
+Route::get('/tutor/usuario/{idUser}', [TutorController::class, 'getTutorByUserId']);
 
 // login y registro
 //Route::post('/register', [AuthController::class, 'registrarTutor']);

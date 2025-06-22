@@ -32,13 +32,37 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const login = async (userData, tokenData) => {
+    let tutorRespaldo = null;
     localStorage.setItem('token', tokenData);
     localStorage.setItem('user', JSON.stringify(userData));
     console.log('🔐 [Login] token y user guardados en localStorage');
     setUser(userData);
     setToken(tokenData);
 
-    console.log(userData);    
+    console.log(userData);
+
+    if (userData.rol === null) {
+      try {
+        const res = await fetch(`${apiUrl}/tutor/usuario/${userData.id}`);
+
+        if (res.ok) {
+          const tutorData = await res.json();
+          console.log("Tutor encontrado:", tutorData);
+
+          // Actualiza userData con rol tutor
+          tutorRespaldo = tutorData;
+          userData.rol = 'tutor';
+
+          // Guarda también en localStorage actualizado
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUser(userData);
+        } else {
+          console.log("No tiene tutor asociado");
+        }
+      } catch (err) {
+        console.error("Error al verificar tutor:", err.message);
+      }
+    }
 
     if (userData.rol === null) {
       try {
@@ -70,12 +94,18 @@ export const AuthProvider = ({ children }) => {
       console.log("🔐 [Token enviado]:", tokenData);
 
       //const resTutor = await axios.get('http://localhost:8000/api/tutor', {
-      const resTutor = await axios.get(`${apiUrl}/tutor`, {
-        headers: { Authorization: `Bearer ${tokenData}` }
-      });
-      console.log('🔐 [Login] respuesta tutor:', resTutor);
-      localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
-      console.log('Tutor asociado:', resTutor.data.tutor);
+      if (tutorRespaldo) {
+        console.log('🔐 [Login] respuesta tutor:', tutorRespaldo);
+        localStorage.setItem('tutor', JSON.stringify(tutorRespaldo));
+        console.log('Tutor asociado:', tutorRespaldo);
+      } else {
+        const resTutor = await axios.get(`${apiUrl}/tutor`, {
+          headers: { Authorization: `Bearer ${tokenData}` }
+        });
+        console.log('🔐 [Login] respuesta tutor:', resTutor);
+        localStorage.setItem('tutor', JSON.stringify(resTutor.data.tutor));
+        console.log('Tutor asociado:', resTutor.data.tutor);
+      }
 
       return { needsRoleSelection: false };
     }

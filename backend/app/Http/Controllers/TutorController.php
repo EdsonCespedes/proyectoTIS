@@ -28,6 +28,19 @@ class TutorController extends Controller
         return response()->json($tutor, 200);
     }
 
+    public function getTutorByUserId($idUser)
+    {
+        $tutor = Tutor::where('idUser', $idUser)->first();
+
+        if (!$tutor) {
+            return response()->json([
+            'message' => 'Tutor no encontrado con ese usuario'
+            ], 404);
+        }
+
+        return response()->json($tutor, 200);
+    }
+
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'nombreTutor'  => 'required|string|max:45',
