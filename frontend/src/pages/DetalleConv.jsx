@@ -102,7 +102,7 @@ const DetalleConv = () => {
                   <th>Título</th>
                   <th>Fecha de inscripciones</th>
                   <th>Fecha de olimpiadas</th>
-                  <th>Estado</th>
+                  
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -116,14 +116,7 @@ const DetalleConv = () => {
                     <td>
                       {convocatoria.fechaInicioOlimp.split(' ')[0]} - {convocatoria.fechaFinOlimp.split(' ')[0]}
                     </td>
-                    <td>
-                      <span
-                        className={`estado ${convocatoria.habilitada === 0 ? "rojo" : "verde"
-                          }`}
-                      >
-                        {convocatoria.habilitada === 0 ? "Inactivo" : "Activo"}
-                      </span>
-                    </td>
+                    
                     <td>
                       <div className="btn-groupdetconv">
                         <button className="edit-btndetconv" onClick={() => handleEdit(convocatoria.idConvocatoria)}>✏️</button>
