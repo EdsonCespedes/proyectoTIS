@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const Recibo = () => {
   const location = useLocation();
   const orden = location.state.orden;
-  const tutorGuardado = JSON.parse(localStorage.getItem('tutor'));
+  const tutorGuardado = JSON.parse(localStorage.getItem('tutor') || '{}');
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -54,7 +54,6 @@ const Recibo = () => {
       });
   };
 
-  // 🔁 Validación con búsqueda de IDs detectados (más flexible)
   useEffect(() => {
     if (textoExtraido && idRecibo.trim() !== '') {
       const textoPlano = textoExtraido
@@ -63,24 +62,28 @@ const Recibo = () => {
         .replace(/[\u0300-\u036f]/g, '');
 
       const idReciboNumerico = idRecibo.trim();
-      const apellidoTutor = tutorGuardado.apellidoTutor
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+      const montoTotal = orden?.montoTotal?.toString().trim() || '';
 
-      const montoTotal = orden.montoTotal.toString().trim();
-      
+      let apellidoTutorNormalizado = '';
+      if (tutorGuardado && tutorGuardado.apellidoTutor) {
+        apellidoTutorNormalizado = tutorGuardado.apellidoTutor
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+      }
 
-      // 🟡 Extrae todos los posibles bloques de 6 dígitos
       const idsEncontrados = textoPlano.match(/\d{6}/g) || [];
-
       console.log("IDs encontrados por OCR:", idsEncontrados);
 
       const coincidencia = idsEncontrados.includes(idReciboNumerico);
 
       if (coincidencia) {
-        const tutorCoincide = textoPlano.includes(apellidoTutor);
-        const montoCoincide = textoPlano.includes(montoTotal);
+        const tutorCoincide = apellidoTutorNormalizado
+          ? textoPlano.includes(apellidoTutorNormalizado)
+          : false;
+        const montoCoincide = montoTotal
+          ? textoPlano.includes(montoTotal)
+          : false;
 
         if (tutorCoincide && montoCoincide) {
           setMensajeCoincidencia('✅ El ID fue encontrado en la imagen y coincide con el tutor y orden de pago');
@@ -211,12 +214,7 @@ const Recibo = () => {
         </p>
       )}
 
-      {textoExtraido && (
-        <div style={{ whiteSpace: 'pre-wrap', background: '#f4f4f4', padding: '10px', marginTop: '15px', borderRadius: '8px' }}>
-          <strong>Texto OCR detectado:</strong>
-          <pre>{textoExtraido}</pre>
-        </div>
-      )}
+      
 
       <div className="recibo-upload-area">
         {!imagenSubida && (
@@ -269,5 +267,4 @@ const Recibo = () => {
 };
 
 export default Recibo;
-
 
