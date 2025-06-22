@@ -216,7 +216,7 @@ const PruebaRegister = () => {
 
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className={cargando ? "divDeshabilitado" : ""}>
                     <label htmlFor="name">Nombre *</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} />
                     {errors.name && <small className="error">{errors.name[0]}</small>}
