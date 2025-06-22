@@ -24,6 +24,7 @@ class AuthController extends Controller
             'lastName' => 'required|string|max:255',
             //
             'email' => 'required|email|string|max:255|unique:users',
+            'rol' => 'tutor',
             'password' => 'required|string|confirmed|min:6',
             'telefono' => 'required|string|max:20',
             'fechaNacimiento' => 'required|date',
@@ -41,7 +42,7 @@ class AuthController extends Controller
                 'eliminado' => true,
             ]);
 
-            $user->assignRole('Tutor');
+            $user->assignRole('tutor');
 
             // Crear tutor vinculado
             Tutor::create([
