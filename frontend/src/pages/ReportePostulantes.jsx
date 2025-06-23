@@ -56,7 +56,7 @@ const ReportePostulantes = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${apiUrl}/convocatorias/activas`)
+    fetch(`${apiUrl}/convocatorias/all`)
       .then(res => res.json())
       .then(data => setConvocatorias(data))
       .catch(err => setError('Error al cargar las convocatorias', err))
