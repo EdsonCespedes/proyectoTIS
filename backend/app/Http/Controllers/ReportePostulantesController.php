@@ -54,32 +54,99 @@ class ReportePostulantesController extends Controller
         }
     }
 
+    // public function obtenerPostulantes()
+    // {
+    //     try {
+    //         // Obtener postulantes con tutor y postulaciones → categoria → area
+    //         $postulantes = Postulante::with([
+    //             'tutor',
+    //             'colegio',
+    //             'curso',
+    //             'postulaciones.categoria.area'
+    //         ])
+    //         // ->where('idCurso', $idCurso)
+    //         ->get();
+
+    //         // Transformar datos
+    //         $resultado = $postulantes->map(function ($postulante) {
+    //             $categorias = $postulante->postulaciones->map(function ($postulacion) {
+    //                 $convocatoria = \App\Models\Convocatoria::where('idConvocatoria', $postulacion->categoria->idConvocatoria)->first();
+    //                 return [
+    //                     'nombreCategoria' => $postulacion->categoria->nombreCategoria,
+    //                     'monto' => $postulacion->categoria->montoCate,
+    //                     'area' => [
+    //                         'nombreArea' => $postulacion->categoria->area->tituloArea ?? 'Sin área',
+    //                     ],
+    //                     'convocatoria' => $convocatoria,
+    //                 ];
+    //             });
+
+    //             return [
+    //                 'postulante' => [
+    //                     'nombrePost' => $postulante->nombrePost,
+    //                     'apellidoPost' => $postulante->apellidoPost,
+    //                     'tutor' => [
+    //                         'nombreTutor' => $postulante->tutor->nombreTutor ?? '',
+    //                         'apellidoTutor' => $postulante->tutor->apellidoTutor ?? '',
+    //                     ],
+    //                     'colegio' => [
+    //                         'nombreColegio' =>$postulante->colegio->nombreColegio ?? '',
+    //                         'departamentoColegio' =>$postulante->colegio->departamento ?? '',
+    //                         'provinciaColegio' =>$postulante->colegio->provincia ?? '',
+    //                     ],
+    //                     'curso' => [
+    //                         'idCurso' =>$postulante->curso->idCurso ?? '',
+    //                         'nombreCurso' =>$postulante->curso->Curso ?? '',
+    //                     ],
+    //                     'departamentoNacimiento' => $postulante->departamento ?? '',
+    //                     'provinciaNacimiento' => $postulante->provincia ?? '',
+    //                 ],
+    //                 'categoria' => $categorias
+    //             ];
+    //         });
+
+    //         return response()->json($resultado);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Error al obtener los datos del reporte.',
+    //             'detalle' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     public function obtenerPostulantes()
     {
         try {
-            // Obtener postulantes con tutor y postulaciones → categoria → area
             $postulantes = Postulante::with([
                 'tutor',
                 'colegio',
                 'curso',
                 'postulaciones.categoria.area'
-            ])
-            // ->where('idCurso', $idCurso)
-            ->get();
+            ])->get();
 
-            // Transformar datos
             $resultado = $postulantes->map(function ($postulante) {
-                $categorias = $postulante->postulaciones->map(function ($postulacion) {
-                    $convocatoria = \App\Models\Convocatoria::where('idConvocatoria', $postulacion->categoria->idConvocatoria)->first();
-                    return [
-                        'nombreCategoria' => $postulacion->categoria->nombreCategoria,
-                        'monto' => $postulacion->categoria->montoCate,
-                        'area' => [
-                            'nombreArea' => $postulacion->categoria->area->tituloArea ?? 'Sin área',
-                        ],
-                        'convocatoria' => $convocatoria,
-                    ];
-                });
+                $categorias = $postulante->postulaciones
+                    ->filter(fn($postulacion) => $postulacion->categoria) // 🔒 asegura que exista categoría
+                    ->map(function ($postulacion) {
+                        $categoria = $postulacion->categoria;
+                        $area = $categoria->area ?? null;
+
+                        // ⚠️ si no existe idConvocatoria, evita buscar
+                        $convocatoria = $categoria->idConvocatoria
+                            ? \App\Models\Convocatoria::find($categoria->idConvocatoria)
+                            : null;
+
+                        return [
+                            'nombreCategoria' => $categoria->nombreCategoria ?? 'Sin nombre',
+                            'monto' => $categoria->montoCate ?? 0,
+                            'area' => [
+                                'nombreArea' => $area->tituloArea ?? 'Sin área',
+                            ],
+                            'convocatoria' => $convocatoria,
+                        ];
+                    })
+                    ->values(); // limpia los índices si se filtró algo
 
                 return [
                     'postulante' => [
@@ -90,18 +157,18 @@ class ReportePostulantesController extends Controller
                             'apellidoTutor' => $postulante->tutor->apellidoTutor ?? '',
                         ],
                         'colegio' => [
-                            'nombreColegio' =>$postulante->colegio->nombreColegio ?? '',
-                            'departamentoColegio' =>$postulante->colegio->departamento ?? '',
-                            'provinciaColegio' =>$postulante->colegio->provincia ?? '',
+                            'nombreColegio' => $postulante->colegio->nombreColegio ?? '',
+                            'departamentoColegio' => $postulante->colegio->departamento ?? '',
+                            'provinciaColegio' => $postulante->colegio->provincia ?? '',
                         ],
                         'curso' => [
-                            'idCurso' =>$postulante->curso->idCurso ?? '',
-                            'nombreCurso' =>$postulante->curso->Curso ?? '',
+                            'idCurso' => $postulante->curso->idCurso ?? '',
+                            'nombreCurso' => $postulante->curso->Curso ?? '',
                         ],
                         'departamentoNacimiento' => $postulante->departamento ?? '',
                         'provinciaNacimiento' => $postulante->provincia ?? '',
                     ],
-                    'categoria' => $categorias
+                    'categoria' => $categorias->isEmpty() ? [] : $categorias
                 ];
             });
 
@@ -114,4 +181,5 @@ class ReportePostulantesController extends Controller
             ], 500);
         }
     }
+
 }
