@@ -56,7 +56,7 @@ const ReportePostulantes = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${apiUrl}/convocatorias/all`)
+    fetch(`${apiUrl}/convocatorias/full`)
       .then(res => res.json())
       .then(data => setConvocatorias(data))
       .catch(err => setError('Error al cargar las convocatorias', err))
@@ -293,7 +293,7 @@ const ReportePostulantes = () => {
               <label>Selecciona una area de la convocatoria:</label>
               <select value={areaSeleccionado} onChange={(e) => setAreaSeleccionado(e.target.value)} disabled={convocatoriaSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
-                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.map(a => (
+                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas?.map(a => (
                   <option key={a.idArea} value={a.tituloArea}>{a.tituloArea}</option>
                 ))}
               </select>
@@ -301,7 +301,7 @@ const ReportePostulantes = () => {
               <label>Selecciona una categoria del area de la convocatoria:</label>
               <select value={categoriaSeleccionado} onChange={(e) => setCategoriaSeleccionado(e.target.value)} disabled={areaSeleccionado === ''}>
                 <option value="">-- Selecciona --</option>
-                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas.find(a => a.tituloArea === areaSeleccionado)?.categorias.map(c => (
+                {convocatorias.find(c => c.tituloConvocatoria === convocatoriaSeleccionado)?.areas?.find(a => a.tituloArea === areaSeleccionado)?.categorias?.map(c => (
                   <option key={c.idCategoria} value={c.nombreCategoria}>{c.nombreCategoria}</option>
                 ))}
               </select>

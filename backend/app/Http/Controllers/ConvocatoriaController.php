@@ -439,6 +439,32 @@ public function getConvocatoriasActivas()
         }
     }
 
+    public function getConvocatoriasConTodo()
+    {
+        try {
+            // Recuperar todas las convocatorias activas con sus relaciones: áreas, categorías, cursos
+            $convocatorias = Convocatoria::with('areas.categorias.cursos')->get();
+
+            // Si no se encuentran convocatorias activas
+            if ($convocatorias->isEmpty()) {
+                return response()->json(['message' => 'No se encontraron convocatorias activas'], 404);
+            }
+
+            foreach ($convocatorias as $conv) {
+                if ($conv->portada) {
+                    $conv->portada = Storage::disk('public')->url($conv->portada);
+                }
+            }
+
+            // Retornar las convocatorias activas con todas sus relaciones
+            return response()->json($convocatorias, 200);
+
+        } catch (\Exception $e) {
+            // Manejo de errores
+            return response()->json(['error' => 'Error al obtener las convocatorias activas: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function index(){
         $convocatorias = Convocatoria::all();
         

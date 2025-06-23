@@ -125,6 +125,8 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::prefix('convocatorias')->group(function(){
     // devuelve TODo: activas, pasadas, futuras
     Route::get('all',     [ConvocatoriaController::class, 'all']);
+    // devuelve TODo: activas, pasadas, futuras
+    Route::get('full',     [ConvocatoriaController::class, 'getConvocatoriasConTodo']);
     // solo onvocatorias que ya terminaron (solo pasadas)
     Route::get('pasadas',    [ConvocatoriaController::class, 'soloPasadas']);
     // solo convocatorias actuales (habilitadas y en su periodo de inscripción)
