@@ -13,13 +13,11 @@ class CrearTriggerHabilitarPostulanteV2 extends Migration
      */public function up(): void
     {
         DB::unprepared("
-            CREATE TRIGGER trigger_habilitar_postulante
-            AFTER UPDATE ON ordenpago
-            FOR EACH ROW
+            CREATE OR REPLACE FUNCTION fn_habilitar_postulante() RETURNS trigger AS $$
             BEGIN
-                IF NEW.cancelado = 1 AND NEW.recibido = 1 THEN
+                IF NEW.cancelado AND NEW.recibido THEN
                     UPDATE postulante
-                    SET habilitado = 1
+                    SET habilitado = TRUE
                     WHERE idPostulante = (
                         SELECT p.idPostulante
                         FROM pagodetalle pd
@@ -28,12 +26,23 @@ class CrearTriggerHabilitarPostulanteV2 extends Migration
                         LIMIT 1
                     );
                 END IF;
-            END
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS trigger_habilitar_postulante ON ordenpago;
+            CREATE TRIGGER trigger_habilitar_postulante
+            AFTER UPDATE ON ordenpago
+            FOR EACH ROW
+            EXECUTE FUNCTION fn_habilitar_postulante();
         ");
     }
 
     public function down(): void
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS trigger_habilitar_postulante');
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trigger_habilitar_postulante ON ordenpago;
+            DROP FUNCTION IF EXISTS fn_habilitar_postulante();
+        ");
     }
 }

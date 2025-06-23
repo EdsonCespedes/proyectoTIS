@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('descArea');
             $table->boolean('habilitada');
             $table->foreignId('idConvocatoria')
-                ->constrained('convocatoria')
+                ->constrained('convocatoria', 'idConvocatoria')
                 ->cascadeOnDelete();
         });
     }

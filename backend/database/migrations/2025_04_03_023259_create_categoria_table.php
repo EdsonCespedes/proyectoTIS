@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('descCategoria')->nullable();
             $table->boolean('habilitada')->nullable();
             $table->foreignId('idArea')
-                ->constrained('area')
+                ->constrained('area', 'idArea')
                 ->cascadeOnDelete();
         });
     }

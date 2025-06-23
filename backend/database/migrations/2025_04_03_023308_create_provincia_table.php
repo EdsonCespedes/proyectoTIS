@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id('idProvincia');
             $table->string('nombreProvincia');
             $table->foreignId('idDepartamento')
-                ->constrained('departamento')
+                ->constrained('departamento', 'idDepartamento')
                 ->cascadeOnDelete();
         });
 

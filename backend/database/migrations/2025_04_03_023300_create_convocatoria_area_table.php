@@ -12,10 +12,10 @@ return new class extends Migration
             $table->id('idConvArea');
 
             $table->foreignId('idConvocatoria')
-                ->constrained('convocatoria')
+                ->constrained('convocatoria', 'idConvocatoria')
                 ->cascadeOnDelete();
             $table->foreignId('idArea')
-                ->constrained('area')
+                ->constrained('area', 'idArea')
                 ->cascadeOnDelete();
         });
     }

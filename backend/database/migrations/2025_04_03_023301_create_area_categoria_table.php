@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('area_categoria', function (Blueprint $table) {
             $table->id('idAreaCat');
             $table->foreignId('idArea')
-                ->constrained('area')
+                ->constrained('area', 'idArea')
                 ->cascadeOnDelete();
             $table->foreignId('idCategoria')
-                ->constrained('categoria')
+                ->constrained('categoria', 'idCategoria')
                 ->cascadeOnDelete();
         });
 

@@ -24,14 +24,14 @@ return new class extends Migration
             $table->string('departamento');
             $table->string('provincia');
             $table->foreignId('idTutor')
-                ->constrained('tutor')
+                ->constrained('tutor', 'idTutor')
                 ->cascadeOnDelete();
             $table->foreignId('idColegio')
-                ->constrained('colegio')
+                ->constrained('colegio', 'idColegio')
                 ->cascadeOnDelete();
             $table->string ('delegacion')->nullable();
             $table->foreignId('idCurso')
-                ->constrained('curso')
+                ->constrained('curso', 'idCurso')
                 ->cascadeOnDelete();
 
             $table->timestamps();

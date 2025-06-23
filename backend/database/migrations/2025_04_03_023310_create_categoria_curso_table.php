@@ -17,10 +17,10 @@ return new class extends Migration
         Schema::create('categoria_curso', function (Blueprint $table) {
             $table->id('idCatCurso');
             $table->foreignId('idCategoria')
-                  ->constrained('categoria')
+                  ->constrained('categoria', 'idCategoria')
                   ->cascadeOnDelete();
             $table->foreignId('idCurso')
-                  ->constrained('curso')
+                  ->constrained('curso', 'idCurso')
                   ->cascadeOnDelete();
         });
 
