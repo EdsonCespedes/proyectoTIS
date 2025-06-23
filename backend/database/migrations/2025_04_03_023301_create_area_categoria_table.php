@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('area_categoria', function (Blueprint $table) {
-            $table->increments('idAreaCat');
-            $table->unsignedInteger ('idArea');
-            $table->foreign('idArea')->references('idArea')->on('area');
-            $table->unsignedInteger ('idCategoria');
-            $table->foreign('idCategoria')->references('idCategoria')->on('categoria');
+            $table->id('idAreaCat');
+            $table->foreignId('idArea')
+                ->constrained('area')
+                ->cascadeOnDelete();
+            $table->foreignId('idCategoria')
+                ->constrained('categoria')
+                ->cascadeOnDelete();
         });
 
         Schema::enableForeignKeyConstraints();

@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('area', function (Blueprint $table) {
-            $table->increments('idArea');
+            $table->id('idArea');
             $table->string('tituloArea');
             $table->string('descArea');
             $table->boolean('habilitada');
-            $table->unsignedInteger ('idConvocatoria');
+            $table->foreignId('idConvocatoria')
+                ->constrained('convocatoria')
+                ->cascadeOnDelete();
         });
     }
 

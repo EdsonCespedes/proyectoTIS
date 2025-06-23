@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('postulante', function (Blueprint $table) {
-            $table->increments('idPostulante');
+            $table->id('idPostulante');
             $table->string('nombrePost');
             $table->string('apellidoPost');
             $table->string('carnet');
@@ -23,13 +23,16 @@ return new class extends Migration
             $table->string('telefonoPost');
             $table->string('departamento');
             $table->string('provincia');
-            $table->unsignedInteger ('idTutor');
-            $table->foreign('idTutor')->references('idTutor')->on('tutor');
-            $table->unsignedInteger ('idColegio');
-            $table->foreign('idColegio')->references('idColegio')->on('colegio');
+            $table->foreignId('idTutor')
+                ->constrained('tutor')
+                ->cascadeOnDelete();
+            $table->foreignId('idColegio')
+                ->constrained('colegio')
+                ->cascadeOnDelete();
             $table->string ('delegacion')->nullable();
-            $table->unsignedInteger ('idCurso');
-            $table->foreign('idCurso')->references('idCurso')->on('curso');
+            $table->foreignId('idCurso')
+                ->constrained('curso')
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });
