@@ -9,13 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('convocatoria_area', function (Blueprint $table) {
-            $table->increments('idConvArea');
+            $table->id('idConvArea');
 
-            $table->unsignedInteger('idConvocatoria');
-            $table->unsignedInteger('idArea');
-
-            $table->foreign('idConvocatoria')->references('idConvocatoria')->on('convocatoria')->onDelete('cascade');
-            $table->foreign('idArea')->references('idArea')->on('area')->onDelete('cascade');
+            $table->foreignId('idConvocatoria')
+                ->constrained('convocatoria')
+                ->cascadeOnDelete();
+            $table->foreignId('idArea')
+                ->constrained('area')
+                ->cascadeOnDelete();
         });
     }
 

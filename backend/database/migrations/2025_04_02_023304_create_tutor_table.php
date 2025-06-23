@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('tutor', function (Blueprint $table) {
-            $table->increments('idTutor');
+            $table->id('idTutor');
             $table->string('nombreTutor');
             $table->string('apellidoTutor');
             $table->string('correoTutor');

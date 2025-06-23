@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categoria', function (Blueprint $table) {
-            $table->increments('idCategoria');
+            $table->id('idCategoria');
             $table->string('nombreCategoria');
             $table->string('descCategoria')->nullable();
             $table->boolean('habilitada')->nullable();
-            $table->unsignedInteger  ('idArea');
-            $table->foreign('idArea')->references('idArea')->on('area');
+            $table->foreignId('idArea')
+                ->constrained('area')
+                ->cascadeOnDelete();
         });
     }
 

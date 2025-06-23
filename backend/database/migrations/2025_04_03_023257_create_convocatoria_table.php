@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('convocatoria', function (Blueprint $table) {
-            $table->increments('idConvocatoria');
+            $table->id('idConvocatoria');
             $table->dateTime('fechaPublicacion')->nullable();
             $table->dateTime('fechaInicioInsc')->nullable();
             $table->dateTime('fechaFinInsc')->nullable();
